@@ -1,4 +1,4 @@
-const version = '1.6.14';
+const version = '1.6.15';
 const show = true;
 const verbose = true;
 if (verbose) console.log("version:", version);
@@ -460,7 +460,15 @@ function setFootnote(r, w, b) {
 	const w2b2 = (typeof r.buffSelectTwo[1] !== "undefined") ? b.find(f => f.id === r.buffSelectTwo[1]).name : "";
 	const w2b3 = (typeof r.buffSelectTwo[2] !== "undefined") ? b.find(f => f.id === r.buffSelectTwo[2]).name : "";
 	const w2b4 = (typeof r.buffSelectTwo[3] !== "undefined") ? b.find(f => f.id === r.buffSelectTwo[3]).name : "";
-	rslt = w1.concat(': ').concat(w1b1).concat((w1b2 === "")?w1b2:`, ${w1b2}`).concat((w1b3 === "")?w1b3:`, ${w1b3}`).concat((w1b4 === "")?w1b4:`, ${w1b4}`);
-	rslt = rslt.concat((w2 === "")?w2:`<br>${w2}: `).concat(w2b1).concat((w2b2 === "")?w2b2:`, ${w2b2}`).concat((w2b3 === "")?w2b3:`, ${w2b3}`).concat((w2b4 === "")?w2b4:`, ${w2b4}`);
+	rslt = (`<p><span style="font-size: 1.1em"><strong>${w1}:</strong>`)
+		.concat(`<em>${w1b1}</em>`)
+		.concat((w1b2 === "") ? w1b2: (`, <em>${w1b2}</em>`))
+		.concat((w1b3 === "") ? w1b3: (`, <em>${w1b3}</em>`))
+		.concat((w1b4 === "") ? w1b4: (`, <em>${w1b4}</em>`))
+		.concat((w2 === "") ? w2: (`<br><strong>${w2}:</strong>`))
+		.concat((w2b1 === "") ? w2b1: (` <em>${w2b1}</em>`))
+		.concat((w2b2 === "") ? w2b2: (`, <em>${w2b2}</em>`))
+		.concat((w2b3 === "") ? w2b3: (`, <em>${w2b3}</em>`))
+		.concat((w2b4 === "") ? w2b4: (`, <em>${w2b4}</em>`));
 	return rslt
 }
