@@ -1,6 +1,6 @@
-const version = '1.6.16';
-const show = true;
-const verbose = true;
+const version = '1.6.17';
+const show = false;
+const verbose = false;
 if (verbose) console.log("version:", version);
 if (action.tag === `swstop`) {
 	//	Turn off any active "shadowweapon" buffs
@@ -461,7 +461,7 @@ function setFootnote(r, w, b) {
 	const w2b3 = (typeof r.buffSelectTwo[2] !== "undefined") ? b.find(f => f.id === r.buffSelectTwo[2]).name : "";
 	const w2b4 = (typeof r.buffSelectTwo[3] !== "undefined") ? b.find(f => f.id === r.buffSelectTwo[3]).name : "";
 	rslt = (`<p><span style="font-size: 1.1em"><strong>${w1}:</strong>`)
-		.concat(`<em>${w1b1}</em>`)
+		.concat(` <em>${w1b1}</em>`)
 		.concat((w1b2 === "") ? w1b2: (`, <em>${w1b2}</em>`))
 		.concat((w1b3 === "") ? w1b3: (`, <em>${w1b3}</em>`))
 		.concat((w1b4 === "") ? w1b4: (`, <em>${w1b4}</em>`))
