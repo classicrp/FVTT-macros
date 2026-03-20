@@ -1,4 +1,4 @@
-const version = '1.6.17';
+const version = '1.6.18';
 const show = false;
 const verbose = false;
 if (verbose) console.log("version:", version);
@@ -235,7 +235,7 @@ let weapon = [];
 let msg = "";
 //	Write response.weaponSelect[] ids to "weapon[n]" dictionary
 msg = await setFootnote(response, fWeap, fBuff);
-await item.addItemBooleanFlag('shadow_weapon');
+//await item.addItemBooleanFlag('shadow_weapon');
 await item.setFlag('ckl-roll-bonuses', 'bonus_footnote', msg);
 //await item.update({ ['system.effectNotes.0']: msg });
 shared.chatAttacks[0].effectNotesHTML = msg;
