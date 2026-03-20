@@ -1,5 +1,5 @@
 // async function anonymous(speaker,actor,token,character,scope,item,shared,action,state,startTime
-const version = '0.5.5';
+const version = '0.5.6';
 const show = false;
 const useTwoWeapons = 'Compendium.world.crp-macros.Macro.ugyEnP5Al3TicSkC';
 const useAction = 'Compendium.world.crp-macros.Macro.VgwfQ1Hk2rC4NOXB';
@@ -176,8 +176,8 @@ debugger
 		skip = false;
 	} else  {
 		//	see if it has the correct macros
+		let skipone = false, skiptwo = false;
 		for (const l of local) {
-			let skipone = false, skiptwo = false;
 			if (l.category === "use" && l.value === useTwoWeapons) {
 				skipone = true;
 			} else if (l.category === "use" && l.value === useAction) {
