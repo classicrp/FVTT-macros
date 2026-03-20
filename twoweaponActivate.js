@@ -1,5 +1,5 @@
 // async function anonymous(speaker,actor,token,character,scope,item,shared,action,state,startTime
-const version = '0.5.8';
+const version = '0.5.9';
 const show = false;
 const useTwoWeapons = 'Compendium.world.crp-macros.Macro.ugyEnP5Al3TicSkC';
 const useAction = 'Compendium.world.crp-macros.Macro.VgwfQ1Hk2rC4NOXB';
@@ -33,7 +33,7 @@ if (action.tag === 'start') {
 //		if (show) debugger
 		if (local.length !== 0) {
 			//	changes need to be made
-			await srcs.update({ ['system.scriptCalls']: []});
+//			await srcs.update({ ['system.scriptCalls']: []});
 //			const pauseTime = 150;
 //				//  add a slight delay to allow the system to "catch-up"
 //			await new Promise(r => setTimeout(r, pauseTime));
