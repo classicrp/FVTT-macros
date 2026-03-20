@@ -1,5 +1,5 @@
 // async function anonymous(speaker,actor,token,character,scope,item,shared,action,state,startTime
-const version = '0.5.7';
+const version = '0.5.8';
 const show = false;
 const useTwoWeapons = 'Compendium.world.crp-macros.Macro.ugyEnP5Al3TicSkC';
 const useAction = 'Compendium.world.crp-macros.Macro.VgwfQ1Hk2rC4NOXB';
@@ -188,24 +188,17 @@ debugger
 		}
 		skip = skip && skipone && skiptwo;
 	}
-	if (!skip) {
-		//	clear existing "use" macros
-//		const initialLen = local.length;
-//		for (let i=0; i < initialLen; i++) {
-//			//	always index 0 since we delete one
-//			if (local[0].category === 'use') local.pop();
-//		}
-        if (!skipone) {
-          //	get and add in to copy the "useTwoWeapon" macro
-            let uTW = buildUseTwoWeapons(useTwoWeapons)
-    		local.push(uTW);
-        }
-        if (!skiptwo) {
-          //	get and add in to copy the "useAction" macro
-    		let uA = buildUseAction(useAction);
-    		local.push(uA);
-        }
-	} else {
+	if (!skipone) {
+        //	get and add in to copy the "useTwoWeapon" macro
+        let uTW = buildUseTwoWeapons(useTwoWeapons)
+   		local.push(uTW);
+    }
+    if (!skiptwo) {
+        //	get and add in to copy the "useAction" macro
+  		let uA = buildUseAction(useAction);
+   		local.push(uA);
+    }
+	if (skipone && skiptwo) {
 		local = [];
 	}
 	if (show) debugger
