@@ -235,9 +235,10 @@ let weapon = [];
 let msg = "";
 //	Write response.weaponSelect[] ids to "weapon[n]" dictionary
 msg = await setFootnote(response, fWeap, fBuff);
+await item.addItemBooleanFlag('shadow_weapon');
 await item.setFlag('ckl-roll-bonuses', 'bonus_footnote', msg);
 //await item.update({ ['system.effectNotes.0']: msg });
-shared.chatAttacks[0].effectNotesHTML = await msg;
+shared.chatAttacks[0].effectNotesHTML = msg;
 	//	Now let "shared" catch up
 if (typeof shared.__nasPendingAttackFootnotes !== 'undefined') {
 	const pauseTime = 750;
@@ -247,6 +248,8 @@ if (show) debugger
 
 for (let i = 0; i < response.weaponSelect.length; i++) {
 	await item.setItemDictionaryFlag(`weapon${i+1}`, response.weaponSelect[i]);
+	const activated = actor.items.get(response.weaponSelect[i]);
+	await activated.addItemBooleanFlag('shadow_weapon');
 	await weapon.push(response.weaponSelect[i]);
 }
 
@@ -254,16 +257,9 @@ for (let i = 0; i < response.weaponSelect.length; i++) {
 for (let i = 0; i < response.buffSelectOne.length; i++) {
 	// if (show) debugger
 	await item.setItemDictionaryFlag(`w1buff${i+1}`, response.buffSelectOne[i]);
-	let activated = actor.items.get(response.buffSelectOne[i]);
+	const activated = actor.items.get(response.buffSelectOne[i]);
 	//	have to bind the correct weapon now
-//	if (response.buffSelectOne[i] === response.buffSelectTwo[i] && activated.name.includes('Enhancement')) {
-		//  Same buff that is an enhancement, on two weapons
-//debugger
     await activated.setFlag('ckl-roll-bonuses', 'target_weapon', weapon);
-//	} else {
-    	//await activated['ckl-roll-bonuses']['target_weapon'].push(weapon);
-//    	await activated.setFlag('ckl-roll-bonuses', 'target_weapon', Array.fromAsync(response.weaponSelect[0]));
-//    }
 	await activated.setActive(true);
 }
 
@@ -272,13 +268,7 @@ for (let i = 0; i < response.buffSelectTwo.length; i++) {
 	await item.setItemDictionaryFlag(`w2buff${i+1}`, response.buffSelectTwo[i]);
 	const activated = actor.items.get(response.buffSelectTwo[i]);
 	//	have to bind the correct weapon now
-//	if (response.buffSelectOne[i] === response.buffSelectTwo[i] && activated.name.includes('Enhancement')) {
-		//  Same buff that is an enhancement, on two weapons
-//		await weapon.push(response.weaponSelect[1]);	
     await activated.setFlag('ckl-roll-bonuses', 'target_weapon', weapon);
-//	} else {
-//        await activated.setFlag('ckl-roll-bonuses', 'target_weapon', Array.fromAsync(response.weaponSelect[1]));
-//	}
 	await activated.setActive(true);
 }
 
@@ -286,6 +276,11 @@ return
 
 function clearDictionary() {
 //	if (show) debugger
+    rslt = item.getFlag('ckl-roll-bonuses', 'target_weapon');
+	for (const w of rslt) {
+		const activated = actor.items.get(w);
+		activated.removeItemBooleanFlag('shadow_weapon');
+	}
     item.update({ ['system.flags.dictionary']: [] });  
 	item.setFlag('ckl-roll-bonuses', 'bonus_footnote', '');
 	shared.chatMessage = false;
