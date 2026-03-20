@@ -1,0 +1,127 @@
+{
+    "type": "check",
+    "style": 0,
+    "sound": "sounds/dice.wav",
+    "content": "
+		<span class="flavor-text">  Will Saving Throw</span>
+		<div class="dice-roll" data-action="expandRoll">  
+			<div class="dice-result">
+				<h3 class="roll-total dice-total has-details success" data-natural="6" data-bonus="11" data-dc="15" data-total="17"><i class="fa-solid fa-dice-d20" inert></i><span class="natural">6</span><span class="bonus">+11</span><span class="equals">⇒</span><span class="total">17</span></h3>
+				<div class="dice-tooltip">
+					<div class="wrapper">
+						<section class="tooltip-part">
+							<div class="dice">
+								<header class="part-header flexrow">
+									<span class="part-formula">1d20</span><span class="part-flavor ">Check</span><span class="part-total">6</span>
+								</header>
+								<ol class="dice-rolls">
+									<li class="roll die d20">6</li>
+								</ol>
+							</div>
+						</section>
+						<section class="tooltip-part">
+							<div class="dice">
+								<header class="part-header flexrow">
+									<span class="part-formula"></span>
+									<span class="part-flavor ">Havok</span>
+									<span class="part-total">
+									<span class="part-prefix">+</span>3</span>
+								</header>
+							</div>
+						</section>
+						<section class="tooltip-part">      
+							<div class="dice">        
+								<header class="part-header flexrow">          
+									<span class="part-formula"></span>          
+									<span class="part-flavor ">Fighter/Rogue/Assassin/Bard</span>          
+									<span class="part-total">            
+									<span class="part-prefix">+</span>7</span>        
+								</header>      
+							</div>    
+						</section>    
+						<section class="tooltip-part">      
+							<div class="dice">        
+								<header class="part-header flexrow">          
+									<span class="part-formula"></span>          
+									<span class="part-flavor ">Wisdom</span>          
+									<span class="part-total">            
+										<span class="part-prefix">+</span>1
+									</span>        
+								</header>      
+							</div>    
+						</section>  
+					</div>
+				</div>  
+			</div>  
+			<div class="difficulty-class">    
+				<label>Success</label>    
+				<span class="threshold sensitive">      DC 15    </span>  
+			</div>
+		</div>
+		<div class="flexcol property-group gm-sensitive  general-notes">
+			<label>Condition Resistances</label>
+			<div class="flexrow tag-list">    
+				<span class="tag">+2 Save Bonus against Poison</span>    
+				<span class="tag">Daring +1</span>\t
+			</div>
+		</div>
+		<div class="flexcol property-group gm-sensitive  general-notes">
+			<label>Misc</label>
+			<div class="flexrow tag-list">    
+				<span class="tag">Spell Resistance 21</span>
+			</div>
+		</div>
+		<div class="flexcol property-group gm-sensitive  general-notes">
+			<label>Notes</label>
+			<div class="flexrow tag-list">    
+				<span class="tag" data-tooltip="Source: Bravery">+<a class="inline-roll inline-result" data-tooltip-text="floor((0 - 2) / 4)" data-roll="{"class":"RollPF","options":{},"dice":[],"formula":"floor((0 - 2) / 4)","terms":[{"class":"FunctionTerm","options":{"flavor":null},"evaluated":true,"fn":"floor","terms":["(0 - 2) / 4"],"rolls":[{"class":"RollPF","options":{},"dice":[],"formula":"(0 - 2) / 4","terms":[{"class":"ParentheticalTerm","options":{"flavor":null},"evaluated":true,"term":"0 - 2","roll":{"class":"RollPF","options":{},"dice":[],"formula":"0 - 2","terms":[{"class":"NumericTerm","options":{"flavor":null},"evaluated":true,"number":0},{"class":"OperatorTerm","options":{},"evaluated":true,"operator":"-"},{"class":"NumericTerm","options":{"flavor":null},"evaluated":true,"number":2}],"total":-2,"evaluated":true}},{"class":"OperatorTerm","options":{},"evaluated":true,"operator":"/"},{"class":"NumericTerm","options":{"flavor":null},"evaluated":true,"number":4}],"total":-0.5,"evaluated":true}],"result":-1}],"total":-1,"evaluated":true}" data-tooltip="floor((@class.level - 2) / 4)"><i class="fa-solid fa-dice-d20" inert></i>-1</a> vs fear effects (untyped)</span>
+				<span class="tag" data-tooltip="Source: Accursed (Completed) (limited SR 21)">
+				<span style="font-family:Arial">Against harmful <i>enchantment</i>, <i>necromancy</i>, and <i>transmutation</i> <b>spells</b> and <b>spell-like abilities</b>—your aura resists further attempts to curse you.</span>
+				</span>    
+				<span class="tag" data-tooltip="Source: Surge of Success">
+					<span style="font-family:Arial, sans-serif;font-size:1.1em">On a natural <a class="inline-roll inline-result" data-tooltip-text="20" data-roll="%7B%22class%22%3A%22RollPF%22%2C%22options%22%3A%7B%7D%2C%22dice%22%3A[]%2C%22formula%22%3A%2220%22%2C%22terms%22%3A[%7B%22class%22%3A%22NumericTerm%22%2C%22options%22%3A%7B%22flavor%22%3Anull%7D%2C%22evaluated%22%3Atrue%2C%22number%22%3A20%7D]%2C%22total%22%3A20%2C%22evaluated%22%3Atrue%7D" data-tooltip="20"><i class="fa-solid fa-dice-d20" inert></i>20</a>, your next <b>attack</b>, <b>save</b>, <b>skill</b> or <b>ability check</b> gets a +<a class="inline-roll inline-result" data-tooltip-text="2" data-roll="%7B%22class%22%3A%22RollPF%22%2C%22options%22%3A%7B%7D%2C%22dice%22%3A[]%2C%22formula%22%3A%222%22%2C%22terms%22%3A[%7B%22class%22%3A%22NumericTerm%22%2C%22options%22%3A%7B%22flavor%22%3Anull%7D%2C%22evaluated%22%3Atrue%2C%22number%22%3A2%7D]%2C%22total%22%3A2%2C%22evaluated%22%3Atrue%7D" data-tooltip="2"><i class="fa-solid fa-dice-d20" inert></i>2</a> circumstance bonus.</span>
+				</span>    
+				<span class="tag" data-tooltip="Source: Save Bonus against Poison">+<a class="inline-roll inline-result" data-tooltip-text="ceil(10 / 2)" data-roll="%7B%22class%22%3A%22RollPF%22%2C%22options%22%3A%7B%7D%2C%22dice%22%3A[]%2C%22formula%22%3A%22ceil%2810 / 2%29%22%2C%22terms%22%3A[%7B%22class%22%3A%22FunctionTerm%22%2C%22options%22%3A%7B%22flavor%22%3Anull%7D%2C%22evaluated%22%3Atrue%2C%22fn%22%3A%22ceil%22%2C%22terms%22%3A[%2210 / 2%22]%2C%22rolls%22%3A[%7B%22class%22%3A%22RollPF%22%2C%22options%22%3A%7B%7D%2C%22dice%22%3A[]%2C%22formula%22%3A%2210 / 2%22%2C%22terms%22%3A[%7B%22class%22%3A%22NumericTerm%22%2C%22options%22%3A%7B%22flavor%22%3Anull%7D%2C%22evaluated%22%3Atrue%2C%22number%22%3A10%7D%2C%7B%22class%22%3A%22OperatorTerm%22%2C%22options%22%3A%7B%7D%2C%22evaluated%22%3Atrue%2C%22operator%22%3A%22/%22%7D%2C%7B%22class%22%3A%22NumericTerm%22%2C%22options%22%3A%7B%22flavor%22%3Anull%7D%2C%22evaluated%22%3Atrue%2C%22number%22%3A2%7D]%2C%22total%22%3A5%2C%22evaluated%22%3Atrue%7D]%2C%22result%22%3A5%7D]%2C%22total%22%3A5%2C%22evaluated%22%3Atrue%7D" data-tooltip="ceil(@classes.gestalt.level / 2)"><i class="fa-solid fa-dice-d20" inert></i>5</a> vs poison</span>   
+				<span class="tag" data-tooltip="Source: Daring (Swashbuckler)">Saves against Fear +<a class="inline-roll inline-result" data-tooltip-text="1 + floor((0 - 3) / 3)" data-roll="%7B%22class%22%3A%22RollPF%22%2C%22options%22%3A%7B%7D%2C%22dice%22%3A[]%2C%22formula%22%3A%221 + floor%28%280 - 3%29 / 3%29%22%2C%22terms%22%3A[%7B%22class%22%3A%22NumericTerm%22%2C%22options%22%3A%7B%22flavor%22%3Anull%7D%2C%22evaluated%22%3Atrue%2C%22number%22%3A1%7D%2C%7B%22class%22%3A%22OperatorTerm%22%2C%22options%22%3A%7B%7D%2C%22evaluated%22%3Atrue%2C%22operator%22%3A%22+%22%7D%2C%7B%22class%22%3A%22FunctionTerm%22%2C%22options%22%3A%7B%22flavor%22%3Anull%7D%2C%22evaluated%22%3Atrue%2C%22fn%22%3A%22floor%22%2C%22terms%22%3A[%22%280 - 3%29 / 3%22]%2C%22rolls%22%3A[%7B%22class%22%3A%22RollPF%22%2C%22options%22%3A%7B%7D%2C%22dice%22%3A[]%2C%22formula%22%3A%22%280 - 3%29 / 3%22%2C%22terms%22%3A[%7B%22class%22%3A%22ParentheticalTerm%22%2C%22options%22%3A%7B%22flavor%22%3Anull%7D%2C%22evaluated%22%3Atrue%2C%22term%22%3A%220 - 3%22%2C%22roll%22%3A%7B%22class%22%3A%22RollPF%22%2C%22options%22%3A%7B%7D%2C%22dice%22%3A[]%2C%22formula%22%3A%220 - 3%22%2C%22terms%22%3A[%7B%22class%22%3A%22NumericTerm%22%2C%22options%22%3A%7B%22flavor%22%3Anull%7D%2C%22evaluated%22%3Atrue%2C%22number%22%3A0%7D%2C%7B%22class%22%3A%22OperatorTerm%22%2C%22options%22%3A%7B%7D%2C%22evaluated%22%3Atrue%2C%22operator%22%3A%22-%22%7D%2C%7B%22class%22%3A%22NumericTerm%22%2C%22options%22%3A%7B%22flavor%22%3Anull%7D%2C%22evaluated%22%3Atrue%2C%22number%22%3A3%7D]%2C%22total%22%3A-3%2C%22evaluated%22%3Atrue%7D%7D%2C%7B%22class%22%3A%22OperatorTerm%22%2C%22options%22%3A%7B%7D%2C%22evaluated%22%3Atrue%2C%22operator%22%3A%22/%22%7D%2C%7B%22class%22%3A%22NumericTerm%22%2C%22options%22%3A%7B%22flavor%22%3Anull%7D%2C%22evaluated%22%3Atrue%2C%22number%22%3A3%7D]%2C%22total%22%3A-1%2C%22evaluated%22%3Atrue%7D]%2C%22result%22%3A-1%7D]%2C%22total%22%3A0%2C%22evaluated%22%3Atrue%7D" data-tooltip="1 + floor((@class.level - 3) / 3)"><i class="fa-solid fa-dice-d20" inert></i>0</a></span>
+			</div>
+		</div>",
+    "system": {
+        "dc": 15,
+        "reference": "ChatMessage.FprntFE2zFlyo9lM",
+        "subject": {
+            "save": "will"
+        }
+    },
+    "speaker": {
+        "scene": "adWP2CxsosNCfLtP",
+        "token": "YtWrtiHnDd0ixRFk",
+        "actor": "tPis1bRmFuPFq4Gw",
+        "alias": "Fade"
+    },
+    "rolls": [
+        "{"class":"D20RollPF","options":{"critical":20,"flavor":"Will Saving Throw","dc":15,"staticRoll":null},"dice":[],"formula":"1d20 + 3[Havok] + 7[Fighter/Rogue/Assassin/Bard] + 1[Wisdom]","terms":[{"class":"Die","options":{"flavor":"Check"},"evaluated":true,"number":1,"faces":20,"modifiers":[],"results":[{"result":6,"active":true}]},{"class":"OperatorTerm","options":{},"evaluated":true,"operator":"+"},{"class":"NumericTerm","options":{"flavor":"Havok"},"evaluated":true,"number":3},{"class":"OperatorTerm","options":{},"evaluated":true,"operator":"+"},{"class":"NumericTerm","options":{"flavor":"Fighter/Rogue/Assassin/Bard"},"evaluated":true,"number":7},{"class":"OperatorTerm","options":{},"evaluated":true,"operator":"+"},{"class":"NumericTerm","options":{"flavor":"Wisdom"},"evaluated":true,"number":1}],"total":17,"evaluated":true}"
+    ],
+    "_id": "AcvJ5HgOi3L9LT4I",
+    "author": "iU2Smz1C2dEHz9rB",
+    "timestamp": 1763241812236,
+    "flavor": "",
+    "whisper": [],
+    "blind": false,
+    "emote": false,
+    "flags": {
+        "multiple-chat-tabs": {
+            "sourceTab": "tab-main"
+        }
+    },
+    "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.350",
+        "systemId": "pf1",
+        "systemVersion": "11.8",
+        "createdTime": 1763241812240,
+        "modifiedTime": 1763241812240,
+        "lastModifiedBy": "iU2Smz1C2dEHz9rB"
+    }
+}

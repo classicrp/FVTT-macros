@@ -1,0 +1,5 @@
+The application-specific permission settings do not grant Local Activation permission for the COM Server application with CLSID 
+{2593F8B9-4EAF-457C-B68A-50F6B8EA6B54}
+ and APPID 
+{15C20B67-12E7-4BB6-92BB-7AFF07997402}
+ to the user VARISIA\Dad SID (S-1-5-21-1891165355-2934728730-69796063-1001) from address LocalHost (Using LRPC) running in the application container Unavailable SID (Unavailable). This security permission can be modified using the Component Services administrative tool.

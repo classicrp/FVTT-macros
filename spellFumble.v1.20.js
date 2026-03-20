@@ -47,7 +47,7 @@ debugger;
 	//	something happened to the dialog, likely cancelled
 		failState = true;
 		msg = "Something happened to the dialog, likely cancelled.";
-		
+		console.log(head + msg);		
 		return null;
 	} 
 
