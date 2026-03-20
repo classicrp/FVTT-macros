@@ -1,4 +1,4 @@
-const version = '1.6.18';
+const version = '1.7.1';
 const show = false;
 const verbose = false;
 if (verbose) console.log("version:", version);
@@ -49,7 +49,7 @@ if (level) {
 } else {
 	return;
 }
-await item.update({ ['system.level']: maxbonusOneWeap });
+//await item.update({ ['system.level']: maxbonusOneWeap });
 
 //	WEAPON DATA
 const weapTypes = "mwak";
@@ -227,30 +227,22 @@ const response = await foundry.applications.api.Dialog.input({
 //	RESPONSE TO INPUTS
 //	now do something with it!
 if (response === 'cancel') {
-	shared.chatMessage = false;
+	shared.reject = true;
 	return
 } 
 
-let weapon = [];
+//let weapon = [];
 let msg = "";
 //	Write response.weaponSelect[] ids to "weapon[n]" dictionary
 msg = await setFootnote(response, fWeap, fBuff);
-//await item.addItemBooleanFlag('shadow_weapon');
-await item.setFlag('ckl-roll-bonuses', 'bonus_footnote', msg);
-//await item.update({ ['system.effectNotes.0']: msg });
 shared.chatAttacks[0].effectNotesHTML = msg;
-	//	Now let "shared" catch up
-if (typeof shared.__nasPendingAttackFootnotes !== 'undefined') {
-	const pauseTime = 750;
-	await new Promise(r => setTimeout(r, pauseTime));
-}
 if (show) debugger
 
 for (let i = 0; i < response.weaponSelect.length; i++) {
 	await item.setItemDictionaryFlag(`weapon${i+1}`, response.weaponSelect[i]);
 	const activated = actor.items.get(response.weaponSelect[i]);
 	await activated.addItemBooleanFlag('shadow_weapon');
-	await weapon.push(response.weaponSelect[i]);
+//	await weapon.push(response.weaponSelect[i]);
 }
 
 //	Write response.buffSelectOne[] ids to "w1buff[n]" dictionary
@@ -259,7 +251,7 @@ for (let i = 0; i < response.buffSelectOne.length; i++) {
 	await item.setItemDictionaryFlag(`w1buff${i+1}`, response.buffSelectOne[i]);
 	const activated = actor.items.get(response.buffSelectOne[i]);
 	//	have to bind the correct weapon now
-    await activated.setFlag('ckl-roll-bonuses', 'target_weapon', weapon);
+    await activated.setFlag('ckl-roll-bonuses', 'target_weapon', response.weaponSelect);
 	await activated.setActive(true);
 }
 
@@ -268,7 +260,7 @@ for (let i = 0; i < response.buffSelectTwo.length; i++) {
 	await item.setItemDictionaryFlag(`w2buff${i+1}`, response.buffSelectTwo[i]);
 	const activated = actor.items.get(response.buffSelectTwo[i]);
 	//	have to bind the correct weapon now
-    await activated.setFlag('ckl-roll-bonuses', 'target_weapon', weapon);
+    await activated.setFlag('ckl-roll-bonuses', 'target_weapon', response.weaponSelect);
 	await activated.setActive(true);
 }
 
@@ -282,8 +274,8 @@ function clearDictionary() {
 		activated.removeItemBooleanFlag('shadow_weapon');
 	}
     item.update({ ['system.flags.dictionary']: [] });  
-	item.setFlag('ckl-roll-bonuses', 'bonus_footnote', '');
-	shared.chatMessage = false;
+//	item.setFlag('ckl-roll-bonuses', 'bonus_footnote', '');
+	shared.reject = true;
 	return
 }
 
