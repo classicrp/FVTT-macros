@@ -1,4 +1,4 @@
-const version = '1.6.15';
+const version = '1.6.16';
 const show = true;
 const verbose = true;
 if (verbose) console.log("version:", version);
@@ -469,6 +469,7 @@ function setFootnote(r, w, b) {
 		.concat((w2b1 === "") ? w2b1: (` <em>${w2b1}</em>`))
 		.concat((w2b2 === "") ? w2b2: (`, <em>${w2b2}</em>`))
 		.concat((w2b3 === "") ? w2b3: (`, <em>${w2b3}</em>`))
-		.concat((w2b4 === "") ? w2b4: (`, <em>${w2b4}</em>`));
+		.concat((w2b4 === "") ? w2b4: (`, <em>${w2b4}</em>`))
+		.concat(`</span></p>`);
 	return rslt
 }
