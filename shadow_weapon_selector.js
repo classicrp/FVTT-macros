@@ -1,9 +1,10 @@
-const version = '1.7.3';
+const version = '1.7.4';
 const show = false;
 const verbose = false;
 if (verbose) console.log("version:", version);
 if (action.tag === `swstop`) {
 	//	Turn off any active "shadowweapon" buffs
+debugger
 	await clearDictionary();
 	const actBuffs = await actor._itemTypes.buff.filter(b => b.system.tags.includes('shadowweapon') && b.system.active);
 	for (const a of actBuffs) {
@@ -251,7 +252,9 @@ return
 
 function clearDictionary() {
 	if (show) debugger
-    const rslt = item.getFlag('ckl-roll-bonuses', 'target_weapon');
+    let rslt = [];
+    rslt.push(item.getItemDictionaryFlag('weapon1'));
+    rslt.push(item.getItemDictionaryFlag('weapon2'));
     let msg = '';
 	for (const w of rslt) {
 		const activated = actor.items.get(w);
