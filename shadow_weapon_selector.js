@@ -1,15 +1,15 @@
-const version = '1.7.1';
+const version = '1.7.2';
 const show = false;
 const verbose = false;
 if (verbose) console.log("version:", version);
 if (action.tag === `swstop`) {
 	//	Turn off any active "shadowweapon" buffs
+	await clearDictionary();
 	const actBuffs = await actor._itemTypes.buff.filter(b => b.system.tags.includes('shadowweapon') && b.system.active);
 	for (const a of actBuffs) {
 		await a.setFlag('ckl-roll-bonuses', 'target_weapon', []);
 		await a.setActive(false);		// (!a.isActive);
 	}
-	await clearDictionary();
 	return;
 }
 
@@ -269,13 +269,20 @@ return
 function clearDictionary() {
 //	if (show) debugger
     rslt = item.getFlag('ckl-roll-bonuses', 'target_weapon');
+    msg = '';
 	for (const w of rslt) {
 		const activated = actor.items.get(w);
-		activated.removeItemBooleanFlag('shadow_weapon');
+        if (msg === '') {
+            msg = `<p><span style="font-size: 1.1 em"><strong>${activated.name}</strong>`;
+        } else {
+            msg = msg.concat(`, <strong>${activated.name}</strong>.</span></p>`);
+        }
+        activated.removeItemBooleanFlag('shadow_weapon');
 	}
+    shared.chatAttacks[0].effectNotesHTML = msg;
     item.update({ ['system.flags.dictionary']: [] });  
 //	item.setFlag('ckl-roll-bonuses', 'bonus_footnote', '');
-	shared.reject = true;
+//	shared.reject = true;
 	return
 }
 
