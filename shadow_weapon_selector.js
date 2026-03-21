@@ -1,4 +1,4 @@
-const version = '1.7.2';
+const version = '1.7.3';
 const show = false;
 const verbose = false;
 if (verbose) console.log("version:", version);
@@ -18,13 +18,10 @@ let maxbonusOneWeap = 0, maxbonusTwoWeap = 0, enhbonusOneWeap = 0, enhbonusTwoWe
 
 //	only Fighter (Gloomblade) ?? can use
 /*
-At 1st level, A gloomblade can create a shadowy weapon in a free hand as a move action. This can take the form of any melee weapon with which he is proficient. A gloomblade can have only one shadow weapon in existence at a time; creating a new shadow weapon causes an existing shadow weapon to vanish. At 3rd level, the shadow weapon acts as a magic weapon with a +1 enhancement bonus; this bonus increases by 1 for every 4 levels a gloomblade has beyond 2nd, to a maximum enhancement bonus of +5 at 18th level.
-
-At 7th level, a gloomblade can create (and maintain) two shadow weapons at a time as a move action; if he does, each weapon has an enhancement bonus 1 lower than normal. If a gloomblade creates only one weapon, it gains a weapon special ability of his choice (chosen upon creation); the ability must be valid for the shadow weapon's weapon type and must be chosen from defending, flaming, frost, keen, ghost touch, merciful, shock, thundering, or vicious. (Additional special abilities might qualify, at the GM's discretion.)
-
-At 11th level, a gloomblade's shadow weapons each gain their full enhancement bonus if he creates two weapons. If a gloomblade creates only one shadow weapon, it gains additional weapon special abilities; the total effective bonus of these abilities cannot exceed +3. The gloomblade can now choose from the of anarchic, axiomatic, flaming burst, icy burst, holy, shocking burst, unholy, and wounding weapon special abilities as well as those from the list above.
-
-At 15th level, a gloomblade's shadow weapons each gain magic weapon special abilities with a total effective bonus of +2 per weapon. If a gloomblade creates only one shadow weapon, its magic weapon special abilities cannot exceed a total effective bonus of +5. The gloomblade adds brilliant energy, dancing, and speed to the options he can choose as weapon special abilities for his shadow weapon.
+    At 1st level, A gloomblade can create a shadowy weapon in a free hand as a move action. This can take the form of any melee weapon with which he is proficient. A gloomblade can have only one shadow weapon in existence at a time; creating a new shadow weapon causes an existing shadow weapon to vanish. At 3rd level, the shadow weapon acts as a magic weapon with a +1 enhancement bonus; this bonus increases by 1 for every 4 levels a gloomblade has beyond 2nd, to a maximum enhancement bonus of +5 at 18th level.
+    At 7th level, a gloomblade can create (and maintain) two shadow weapons at a time as a move action; if he does, each weapon has an enhancement bonus 1 lower than normal. If a gloomblade creates only one weapon, it gains a weapon special ability of his choice (chosen upon creation); the ability must be valid for the shadow weapon's weapon type and must be chosen from defending, flaming, frost, keen, ghost touch, merciful, shock, thundering, or vicious. (Additional special abilities might qualify, at the GM's discretion.)
+    At 11th level, a gloomblade's shadow weapons each gain their full enhancement bonus if he creates two weapons. If a gloomblade creates only one shadow weapon, it gains additional weapon special abilities; the total effective bonus of these abilities cannot exceed +3. The gloomblade can now choose from the of anarchic, axiomatic, flaming burst, icy burst, holy, shocking burst, unholy, and wounding weapon special abilities as well as those from the list above.
+    At 15th level, a gloomblade's shadow weapons each gain magic weapon special abilities with a total effective bonus of +2 per weapon. If a gloomblade creates only one shadow weapon, its magic weapon special abilities cannot exceed a total effective bonus of +5. The gloomblade adds brilliant energy, dancing, and speed to the options he can choose as weapon special abilities for his shadow weapon.
 */
 const level = await hasArchetype(actor, "fighter", "gloomblade");
 
@@ -49,7 +46,6 @@ if (level) {
 } else {
 	return;
 }
-//await item.update({ ['system.level']: maxbonusOneWeap });
 
 //	WEAPON DATA
 const weapTypes = "mwak";
@@ -63,7 +59,6 @@ const weap = {
 };
 let fWeap = []
 for (const w of weaps) {
-//debugger
 	let o = weap.constructor();
 	if (w.actions.size !== 0) {
 		o.id = w._id;
@@ -95,7 +90,6 @@ for (const w of weaps) {
 }
 
 //	BUFF DATA
-//debugger
 const buffs = await deepClone(actor._itemTypes.buff.filter(b => b.system.tags.includes('shadowweapon') && b.system.level > 0 && b.system.level <= maxbonusOneWeap).concat(actor._itemTypes.buff.filter(b => b.system.tags.includes('shadowweapon') && (b.system.tags.includes(`${enhbonusOneWeap}`) || b.system.tags.includes(`${enhbonusTwoWeap}`)) && b.system.level === 0)));
 if (verbose) console.log("buffs:", buffs);
 const buff = {
@@ -108,11 +102,9 @@ const buff = {
 };
 let fBuff = [], wBuff = [];
 for (const b of buffs) {
-//debugger
 	let o = buff.constructor();
 	o.id = b._id;
 	o.name = b.name.replace(' (shadow weapon)', '');
-//	o.name = o.name.substring(0, o.name.length);
 	o.feature = b.system.tags[0];
 	o.cost = b.system.level;
 	o.type = b.system.tags.filter(t => t.toLowerCase() !== 'shadowweapon' && t.toString().length !== 1).toString();
@@ -123,12 +115,11 @@ wBuff = await deepClone(fBuff);
 
 //	HTML BUILDING
 let dHtml = "";
+const sMO = (maxbonusOneWeap===0) ? '-': `+${maxbonusOneWeap}`;
+const sMT = (maxbonusTwoWeap===0) ? '-': `+${maxbonusTwoWeap}`;
 /*
  	<dTop> should be a numeric display only, not an input field
 */
-const sMO = (maxbonusOneWeap===0) ? '-': `+${maxbonusOneWeap}`;
-const sMT = (maxbonusTwoWeap===0) ? '-': `+${maxbonusTwoWeap}`;
-
 const dTop = `
 	<div class="form-group">
 		<label for="dialog-inert-label">Max Option Cost</label>
@@ -171,7 +162,6 @@ let bGrpOne = `
 	</div>`;
 /*
 */
-//if (verbose) console.log("bGrpOne:", bGrpOne);
 let bGrpTwo = `
 	<div class="form-group">
 		<label for="dialog-multi-buff-two">Second Weapon Options</label>
@@ -185,11 +175,7 @@ let bGrpTwo = `
 	</div>`;
 /*
 */
-//if (verbose) console.log("bGrpTwo:", bGrpTwo);
-
 dHtml = dTop + wGrp + bGrpOne + bGrpTwo;
-
-//if (show) debugger
 
 //	LAUNCH DIALOG
 const response = await foundry.applications.api.Dialog.input({
@@ -231,7 +217,6 @@ if (response === 'cancel') {
 	return
 } 
 
-//let weapon = [];
 let msg = "";
 //	Write response.weaponSelect[] ids to "weapon[n]" dictionary
 msg = await setFootnote(response, fWeap, fBuff);
@@ -242,12 +227,10 @@ for (let i = 0; i < response.weaponSelect.length; i++) {
 	await item.setItemDictionaryFlag(`weapon${i+1}`, response.weaponSelect[i]);
 	const activated = actor.items.get(response.weaponSelect[i]);
 	await activated.addItemBooleanFlag('shadow_weapon');
-//	await weapon.push(response.weaponSelect[i]);
 }
 
 //	Write response.buffSelectOne[] ids to "w1buff[n]" dictionary
 for (let i = 0; i < response.buffSelectOne.length; i++) {
-	// if (show) debugger
 	await item.setItemDictionaryFlag(`w1buff${i+1}`, response.buffSelectOne[i]);
 	const activated = actor.items.get(response.buffSelectOne[i]);
 	//	have to bind the correct weapon now
@@ -267,9 +250,9 @@ for (let i = 0; i < response.buffSelectTwo.length; i++) {
 return
 
 function clearDictionary() {
-//	if (show) debugger
-    rslt = item.getFlag('ckl-roll-bonuses', 'target_weapon');
-    msg = '';
+	if (show) debugger
+    const rslt = item.getFlag('ckl-roll-bonuses', 'target_weapon');
+    let msg = '';
 	for (const w of rslt) {
 		const activated = actor.items.get(w);
         if (msg === '') {
@@ -281,13 +264,10 @@ function clearDictionary() {
 	}
     shared.chatAttacks[0].effectNotesHTML = msg;
     item.update({ ['system.flags.dictionary']: [] });  
-//	item.setFlag('ckl-roll-bonuses', 'bonus_footnote', '');
-//	shared.reject = true;
-	return
+	return true;
 }
 
 function onRender(_event, app){
-//debugger
 	if (typeof item === 'undefined') return;
 	const html = app.element;
 	let rslt = false;
@@ -357,7 +337,6 @@ function onRender(_event, app){
 }
 
 function hasArchetype(actor, c, a) {
-//debugger
 	let rslt = -1;
 	// check for gloomblade template/class
 	const act = actor.toObject();
@@ -372,7 +351,6 @@ function hasArchetype(actor, c, a) {
 }
 
 function checkCurrentWeaps(w, n) {
-//debugger	
 	let rslt = 0;
 	if (w._value.size === 0) {
 		//  Data was cleared
@@ -389,7 +367,6 @@ function checkCurrentWeaps(w, n) {
 }
 
 function checkForWeaponDeselect(c, ba, wa, v) {
-//debugger	
 	let out = "";
 	if (c._value.size === 0) {
 		//	removed only selection
@@ -407,13 +384,12 @@ function rebuildWeapsInner(a, b, wa) {
 		if (a < b) return acc+=`<option value="${e.id}">${e.name}</option>\n`;
 		return acc;
 	},`<option value=""></option>`);
-//	if (verbose) console.log("Weapon Select change:", inner);
 	return inner;
 }
 
 function rebuildBuffOneInner(ba, n, eO, mO, eT, mT, nO, state) {
 	const inner = ba.reduce((acc,e)=>{
-//		if (show) debugger
+		if (show) debugger
 		if (state) {
 			if( (n <= 1 && e.cost === 0 && e.enh === eO) || (n <= 1 && e.cost > 0 && e.cost <= mO && e.cost <= nO) ) return acc+=`<option value="${e.id}">${e.name}</option>\n`;
 			if( (n === 2 && e.cost === 0 && e.enh === eT) || (n === 2 && e.cost > 0 && e.cost <= mT && e.cost <= nO) ) return acc+=`<option value="${e.id}">${e.name}</option>\n`;
@@ -429,7 +405,7 @@ function rebuildBuffOneInner(ba, n, eO, mO, eT, mT, nO, state) {
 
 function rebuildBuffTwoInner(ba, n, eT, mT, nT, state) {
 	const inner = ba.reduce((acc,e)=>{
-//		if (show) debugger
+		if (show) debugger
 		if (state) {
 			if( (n === 2 && e.cost === 0 && e.enh === eT) || (n === 2 && e.cost > 0 && e.cost <= mT && e.cost <= nT) ) return acc+=`<option value="${e.id}">${e.name}</option>\n`;
 		} else {
@@ -443,7 +419,6 @@ function rebuildBuffTwoInner(ba, n, eT, mT, nT, state) {
 
 function setFootnote(r, w, b) {
 	let rslt = "";
-//debugger	
 	const w1 = (typeof r.weaponSelect[0] !== "undefined") ? w.find(f => f.id === r.weaponSelect[0]).name : "";
 	const w1b1 = (typeof r.buffSelectOne[0] !== "undefined") ? b.find(f => f.id === r.buffSelectOne[0]).name : "";
 	const w1b2 = (typeof r.buffSelectOne[1] !== "undefined") ? b.find(f => f.id === r.buffSelectOne[1]).name : "";
