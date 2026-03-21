@@ -1,4 +1,4 @@
-const version = '1.7.4';
+const version = '1.7.5';
 const show = false;
 const verbose = false;
 if (verbose) console.log("version:", version);
@@ -259,7 +259,7 @@ function clearDictionary() {
 	for (const w of rslt) {
 		const activated = actor.items.get(w);
         if (msg === '') {
-            msg = `<p><span style="font-size: 1.1 em"><strong>${activated.name}</strong>`;
+            msg = `<p><span style="font-size: 1.1em"><strong>${activated.name}</strong>`;
         } else {
             msg = msg.concat(`, <strong>${activated.name}</strong>.</span></p>`);
         }
