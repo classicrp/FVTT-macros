@@ -1,4 +1,4 @@
-const version = '0.0.4';
+const version = '0.0.5';
 let buff = actor._itemTypes.buff.filter(b => b.name === 'Two Weapon Use').at(0);
 if (!buff.isActive) return false;
 if (item.getItemBooleanFlags().includes('abort')) return;
@@ -23,7 +23,7 @@ if (used < 2) {
 
 function useAction(w) {
     /*-			CONFIGURATION			*/
-    const targetMacro = "useAction";
+    const targetMacro = "useQuietAction";
     const commandOverride = `My: ${w}`;
     
     //			COMMAND					
