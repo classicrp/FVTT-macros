@@ -1,4 +1,5 @@
-const version = '0.1.5';
+const version = '0.1.6';
+const show = true;
 let element = '', rslt = '', itmName = '', itmData = '';
 //	Get action used
 if ((action.tag === 'acid') || (action.tag === 'cold') || (action.tag === 'fire')) {
@@ -10,6 +11,8 @@ if ((action.tag === 'acid') || (action.tag === 'cold') || (action.tag === 'fire'
   return;
 }
 
+if (show) debugger;
+
 //	Get the spell buff associated with said action
 itmName = `Elemental Touch (${element})`;
 let buff = await actor._itemTypes.buff.filter(b => b.name === itmName).at(0);
@@ -18,8 +21,6 @@ if (typeof buff === 'undefined') {
 	await Item.create(itmData, {parent: actor});
 	buff = await actor._itemTypes.buff.filter(b => b.name === itmName).at(0);
 }
-
-debugger
 
 //	Get spell details from chatData
 const cl = shared.chatAttacks[0].rollData.cl;  //  item.casterLevel;
