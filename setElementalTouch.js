@@ -1,5 +1,5 @@
-const version = '0.1.4';
-let element = '', rslt = '';
+const version = '0.1.5';
+let element = '', rslt = '', itmName = '', itmData = '';
 //	Get action used
 if ((action.tag === 'acid') || (action.tag === 'cold') || (action.tag === 'fire')) {
   element = action.tag; 
@@ -9,11 +9,12 @@ if ((action.tag === 'acid') || (action.tag === 'cold') || (action.tag === 'fire'
   shared.reject = true;
   return;
 }
+
 //	Get the spell buff associated with said action
-let itmName = `Elemental Touch (${element})`;
+itmName = `Elemental Touch (${element})`;
 let buff = await actor._itemTypes.buff.filter(b => b.name === n).at(0);
 if (typeof buff === 'undefined') {
-	let itmData = await getBuff(itmName);
+	itmData = await getBuff(itmName);
 	await Item.create(itmData, {parent: actor});
 	buff = await actor._itemTypes.buff.filter(b => b.name === itmName).at(0);
 }
@@ -24,20 +25,20 @@ debugger
 const cl = shared.chatAttacks[0].rollData.cl;  //  item.casterLevel;
 const sl = shared.chatAttacks[0].rollData.sl;  //  item.system.level;
 const dc = shared.chatAttacks[0].rollData.dc;  //  10 + sl + ablMod;
-let footnote = '', ongoingAcid = '';
-
+let footnote = '';
 if (action.tag === 'acid') {
 	//  Set the 
 	itmName = 'Ongoing Acid Damage';
 	duration = Math.floor(cl / 3);
-	ongoingAcid = await actor._itemTypes.buff.filter(b => b.name === n).at(0);
+	let ongoingAcid = await actor._itemTypes.buff.filter(b => b.name === itmName).at(0);
 	if (typeof ongoingAcid === 'undefined') {
 		let itmData = await getBuff(itmName);
 		await Item.create(itmData, {parent: actor});
 		ongoingAcid = await actor._itemTypes.buff.filter(b => b.name === itmName).at(0);
-		rslt = await ongoingAcid.setItemDictionaryFlag('duration', duration);
 	}
-    footnote = `<p>Causes 1 point of @Apply[${itmName};target] per rnd for [[floor(${cl}/3)]] rnds. The target must make a @Save[fortitude;dc=${dc}] save or be @Condition[sickened;dur=${Math.floor(${cl}/3)}] during ongoing acid damage.</p>`;
+	rslt = await ongoingAcid.setItemDictionaryFlag('duration', duration);
+    rslt = await ongoingAcid.setItemDictionaryFlag('damage', '1');
+    footnote = `<p>Causes 1 point of @Apply[${itmName};target] per rnd for [[floor(${cl}/3)]] rnds. The target must make a @Save[fortitude;dc=${dc}] save or be @Condition[sickened;dur=${duration}] during ongoing acid damage.</p>`;
 	
 } else if (action.tag === 'cold') {
     footnote = `Target must make a @Save[fortitude;dc=18] or be @Condition[fatigued;dur=@cl].  A creature that is already fatigued suffers no additional effect.`;
