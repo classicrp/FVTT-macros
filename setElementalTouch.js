@@ -48,7 +48,7 @@ if (action.tag === 'acid') {
     footnote = `Your hands ignite and shed light as a torch. Your touch may cause targets to catch on fire.`;
 }
 
-await shared.chatAttacks[0].effectNotesHTML = footnote;
+shared.chatAttacks[0].effectNotesHTML = footnote;
 // await buff.setFlag('ckl-roll-bonuses', 'bonus_footnote', footnote); // flags.ckl-roll-bonuses.bonus_footnote
 await buff.update({ 'system.level': cl });
 await buff.setActive(true);
