@@ -1,4 +1,4 @@
-const version = '0.1.7';
+const version = '0.1.8';
 const show = true;
 let element = '', rslt = '', itm = '', itmName = '', itmData = '';
 //	Get action used
@@ -18,7 +18,7 @@ itmName = `Elemental Touch (${element})`;
 let buff = await actor._itemTypes.buff.filter(b => b.name === itmName).at(0);
 if (typeof buff === 'undefined') {
 	itm = await getBuff(itmName);
-	iteData = await game.items.fromCompendium(itm);
+	itmData = await game.items.fromCompendium(itm);
 	await Item.create(itmData, {parent: actor});
 	buff = await actor._itemTypes.buff.filter(b => b.name === itmName).at(0);
 }
@@ -35,7 +35,7 @@ if (action.tag === 'acid') {
 	let ongoingAcid = await actor._itemTypes.buff.filter(b => b.name === itmName).at(0);
 	if (typeof ongoingAcid === 'undefined') {
 		itm = await getBuff(itmName);
-		itemData = await game.items.fromCompendium(itm);
+		itmData = await game.items.fromCompendium(itm);
 		await Item.create(itmData, {parent: actor});
 		ongoingAcid = await actor._itemTypes.buff.filter(b => b.name === itmName).at(0);
 	}
