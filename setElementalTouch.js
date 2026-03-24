@@ -1,4 +1,4 @@
-const version = '0.2.0';
+const version = '0.2.1';
 const show = true;
 
 //	Declarations
@@ -21,7 +21,7 @@ itmName = `Elemental Touch (${element})`;
 let buff = await actor._itemTypes.buff.filter(b => b.name === itmName).at(0);
 if (typeof buff === 'undefined') {
 	pack = 'world.buffs';
-	uuid = await game.packs.get(pack).index.getName(n).uuid;
+	uuid = await game.packs.get(pack).index.getName(itmName).uuid;
 	itm = await fromUuidSync(uuid);
 	itmData = await game.items.fromCompendium(itm);
 	await Item.create(itmData, {parent: actor});
@@ -40,7 +40,7 @@ if (action.tag === 'acid') {
 	let ongoingAcid = await actor._itemTypes.buff.filter(b => b.name === itmName).at(0);
 	if (typeof ongoingAcid === 'undefined') {
 		pack = 'world.buffs';
-		uuid = await game.packs.get(pack).index.getName(n).uuid;
+		uuid = await game.packs.get(pack).index.getName(itmName).uuid;
 		itm = await fromUuidSync(uuid);
 		itmData = await game.items.fromCompendium(itm);
 		await Item.create(itmData, {parent: actor});
