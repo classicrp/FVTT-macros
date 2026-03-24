@@ -22,7 +22,7 @@ let buff = await actor._itemTypes.buff.filter(b => b.name === itmName).at(0);
 if (typeof buff === 'undefined') {
 	pack = 'world.buffs';
 	uuid = await game.packs.get(pack).index.getName(itmName).uuid;
-	itm = await fromUuidSync(uuid);
+	itm = await fromUuid(uuid);
 	itmData = await game.items.fromCompendium(itm);
 	await Item.create(itmData, {parent: actor});
 	buff = await actor._itemTypes.buff.filter(b => b.name === itmName).at(0);
@@ -41,7 +41,7 @@ if (action.tag === 'acid') {
 	if (typeof ongoingAcid === 'undefined') {
 		pack = 'world.buffs';
 		uuid = await game.packs.get(pack).index.getName(itmName).uuid;
-		itm = await fromUuidSync(uuid);
+		itm = await fromUuid(uuid);
 		itmData = await game.items.fromCompendium(itm);
 		await Item.create(itmData, {parent: actor});
 		ongoingAcid = await actor._itemTypes.buff.filter(b => b.name === itmName).at(0);
