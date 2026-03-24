@@ -1,4 +1,4 @@
-const version = '0.2.4';
+const version = '0.2.5';
 const show = true;
 
 //	Declarations
@@ -60,7 +60,7 @@ if (action.tag === 'acid') {
 
 shared.chatAttacks[0].effectNotesHTML = footnote;
 // await buff.setFlag('ckl-roll-bonuses', 'bonus_footnote', footnote); // flags.ckl-roll-bonuses.bonus_footnote
-await buff.update({ 'system.level': cl });
+// await buff.update({ 'system.level': cl });
 await buff.setActive(true);
 
 return;
