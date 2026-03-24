@@ -1,6 +1,6 @@
-const version = '0.1.6';
+const version = '0.1.7';
 const show = true;
-let element = '', rslt = '', itmName = '', itmData = '';
+let element = '', rslt = '', itm = '', itmName = '', itmData = '';
 //	Get action used
 if ((action.tag === 'acid') || (action.tag === 'cold') || (action.tag === 'fire')) {
   element = action.tag; 
@@ -17,7 +17,8 @@ if (show) debugger;
 itmName = `Elemental Touch (${element})`;
 let buff = await actor._itemTypes.buff.filter(b => b.name === itmName).at(0);
 if (typeof buff === 'undefined') {
-	itmData = await getBuff(itmName);
+	itm = await getBuff(itmName);
+	iteData = await game.items.fromCompendium(itm);
 	await Item.create(itmData, {parent: actor});
 	buff = await actor._itemTypes.buff.filter(b => b.name === itmName).at(0);
 }
@@ -33,7 +34,8 @@ if (action.tag === 'acid') {
 	duration = Math.floor(cl / 3);
 	let ongoingAcid = await actor._itemTypes.buff.filter(b => b.name === itmName).at(0);
 	if (typeof ongoingAcid === 'undefined') {
-		let itmData = await getBuff(itmName);
+		itm = await getBuff(itmName);
+		itemData = await game.items.fromCompendium(itm);
 		await Item.create(itmData, {parent: actor});
 		ongoingAcid = await actor._itemTypes.buff.filter(b => b.name === itmName).at(0);
 	}
@@ -57,10 +59,10 @@ await buff.setActive(true);
 return;
 
 function getBuff(n) {
+	if (show) debugger;
 	// get get the buff in the world compendium
 	const pack = 'world.buffs';
 	const uuid = game.packs.get(pack).index.getName(n).uuid;
 	const item = fromUuidSync(uuid);
-	const itemData = game.items.fromCompendium(item);
-	return itemData;
+	return item;
 }
