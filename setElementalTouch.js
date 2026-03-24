@@ -12,7 +12,7 @@ if ((action.tag === 'acid') || (action.tag === 'cold') || (action.tag === 'fire'
 
 //	Get the spell buff associated with said action
 itmName = `Elemental Touch (${element})`;
-let buff = await actor._itemTypes.buff.filter(b => b.name === n).at(0);
+let buff = await actor._itemTypes.buff.filter(b => b.name === itmName).at(0);
 if (typeof buff === 'undefined') {
 	itmData = await getBuff(itmName);
 	await Item.create(itmData, {parent: actor});
