@@ -1,8 +1,8 @@
 // async function anonymous(speaker,actor,token,character,scope,item,shared,action,state,startTime
-const version = '0.5.9';
+const version = '0.6.0';
 const show = false;
-const useTwoWeapons = 'Compendium.world.crp-macros.Macro.ugyEnP5Al3TicSkC';
-const useAction = 'Compendium.world.crp-macros.Macro.VgwfQ1Hk2rC4NOXB';
+const useTwoWeapons = 'Compendium.crp-pf1.crp-macros.Macro.ugyEnP5Al3TicSkC';
+const useAction = 'Compendium.crp-pf1.crp-macros.Macro.VgwfQ1Hk2rC4NOXB';
 let rslt = "";
 
 // see if we have the buff, if not then go get it from Compendium
