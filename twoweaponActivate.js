@@ -274,7 +274,7 @@ function buildUseAction(m) {
 }
 	
 function buildUseTwoWeapons(m) {
-/* ----	object definition for 'updateCastings' macro ----------------------------------	*/
+/* ----	object definition for 'useTwoWeapons' macro ----------------------------------	*/
 	const id = randomID(8);
 	let o = { 
 		category: "use",
