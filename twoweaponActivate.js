@@ -8,8 +8,8 @@ let rslt = "";
 // see if we have the buff, if not then go get it from Compendium
 let buff = await actor._itemTypes.buff.filter(b => b.name === 'Two Weapon Use').at(0);
 if (typeof buff === 'undefined') {
-	// get get the buff in the world compendium
-	const pack = 'world.buffs';
+	// get get the buff in the world compendium  // Compendium.crp-pf1.crp-items.Item.jilPijFHUct7wB31
+	const pack = 'crp-pf1.crp-items';
 	const name = 'Two Weapon Use';
 	const uuid = await game.packs.get(pack).index.getName(name).uuid;
 	const item = await fromUuid(uuid);
