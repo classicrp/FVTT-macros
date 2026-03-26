@@ -1,4 +1,4 @@
-const version = '0.2.6';
+const version = '0.2.7';
 const show = true;
 
 //	Declarations
@@ -32,6 +32,7 @@ if (typeof buff === 'undefined') {
 const cl = shared.chatAttacks[0].rollData.cl;  //  item.casterLevel;
 const sl = shared.chatAttacks[0].rollData.sl;  //  item.system.level;
 const dc = shared.chatAttacks[0].rollData.dc;  //  10 + sl + ablMod;
+
 let footnote = '';
 if (action.tag === 'acid') {
 	//  Set the 
@@ -39,7 +40,7 @@ if (action.tag === 'acid') {
 	duration = Math.floor(cl / 3);
 	let ongoingAcid = await actor._itemTypes.buff.filter(b => b.name === itmName).at(0);
 	if (typeof ongoingAcid === 'undefined') {
-		pack = 'world.buffs';
+		pack = 'crp-content.crp-items';
 		uuid = await game.packs.get(pack).index.getName(itmName).uuid;
 		itm = await fromUuid(uuid);
 		itmData = await game.items.fromCompendium(itm);
