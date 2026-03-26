@@ -1,15 +1,15 @@
 // async function anonymous(speaker,actor,token,character,scope,item,shared,action,state,startTime
-const version = '0.6.0';
+const version = '0.6.1';
 const show = false;
-const useTwoWeapons = 'Compendium.crp-pf1.crp-macros.Macro.ugyEnP5Al3TicSkC';
-const useAction = 'Compendium.crp-pf1.crp-macros.Macro.VgwfQ1Hk2rC4NOXB';
+const useTwoWeapons = 'Compendium.crp-content.crp-macros.Macro.ugyEnP5Al3TicSkC';
+const useAction = 'Compendium.crp-content.crp-macros.Macro.VgwfQ1Hk2rC4NOXB';
 let rslt = "";
 
 // see if we have the buff, if not then go get it from Compendium
 let buff = await actor._itemTypes.buff.filter(b => b.name === 'Two Weapon Use').at(0);
 if (typeof buff === 'undefined') {
 	// get get the buff in the world compendium  // Compendium.crp-pf1.crp-items.Item.jilPijFHUct7wB31
-	const pack = 'crp-pf1.crp-items';
+	const pack = 'crp-content.crp-items';
 	const name = 'Two Weapon Use';
 	const uuid = await game.packs.get(pack).index.getName(name).uuid;
 	const item = await fromUuid(uuid);
