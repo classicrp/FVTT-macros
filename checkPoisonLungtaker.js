@@ -1,10 +1,10 @@
-const version = '0.1.1';
+const version = '0.1.2';
 const verbose = true;
 const show = true;
 const saves = 2;
 
-let saved = await item.getItemDictionaryFlag('saved');
-const storDamage = await Number(item.getItemDictionaryFlag('damage'));
+let saved = await Number(item.getItemDictionaryFlag('saved'))||0;
+const storDamage = await Number(item.getItemDictionaryFlag('damage'))||0;
 let chkSaved = false, chkDamage = false;
 let rslt = '', newDamage = 0, totDamage = 0;
 
