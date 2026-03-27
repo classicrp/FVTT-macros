@@ -1,4 +1,6 @@
-const version = '0.0.4';
+const version = '0.0.5';
+const verbose = true;
+const show = true;
 if (typeof state === 'undefined' || !state) return;
 let saves = await item.getItemDictionaryFlag('saves');
 let damage = await item.getItemDictionaryFlag('damage');
@@ -7,8 +9,23 @@ if (!action) {
 	let target = token.document._id;
 	const lm = await game.macros.getName("getChatIdForLastType");
 	const cmsg = await lm.execute({ ctype: 'check' });
-	console.log("cmsg", cmsg);
-	debugger
+	if (cmsg) {
+		if (cmsg.rolls[0].isNat20) {
+			//	special success, halve the penalty
+			if (verbose) console.log("critical success");
+		} else if (cmsg.rolls[0].isNat1){
+			//	special failure, double the penalty
+			if (verbose) console.log("critical failure");
+		} else if (cmsg.rolls[0].isSuccess) {
+			//	normal success, update the dictionary
+			if (verbose) console.log("success");
+			await item.setItemDictionaryFlag('saves', saves++);
+		} else if (cmsg.rolls[0].isFailure) {
+			// normal failure, update the penalty
+			if (verbose) console.log("failure");
+		}
+	}
+	if (show) debugger
 	
 } else if (action.tag === 'save') {
 	// check the results
