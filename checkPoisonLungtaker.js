@@ -1,29 +1,61 @@
-const version = '0.0.5';
+const version = '0.0.6';
 const verbose = true;
 const show = true;
+const saves = 2;
 if (typeof state === 'undefined' || !state) return;
-let saves = await item.getItemDictionaryFlag('saves');
-let damage = await item.getItemDictionaryFlag('damage');
+let saved = await item.getItemDictionaryFlag('saved');
+const storDamage = await Number(item.getItemDictionaryFlag('damage'));
+let chkSaved = false, chkDamage = false;
+let rslt = '', newDamage = 0, totDamage = 0;
 if (!action) {
 	//	see if there is a save out there
 	let target = token.document._id;
 	const lm = await game.macros.getName("getChatIdForLastType");
 	const cmsg = await lm.execute({ ctype: 'check' });
 	if (cmsg) {
+		if (show) debugger
+		// negative values so 'remove' stored value
+		newDamage = item.changes.contents[0].value - storDamage;	
 		if (cmsg.rolls[0].isNat20) {
 			//	special success, halve the penalty
 			if (verbose) console.log("critical success");
+			saved++
+			chkSaved = true;
+			if (saved >= saves) {
+				//  finished
+				rslt = await stopPoison();
+				return;
+			} else {
+				chkDamage = true;
+				totDamage = Math.ceil(newDamage / 2) + storDamage;
+			}
+			
 		} else if (cmsg.rolls[0].isNat1){
 			//	special failure, double the penalty
 			if (verbose) console.log("critical failure");
+			chkDamage = true;
+			totDamage = (2 * newDamage) + storDamage;
+			
 		} else if (cmsg.rolls[0].isSuccess) {
 			//	normal success, update the dictionary
 			if (verbose) console.log("success");
-			await item.setItemDictionaryFlag('saves', saves++);
+			saved++
+			if (saved >= saves) {
+				//  finished
+				rslt = await stopPoison();
+				return;
+			} else {
+				chkSaved = true;
+				chkDamage = true;
+				totDamage = newDamage + storDamage;
+			}
+			
 		} else if (cmsg.rolls[0].isFailure) {
 			// normal failure, update the penalty
 			if (verbose) console.log("failure");
 		}
+		if (chkDamage) await item.setItemDictionaryFlag('damage', totDamage);
+		if (chkSaved) await item.setItemDictionaryFlag('saved', saved);
 	}
 	if (show) debugger
 	
@@ -41,3 +73,10 @@ if (!action) {
 	} 
 }
 debugger
+
+function stopPoison() {
+	const _active = item.setActive(false);
+	const _saved = item.setItemDictionaryFlag('saved', 0);
+	const _damage = item.setItemDictionaryFlag('damage', 0);
+	return (_active && _saved === 0 && _damage === 0);
+}
