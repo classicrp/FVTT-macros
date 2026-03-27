@@ -1,11 +1,11 @@
-const version = '0.0.2';
+const version = '0.0.3';
 if (typeof state === 'undefined' || !state) return;
 let saves = await item.getItemDictionaryFlag('saves');
 let damage = await item.getItemDictionaryFlag('damage');
 debugger
 if (!action) {
 	//	see if there is a save out there
-	let target = token.documents._id;
+	let target = token.document._id;
 	const lm = await game.macros.getName("getChatIdForLastType");
 	const cmsg = await lm.execute({ ctype: 'check' });
 	
