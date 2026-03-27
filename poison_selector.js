@@ -1,4 +1,4 @@
-const version = "1.3.3"
+const version = "1.3.4"
 const show = false;
 const verbose = false;
 
@@ -15,6 +15,8 @@ if (action.tag === `premoved`) {
 	return;
 	await item.setItemDictionaryFlag('poison', "");
 }
+
+shared.rejected = true;  // don't show the selector's card
 
 //	POISON DATA
 let skip = false;
@@ -111,7 +113,6 @@ if (response === 'cancel') {
 	shared.chatMessage = false;
 	return;
 }
-shared.rejected = true;  // don't show the selector's card
 
 //if (show) debugger
 await item.setItemDictionaryFlag('poison', response.poisonSelect);
