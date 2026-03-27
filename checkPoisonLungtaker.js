@@ -1,13 +1,14 @@
-const version = '0.0.7';
+const version = '0.1.0';
 const verbose = true;
 const show = true;
 const saves = 2;
-if (typeof state === 'undefined' || !state) return;
+
 let saved = await item.getItemDictionaryFlag('saved');
 const storDamage = await Number(item.getItemDictionaryFlag('damage'));
 let chkSaved = false, chkDamage = false;
 let rslt = '', newDamage = 0, totDamage = 0;
-if (!action) {
+
+if (typeof state !== 'undefined' || state) {
 	//	see if there is a save out there
 	let target = token.document._id;
 	const lm = await game.macros.getName("getChatIdForLastType");
@@ -58,22 +59,24 @@ if (!action) {
 		if (chkSaved) await item.setItemDictionaryFlag('saved', saved);
 	}
 	if (show) debugger
-	
-} else if (action.tag === 'save') {
-	// check the results
-	if (show) debugger
-	let count = 0;
-	while (count < 10) {
-		count++;
-		// Pause for x milliseconds
-		const pauseTime = 1000;
-		await new Promise(r => setTimeout(r, pauseTime));
-		//	check for a save
-		let rslt = shared.message.system.rolls;
-		console.log("count", count);
-	} 
+
+} else if (typeof action !== 'unidentified' || action) {	
+	if (action.tag === 'save') {
+		// check the results
+		if (show) debugger
+		let count = 0;
+		while (count < 10) {
+			count++;
+			// Pause for x milliseconds
+			const pauseTime = 1000;
+			await new Promise(r => setTimeout(r, pauseTime));
+			//	check for a save
+			let rslt = shared.message.system.rolls;
+			console.log("count", count);
+		} 
+	}
 }
-debugger
+return
 
 function stopPoison() {
 	if (show) debugger
