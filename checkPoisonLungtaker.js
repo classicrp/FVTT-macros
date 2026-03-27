@@ -1,4 +1,4 @@
-const version = '0.0.6';
+const version = '0.0.7';
 const verbose = true;
 const show = true;
 const saves = 2;
@@ -61,6 +61,7 @@ if (!action) {
 	
 } else if (action.tag === 'save') {
 	// check the results
+	if (show) debugger
 	let count = 0;
 	while (count < 10) {
 		count++;
@@ -75,6 +76,7 @@ if (!action) {
 debugger
 
 function stopPoison() {
+	if (show) debugger
 	const _active = item.setActive(false);
 	const _saved = item.setItemDictionaryFlag('saved', 0);
 	const _damage = item.setItemDictionaryFlag('damage', 0);
