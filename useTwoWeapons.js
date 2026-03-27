@@ -1,8 +1,8 @@
-const version = '0.0.5';
+const version = '0.0.7';
 let buff = actor._itemTypes.buff.filter(b => b.name === 'Two Weapon Use').at(0);
 if (!buff.isActive) return false;
-if (item.getItemBooleanFlags().includes('abort')) return;
 debugger
+if (item.hasItemBooleanFlag('abort')) return;
 let used = Number(buff.getItemDictionaryFlag('used'));
 used++;
 if (used < 2) {
