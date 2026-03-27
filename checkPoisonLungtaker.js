@@ -1,4 +1,4 @@
-const version = '0.1.0';
+const version = '0.1.1';
 const verbose = true;
 const show = true;
 const saves = 2;
@@ -8,7 +8,7 @@ const storDamage = await Number(item.getItemDictionaryFlag('damage'));
 let chkSaved = false, chkDamage = false;
 let rslt = '', newDamage = 0, totDamage = 0;
 
-if (typeof state !== 'undefined' || state) {
+if (typeof state !== 'undefined' && state) {
 	//	see if there is a save out there
 	let target = token.document._id;
 	const lm = await game.macros.getName("getChatIdForLastType");
@@ -60,7 +60,7 @@ if (typeof state !== 'undefined' || state) {
 	}
 	if (show) debugger
 
-} else if (typeof action !== 'unidentified' || action) {	
+} else if (typeof action !== 'unidentified' && action) {	
 	if (action.tag === 'save') {
 		// check the results
 		if (show) debugger
