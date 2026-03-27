@@ -1,5 +1,5 @@
 // async function anonymous(speaker,actor,token,character,scope,item,shared,action,state,startTime
-const version = '0.6.3';
+const version = '0.6.4';
 const show = false;
 const twoweaponUse = 'Compendium.crp-contents.crp-macros.Macro.gOFO6ByH6vrt6g6e';
 const useAction = 'Compendium.crp-content.crp-macros.Macro.VgwfQ1Hk2rC4NOXB';
@@ -178,7 +178,7 @@ debugger
 	} else  {
 		//	see if it has the correct macros
 		for (const l of local) {
-			if (l.category === "use" && l.value === useTwoWeapons) {
+			if (l.category === "use" && l.value === twoweaponUse) {
 				skipone = true;
 			} else if (l.category === "use" && l.value === useAction) {
 				skiptwo = true;
@@ -190,7 +190,7 @@ debugger
 	}
 	if (!skipone) {
         //	get and add in to copy the "twoweaponUse" macro
-        let uTW = buildUseTwoWeapons(twoweaponUse)
+        let uTW = buildtwoweaponUse(twoweaponUse)
    		local.push(uTW);
     }
     if (!skiptwo) {
@@ -273,14 +273,14 @@ function buildUseAction(m) {
 	return o;
 }
 	
-function buildUseTwoWeapons(m) {
-/* ----	object definition for 'useTwoWeapons' macro ----------------------------------	*/
+function buildtwoweaponUse(m) {
+/* ----	object definition for 'twoweaponUse' macro ----------------------------------	*/
 	const id = randomID(8);
 	let o = { 
 		category: "use",
 		hidden: false, 
 		img: "resource/35E/icons/feats/two-weapon-fighting.png", 
-		name: "useTwoWeapons", 
+		name: "twoweaponUse", 
 		type: "macro", 
 		value: m, 
 		_id: id
