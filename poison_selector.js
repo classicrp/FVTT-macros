@@ -1,4 +1,4 @@
-const version = "1.3.2"
+const version = "1.3.3"
 const show = false;
 const verbose = false;
 
@@ -110,7 +110,8 @@ const response = await foundry.applications.api.Dialog.input({
 if (response === 'cancel') {
 	shared.chatMessage = false;
 	return;
-} 
+}
+shared.rejected = true;  // don't show the selector's card
 
 //if (show) debugger
 await item.setItemDictionaryFlag('poison', response.poisonSelect);
@@ -138,7 +139,6 @@ for (let i = 0; i < response.poisonSelect.length; i++) {
 */
 
 }
-shared.rejected = true;  // don't show the selector's card
 return
 
 function onRender(_event, app){
