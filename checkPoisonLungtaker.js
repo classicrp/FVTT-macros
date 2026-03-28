@@ -1,4 +1,4 @@
-const version = '0.1.7';
+const version = '0.1.8';
 const verbose = true;
 const show = true;
 
@@ -59,22 +59,15 @@ if ((typeof state !== 'undefined' && state) || (typeof action !== 'unidentified'
 	}
 }
 if (chkFinished) {
-	await stopPoison();
+	const _saved = item.setItemDictionaryFlag('saved', 0);
+	const _damage = item.setItemDictionaryFlag('damage', 0);
+	const _active = item.setActive(false);
 } else {
 	if (chkSaved) await item.setItemDictionaryFlag('saved', saved);
 	if (chkDamage) await item.setItemDictionaryFlag('damage', totDamage);
 }
 
 return
-
-function stopPoison() {
-//	shuts down the buff and zeroes dictionary values
-	if (show) debugger
-	const _saved = item.setItemDictionaryFlag('saved', 0);
-	const _damage = item.setItemDictionaryFlag('damage', 0);
-	const _active = item.setActive(false);
-	return (_active && _saved === 0 && _damage === 0);
-}
 
 function checkSave(r, s, n, nd, sd) {
 //	non-destructive function utilizing passed-in values
@@ -113,9 +106,9 @@ function checkSave(r, s, n, nd, sd) {
 		if (sav >= n) {
 		//  finished
 			cf = true;
-			cs = true;
-			cd = true;
-			totdmg = Math.ceil(nd / 2) + sd;			
+			cs = false;
+			cd = false;
+			totdmg = 0;			
 		} else {
 			cf = false;
 			cs = true;
