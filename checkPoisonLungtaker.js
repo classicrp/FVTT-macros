@@ -1,4 +1,4 @@
-const version = '0.1.5';
+const version = '0.1.6';
 const verbose = true;
 const show = true;
 
@@ -8,7 +8,7 @@ let rslt = '', newDamage = 0, totDamage = 0;
 let saved = await Number(item.getItemDictionaryFlag('saved'))||0;
 const storDamage = await Number(item.getItemDictionaryFlag('damage'))||0;
 
-if (typeof state !== 'undefined' && state) {
+if ((typeof state !== 'undefined' && state) || (typeof action !== 'unidentified' && action.tag === 'check')) {
 	//	see if there is a save out there
 	if (show) debugger
 	let target = token.document._id;
@@ -37,7 +37,7 @@ if (typeof state !== 'undefined' && state) {
 		// check the results
 		if (show) debugger
 		let count = 0;
-		while (count < 10) {
+		do {
 			count++;
 			// Pause for x milliseconds
 			const pauseTime = 1000;
@@ -48,7 +48,8 @@ if (typeof state !== 'undefined' && state) {
 			}
 			console.log(version, "count:", count);
 		} 
-		//	get local roll values
+		while (count < 10);
+		//	get local roll values		
 	}
 }
 if (chkFinished) {
