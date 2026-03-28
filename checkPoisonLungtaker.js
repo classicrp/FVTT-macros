@@ -1,8 +1,8 @@
-const version = '0.1.6';
+const version = '0.1.7';
 const verbose = true;
 const show = true;
 
-const savesNeeded = 2;
+const savesNeeded = 2, diceNumber = 1, diceSize = 6;
 let chkFinished = false, chkSaved = false, chkDamage = false;
 let rslt = '', newDamage = 0, totDamage = 0;
 let saved = await Number(item.getItemDictionaryFlag('saved'))||0;
@@ -16,9 +16,15 @@ if ((typeof state !== 'undefined' && state) || (typeof action !== 'unidentified'
 	const cmsg = await lm.execute({ ctype: 'check' });
 	if (cmsg) {
 		if (show) debugger
+		
 		const roll = cmsg.rolls[0];
 		// negative values so 'remove' stored value
-		newDamage = item.changes.contents[0].value - storDamage;	
+		if (typeof state === 'undefined') {
+		//	we are using an action so need to manually roll 1d6	
+			newDamage = -diceNumber * Math.floor(Math.random() * diceSize + 1);
+		} else {
+			newDamage = item.changes.contents[0].value - storDamage;	
+		}
 		rslt = await checkSave(roll, saved, savesNeeded, newDamage, storDamage);
 		if (rslt) {
 		//	extract results
@@ -125,6 +131,14 @@ function checkSave(r, s, n, nd, sd) {
 		cd = true;
 		totdmg = nd + sd;
 	}
-	a.push( ["finshed", cf], ["saved", cs], ["number", sav], ["damage", cd], ["total", totdmg] );
-	return a;
+	// not the array I want
+	return new CSresult(cf, cs, sav, cd, totdmg);
+}
+
+function CSresult(cf, cs, sav, cd, td) {
+	this.finished = cf;
+	this.saved = cs;
+	this.number = sav;
+	this.damage = cd;
+	this.total = td;
 }
