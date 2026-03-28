@@ -125,6 +125,6 @@ function checkSave(r, s, n, nd, sd) {
 		cd = true;
 		totdmg = nd + sd;
 	}
-	a.push({ ["finshed", cf], ["saved", cs], ["number", sav], ["damage", cd], ["total", totdmg] });
+	a.push( ["finshed", cf], ["saved", cs], ["number", sav], ["damage", cd], ["total", totdmg] );
 	return a;
 }
