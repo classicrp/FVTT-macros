@@ -1,4 +1,4 @@
-const version = '0.1.2';
+const version = '0.1.4';
 const verbose = true;
 const show = true;
 const saves = 2;
@@ -65,15 +65,18 @@ if (typeof state !== 'undefined' && state) {
 		// check the results
 		if (show) debugger
 		let count = 0;
-		while (count < 10) {
+		async while (count < 10) {
 			count++;
 			// Pause for x milliseconds
 			const pauseTime = 1000;
 			await new Promise(r => setTimeout(r, pauseTime));
 			//	check for a save
-			let rslt = shared.message.system.rolls;
+			if (typeof shared.rollData.rolls !== 'undefined') {
+				break;
+			}
 			console.log("count", count);
 		} 
+		//	get local roll values
 	}
 }
 return
