@@ -20,7 +20,7 @@ shared.rejected = true;  // don't show the selector's card
 
 //	POISON DATA
 let skip = false;
-let poisons = actor._itemTypes.consumable.filter(p => p.system.subType === "poison");
+let poisons = deepClone(actor._itemTypes.consumable.filter(p => p.system.subType === "poison"));
 let maxSelected = 1;
 // if (show) debugger
 //if (show) return
