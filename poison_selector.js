@@ -1,4 +1,4 @@
-const version = "1.3.4"
+const version = "1.3.5"
 const show = false;
 const verbose = false;
 
@@ -24,19 +24,11 @@ let poisons = actor._itemTypes.consumable.filter(p => p.system.subType === "pois
 let maxSelected = 1;
 // if (show) debugger
 //if (show) return
-const pois = {
-	id: "",
-	name: "",
-	desc: "",
-};
 let fPois = [];
 poisons.forEach(p => {
 	//debugger;
-	let o = pois.constructor();
-	o.id = p._id;
-	o.name = p.name;
-	o.desc = p.fullDescription;
-	fPois.push(o);
+	let o = null;
+	fPois.push(new Poison(p._id, p.name, p.fullDescription));
 });
 if (verbose) console.log("Poison Data:", fPois)
 
@@ -111,6 +103,7 @@ const response = await foundry.applications.api.Dialog.input({
 //	now do something with it!
 if (response === 'cancel') {
 	shared.chatMessage = false;
+	shared.reject = true;
 	return;
 }
 
@@ -212,4 +205,10 @@ function removeHTML(htm) {
 	}
 	if (verbose) console.log("Text:", rslt);
 	return rslt;
+}
+
+function Poison(id, name, desc) {
+	this.id = id;
+	this.name = name;
+	this.desc = desc;
 }
