@@ -1,4 +1,4 @@
-const version = "1.3.5"
+const version = "1.3.6"
 const show = false;
 const verbose = false;
 
@@ -113,6 +113,8 @@ await item.setItemDictionaryFlag('poison', response.poisonSelect);
 for (let i = 0; i < response.poisonSelect.length; i++) {
 	//	Trigger the selected poison
 	const poisBuff = poisons.find( f => f.id === response.poisonSelect[i] );
+debugger
+	await poisBuff.setItemDictionaryFlag('messageId', shared.chatMessage );
 	await poisBuff.use();
 
 // debugger
