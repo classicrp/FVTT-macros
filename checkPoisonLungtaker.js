@@ -1,4 +1,4 @@
-const version = '0.1.10';
+const version = '0.1.11';
 const verbose = true;
 const show = true;
 
@@ -17,7 +17,7 @@ if (getSave) {
 	if (show) debugger
 	let target = token.document._id;
 	const lm = await game.macros.getName("getChatIdForLastType");
-	const cmsg = await lm.execute({ ctype: 'check', mid:  });
+	const cmsg = await lm.execute({ ctype: 'check' }); // , msgid: 
 	if (cmsg) {
 		
 		const roll = cmsg.rolls[0];
