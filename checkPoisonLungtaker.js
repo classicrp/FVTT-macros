@@ -1,4 +1,4 @@
-const version = '0.1.8';
+const version = '0.1.9';
 const verbose = true;
 const show = true;
 
@@ -8,6 +8,7 @@ let rslt = '', newDamage = 0, totDamage = 0;
 let saved = await Number(item.getItemDictionaryFlag('saved'))||0;
 const storDamage = await Number(item.getItemDictionaryFlag('damage'))||0;
 
+if (show) debugger
 if ((typeof state !== 'undefined' && state) || (typeof action !== 'unidentified' && action.tag === 'check')) {
 	//	see if there is a save out there
 	if (show) debugger
@@ -15,7 +16,6 @@ if ((typeof state !== 'undefined' && state) || (typeof action !== 'unidentified'
 	const lm = await game.macros.getName("getChatIdForLastType");
 	const cmsg = await lm.execute({ ctype: 'check' });
 	if (cmsg) {
-		if (show) debugger
 		
 		const roll = cmsg.rolls[0];
 		// negative values so 'remove' stored value
