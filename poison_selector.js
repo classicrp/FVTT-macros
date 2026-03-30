@@ -1,4 +1,4 @@
-const version = "1.3.7"
+const version = "1.3.8"
 const show = false;
 const verbose = false;
 
@@ -114,7 +114,8 @@ for (let i = 0; i < response.poisonSelect.length; i++) {
 	const poisBuff = poisons.find( f => f.id === response.poisonSelect[i] );
 debugger
 	const rslt = await poisBuff.use();
-	await poisBuff.setItemDictionaryFlag('messageId', result.shared.chatData.content );
+	const hText = await getHTMLpart( rslt.shared.chatData.content, '<h3 class="item-name">', '</h3>' );
+	await poisBuff.setItemDictionaryFlag('messageId', hText );
 
 // debugger
 
@@ -212,4 +213,10 @@ function Poison(id, name, desc) {
 	this.id = id;
 	this.name = name;
 	this.desc = desc;
+}
+
+function getHTMLpart(html, begin, end) {
+	const hStart = html.indexOf(begin);
+	const hEnd = html.indexOf(end, hStart);
+	return html.substring(hStart + begin.length, end);
 }
