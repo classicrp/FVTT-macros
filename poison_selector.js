@@ -1,4 +1,4 @@
-const version = "1.3.10"
+const version = "1.3.11"
 const show = false;
 const verbose = false;
 
@@ -115,7 +115,9 @@ for (let i = 0; i < response.poisonSelect.length; i++) {
 debugger
 	const rslt = await poison.use();
 	const hText = await getHTMLpart( rslt.shared.chatData.content, '<h3 class="item-name">', '</h3>' );
-	await poison.setItemDictionaryFlag('messageId', hText );
+	const msgIdx = await game.collections.get('ChatMessage').contents.findIndex(f => f.content.includes(hText));
+	const msgId = await game.collections.get(msgIdx).id;
+	await item.setItemDictionaryFlag('messageId', msgId );
 
 // debugger
 
