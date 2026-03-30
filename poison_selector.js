@@ -1,4 +1,4 @@
-const version = "1.3.6"
+const version = "1.3.7"
 const show = false;
 const verbose = false;
 
@@ -27,7 +27,6 @@ let maxSelected = 1;
 let fPois = [];
 poisons.forEach(p => {
 	//debugger;
-	let o = null;
 	fPois.push(new Poison(p._id, p.name, p.fullDescription));
 });
 if (verbose) console.log("Poison Data:", fPois)
@@ -114,8 +113,8 @@ for (let i = 0; i < response.poisonSelect.length; i++) {
 	//	Trigger the selected poison
 	const poisBuff = poisons.find( f => f.id === response.poisonSelect[i] );
 debugger
-	await poisBuff.setItemDictionaryFlag('messageId', shared.chatMessage );
-	await poisBuff.use();
+	const rslt = await poisBuff.use();
+	await poisBuff.setItemDictionaryFlag('messageId', result.shared.chatData.content );
 
 // debugger
 
