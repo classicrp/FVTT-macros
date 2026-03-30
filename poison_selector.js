@@ -113,7 +113,7 @@ for (let i = 0; i < response.poisonSelect.length; i++) {
 	//	Trigger the selected poison
 	const poison = poisons.find( f => f.id === response.poisonSelect[i] );
 debugger
-	const rslt = await poisBuff.use();
+	const rslt = await poison.use();
 	const hText = await getHTMLpart( rslt.shared.chatData.content, '<h3 class="item-name">', '</h3>' );
 	await poison.setItemDictionaryFlag('messageId', hText );
 
