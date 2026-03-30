@@ -1,4 +1,4 @@
-const version = '0.1.11';
+const version = '0.1.12';
 const verbose = true;
 const show = true;
 
@@ -10,7 +10,7 @@ const storDamage = await Number(item.getItemDictionaryFlag('damage'))||0;
 
 if (show) debugger
 if (typeof state !== 'undefined' && state) getSave = true;
-if (typeof action !== 'unidentified' && action.tag === 'check') getSave = true;
+if (typeof action !== 'undefined' && action.tag === 'check') getSave = true;
 	
 if (getSave) {
 	//	see if there is a save out there
