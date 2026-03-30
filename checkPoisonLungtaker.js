@@ -1,20 +1,23 @@
-const version = '0.1.9';
+const version = '0.1.10';
 const verbose = true;
 const show = true;
 
 const savesNeeded = 2, diceNumber = 1, diceSize = 6;
-let chkFinished = false, chkSaved = false, chkDamage = false;
+let chkFinished = false, chkSaved = false, chkDamage = false, getSave = false;
 let rslt = '', newDamage = 0, totDamage = 0;
 let saved = await Number(item.getItemDictionaryFlag('saved'))||0;
 const storDamage = await Number(item.getItemDictionaryFlag('damage'))||0;
 
 if (show) debugger
-if ((typeof state !== 'undefined' && state) || (typeof action !== 'unidentified' && action.tag === 'check')) {
+if (typeof state !== 'undefined' && state) getSave = true;
+if (typeof action !== 'unidentified' && action.tag === 'check') getSave = true;
+	
+if (getSave) {
 	//	see if there is a save out there
 	if (show) debugger
 	let target = token.document._id;
 	const lm = await game.macros.getName("getChatIdForLastType");
-	const cmsg = await lm.execute({ ctype: 'check' });
+	const cmsg = await lm.execute({ ctype: 'check', mid:  });
 	if (cmsg) {
 		
 		const roll = cmsg.rolls[0];
