@@ -1,4 +1,4 @@
-const version = "1.3.8"
+const version = "1.3.9"
 const show = false;
 const verbose = false;
 
@@ -216,7 +216,8 @@ function Poison(id, name, desc) {
 }
 
 function getHTMLpart(html, begin, end) {
-	const hStart = html.indexOf(begin);
-	const hEnd = html.indexOf(end, hStart);
-	return html.substring(hStart + begin.length, end);
+	const tagStart = html.indexOf(begin);
+	const tagEnd = html.indexOf(end, tagStart);
+	const label = html.substring(tagStart + begin.length, tagEnd);
+	return label;
 }
