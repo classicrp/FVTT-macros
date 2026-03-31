@@ -1,14 +1,13 @@
-const version = '0.1.24';
+const version = '0.1.25';
 const verbose = true;
 const show = true;
-
+const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.DZNSVVGlNsrxMMQa';
 
 const savesNeeded = 2, diceNumber = 1, diceSize = 6;
 let chkFinished = false, chkSaved = false, chkDamage = false, getSave = false;
 let rslt = '', chatId = '', newDamage = 0, totDamage = 0;
 let saved = await Number(item.getItemDictionaryFlag('saved'))||0;
 const storDamage = await Number(item.getItemDictionaryFlag('damage'))||0;
-if (show) debugger
 
 if (typeof state !== 'undefined' && !state) {
 	chkFinished = true;
@@ -24,13 +23,13 @@ if (getSave) {
 	//	see if there is a save out there
 	if (show) debugger
 	let cmsg = '', itm = '', itmName = '', itmData = '', pack = '', uuid = '';
-	itmName = 'getChatIdForLastType';
-	pack = 'crp-contents.crp-macros';
-	rslt = await game.packs.get(pack).index.getName(itmName).uuid;
+//	itmName = 'getChatIdForLastType';
+//	pack = 'crp-contents.crp-macros';
+//	rslt = await game.packs.get(pack).index.getName(itmName).uuid;
 //	rslt = await game.packs.get(pack).index.find(f => f.name === 'getChatIdForLastType').uuid;
 //	if (rslt) {
-		lm = fromUuidSync('Compendium.crp-contents.crp-macros.Macro.DZNSVVGlNsrxMMQa');
-		itmData = await game.macros.fromCompendium(lm);
+		lm = await fromUuid(GETCHATIDFORLASTTYPE);
+//		itmData = await game.macros.fromCompendium(lm);
 //		const lm = await game.macros.getName();
 		rslt = await item.getItemDictionaryFlag('chatId1');
 		if (rslt) {
