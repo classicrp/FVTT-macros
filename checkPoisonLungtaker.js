@@ -1,4 +1,4 @@
-const version = '0.1.23';
+const version = '0.1.24';
 const verbose = true;
 const show = true;
 
@@ -24,12 +24,13 @@ if (getSave) {
 	//	see if there is a save out there
 	if (show) debugger
 	let cmsg = '', itm = '', itmName = '', itmData = '', pack = '', uuid = '';
-//	itmName = 'getChatIdForLastType';
-//	pack = 'crp-contents.crp-macros';
+	itmName = 'getChatIdForLastType';
+	pack = 'crp-contents.crp-macros';
+	rslt = await game.packs.get(pack).index.getName(itmName).uuid;
 //	rslt = await game.packs.get(pack).index.find(f => f.name === 'getChatIdForLastType').uuid;
 //	if (rslt) {
 		lm = fromUuidSync('Compendium.crp-contents.crp-macros.Macro.DZNSVVGlNsrxMMQa');
-//		itmData = await game.items.fromCompendium(itm);
+		itmData = await game.macros.fromCompendium(lm);
 //		const lm = await game.macros.getName();
 		rslt = await item.getItemDictionaryFlag('chatId1');
 		if (rslt) {
