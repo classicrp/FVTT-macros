@@ -28,7 +28,7 @@ if (getSave) {
 //	pack = 'crp-contents.crp-macros';
 //	rslt = await game.packs.get(pack).index.find(f => f.name === 'getChatIdForLastType').uuid;
 //	if (rslt) {
-		lm = await fromUuid('Compendium.crp-contents.crp-macros.Macro.DZNSVVGlNsrxMMQa');
+		lm = fromUuidSync('Compendium.crp-contents.crp-macros.Macro.DZNSVVGlNsrxMMQa');
 //		itmData = await game.items.fromCompendium(itm);
 //		const lm = await game.macros.getName();
 		rslt = await item.getItemDictionaryFlag('chatId1');
