@@ -1,4 +1,4 @@
-const version = '0.1.27';
+const version = '0.1.28';
 const verbose = true;
 const show = true;
 const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.DZNSVVGlNsrxMMQa';
@@ -35,7 +35,7 @@ if (getSave) {
 		if (rslt) {
 			cmsg = await lm.execute({ item: item, ctype: 'check', chatId: rslt });
 		} else {
-			cmsg = await lm.execute({ item: item, ctype: 'check' });
+			cmsg = await lm.execute({ item: item, actor: actor, token: token, ctype: 'check' });
 		}
 //	}
 	if (cmsg) {	
@@ -62,9 +62,9 @@ if (getSave) {
 	}
 
 } else if (typeof action !== 'unidentified' && action) {	
+	if (show) debugger
 	if (action.tag === 'save') {
 		// check the results
-		if (show) debugger
 		let count = 0;
 		do {
 			count++;
