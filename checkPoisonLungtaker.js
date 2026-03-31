@@ -1,4 +1,4 @@
-const version = '0.1.17';
+const version = '0.1.18';
 const verbose = true;
 const show = true;
 
@@ -17,8 +17,13 @@ if (typeof action !== 'undefined' && action !== null && action.tag === 'save') g
 if (getSave) {
 	//	see if there is a save out there
 	if (show) debugger
-	let cmsg = "";
-	const lm = await game.macros.getName("getChatIdForLastType");
+	let cmsg = '', itm = '', itmName = '', itmData = '', pack = '', uuid = '';
+	itmName = 'getChatIdForLastType';
+	pack = 'crp-contents.crp-items';
+	uuid = await game.packs.get(pack).index.getName(itmName).uuid;
+	itm = await fromUuid(uuid);
+	itmData = await game.items.fromCompendium(itm);
+	const lm = await game.macros.getName();
 	rslt = await item.getItemDictionaryFlag('chatId1');
 	if (rslt) {
 		cmsg = await lm.execute({ ctype: 'check', chatId: rslt });
@@ -30,7 +35,7 @@ if (getSave) {
 		const roll = cmsg.rolls[0];
 		// negative values so 'remove' stored value
 		if (typeof state === 'undefined') {
-		//	we are using an action so need to manually roll 1d6	
+		//	we are using an action so need to manually roll {diceNumber}d{diceSize}	
 			newDamage = -diceNumber * Math.floor(Math.random() * diceSize + 1);
 		} else {
 			newDamage = item.changes.contents[0].value - storDamage;	
