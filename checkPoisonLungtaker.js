@@ -61,7 +61,7 @@ if (getSave) {
 		await ui.notifications.warn(`Could not find a recent save for ${token.name}`);
 	}
 
-} else if (typeof action !== 'unidentified' && action) {	
+} else if (typeof action !== 'undefined' && action) {	
 	if (show) debugger
 	if (action.tag === 'save') {
 		// check the results
