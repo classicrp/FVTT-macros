@@ -1,4 +1,4 @@
-const version = '0.1.20';
+const version = '0.1.22';
 const verbose = true;
 const show = true;
 
@@ -26,21 +26,19 @@ if (getSave) {
 	let cmsg = '', itm = '', itmName = '', itmData = '', pack = '', uuid = '';
 	itmName = 'getChatIdForLastType';
 	pack = 'crp-contents.crp-items';
-	rslt = await game.packs.get(pack).index.getName(itmName);
+	rslt = await game.packs.get(pack).index.find(f => f.name === 'getChatIdForLastType').uuid;
 	if (rslt) {
-		uuid = rslt.uuid;
 		itm = await fromUuid(uuid);
 		itmData = await game.items.fromCompendium(itm);
 		const lm = await game.macros.getName();
+		rslt = await item.getItemDictionaryFlag('chatId1');
+		if (rslt) {
+			cmsg = await lm.execute({ ctype: 'check', chatId: rslt });
+		} else {
+			cmsg = await lm.execute({ ctype: 'check' });
+		}
 	}
-	rslt = await item.getItemDictionaryFlag('chatId1');
-	if (rslt) {
-		cmsg = await lm.execute({ ctype: 'check', chatId: rslt });
-	} else {
-		cmsg = await lm.execute({ ctype: 'check' });
-	}
-	if (cmsg) {
-		
+	if (cmsg) {	
 		const roll = cmsg.rolls[0];
 		// negative values so 'remove' stored value
 		if (typeof state === 'undefined') {
