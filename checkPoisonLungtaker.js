@@ -1,4 +1,4 @@
-const version = '0.1.25';
+const version = '0.1.26';
 const verbose = true;
 const show = true;
 const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.DZNSVVGlNsrxMMQa';
@@ -28,7 +28,7 @@ if (getSave) {
 //	rslt = await game.packs.get(pack).index.getName(itmName).uuid;
 //	rslt = await game.packs.get(pack).index.find(f => f.name === 'getChatIdForLastType').uuid;
 //	if (rslt) {
-		lm = await fromUuid(GETCHATIDFORLASTTYPE);
+		const lm = await fromUuid(GETCHATIDFORLASTTYPE);
 //		itmData = await game.macros.fromCompendium(lm);
 //		const lm = await game.macros.getName();
 		rslt = await item.getItemDictionaryFlag('chatId1');
