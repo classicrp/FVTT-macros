@@ -1,11 +1,11 @@
-const version = '0.1.16';
+const version = '0.1.17';
 const verbose = true;
 const show = true;
 
 
 const savesNeeded = 2, diceNumber = 1, diceSize = 6;
 let chkFinished = false, chkSaved = false, chkDamage = false, getSave = false;
-let rslt = '', newDamage = 0, totDamage = 0;
+let rslt = '', chatId = '', newDamage = 0, totDamage = 0;
 let saved = await Number(item.getItemDictionaryFlag('saved'))||0;
 const storDamage = await Number(item.getItemDictionaryFlag('damage'))||0;
 if (show) debugger
@@ -17,9 +17,14 @@ if (typeof action !== 'undefined' && action !== null && action.tag === 'save') g
 if (getSave) {
 	//	see if there is a save out there
 	if (show) debugger
-	let target = token.document._id;
+	let cmsg = "";
 	const lm = await game.macros.getName("getChatIdForLastType");
-	const cmsg = await lm.execute({ ctype: 'check' }); // , msgid: 
+	rslt = await item.getItemDictionaryFlag('chatId1');
+	if (rslt) {
+		cmsg = await lm.execute({ ctype: 'check', chatId: rslt });
+	} else {
+		cmsg = await lm.execute({ ctype: 'check' });
+	}
 	if (cmsg) {
 		
 		const roll = cmsg.rolls[0];
@@ -38,6 +43,7 @@ if (getSave) {
 			chkDamage = rslt.damage;
 			saved = rslt.number;
 			totDamage = rslt.total;
+			chatId = cmsg._id;
 		}
 	} else {
 		await ui.notifications.warn(`Could not find a recent save for ${token.name}`);
@@ -64,11 +70,17 @@ if (getSave) {
 	}
 }
 if (chkFinished) {
-	const _saved = item.setItemDictionaryFlag('saved', 0);
-	const _damage = item.setItemDictionaryFlag('damage', 0);
-	const _active = item.setActive(false);
+	await item.setItemDictionaryFlag('saved', 0);
+	await item.setItemDictionaryFlag('damage', 0);
+	for (let i = 1; i <= 2; i++) {
+		await item.setItemDictionaryFlag(`chatId${i}`, '');
+	}
+	await item.setActive(false);
 } else {
-	if (chkSaved) await item.setItemDictionaryFlag('saved', saved);
+	if (chkSaved) {
+		await item.setItemDictionaryFlag('saved', saved);
+		await item.setItemDictionaryFlag(`chatId${saved}`, chatId);
+	}
 	if (chkDamage) await item.setItemDictionaryFlag('damage', totDamage);
 }
 
