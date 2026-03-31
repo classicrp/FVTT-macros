@@ -1,4 +1,4 @@
-const version = '0.1.18';
+const version = '0.1.19';
 const verbose = true;
 const show = true;
 
@@ -10,7 +10,13 @@ let saved = await Number(item.getItemDictionaryFlag('saved'))||0;
 const storDamage = await Number(item.getItemDictionaryFlag('damage'))||0;
 if (show) debugger
 
-if (typeof state !== 'undefined' && !state) chkFinished = true;
+if (typeof state !== 'undefined' && !state) {
+	chkFinished = true;
+	if (typeof shared.category !== 'undefined') {
+	//	buff is being deleted
+		if (shared.category === 'toggle') return;
+	}
+}
 if (typeof state !== 'undefined' && state) getSave = true;
 if (typeof action !== 'undefined' && action !== null && action.tag === 'save') getSave = true;
 	
