@@ -1,4 +1,4 @@
-const version = '0.1.19';
+const version = '0.1.20';
 const verbose = true;
 const show = true;
 
@@ -26,10 +26,13 @@ if (getSave) {
 	let cmsg = '', itm = '', itmName = '', itmData = '', pack = '', uuid = '';
 	itmName = 'getChatIdForLastType';
 	pack = 'crp-contents.crp-items';
-	uuid = await game.packs.get(pack).index.getName(itmName).uuid;
-	itm = await fromUuid(uuid);
-	itmData = await game.items.fromCompendium(itm);
-	const lm = await game.macros.getName();
+	rslt = await game.packs.get(pack).index.getName(itmName);
+	if (rslt) {
+		uuid = rslt.uuid;
+		itm = await fromUuid(uuid);
+		itmData = await game.items.fromCompendium(itm);
+		const lm = await game.macros.getName();
+	}
 	rslt = await item.getItemDictionaryFlag('chatId1');
 	if (rslt) {
 		cmsg = await lm.execute({ ctype: 'check', chatId: rslt });
