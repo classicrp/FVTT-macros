@@ -17,13 +17,15 @@
 	await ui.notifications.info(result);
 	```
 */
-	const version = 'v1.2.5';
+	const version = 'v1.2.6';
 	const head = `Macro.getChatIdForLastType(${version}): `;
 	let msg = '';
 	let failure = false;
+	let show = true;
+	let verbose = false;
 	//	========================================================= //
 
-debugger;
+	if (show) debugger
 
 	let myresult = "";
 	let n = 0;
@@ -80,7 +82,7 @@ debugger;
 		//	being here is a mistake.
 			msg = "You can't get there from here!"
 			ui.notifications.error(msg);
-			console.log(head + msg);
+			if (verbose) console.log(head + msg);
 			myresult = "";
 		};
 	} else {
