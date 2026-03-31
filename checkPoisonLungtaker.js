@@ -1,14 +1,16 @@
-const version = '0.1.13';
+const version = '0.1.14';
 const verbose = true;
 const show = true;
+
 
 const savesNeeded = 2, diceNumber = 1, diceSize = 6;
 let chkFinished = false, chkSaved = false, chkDamage = false, getSave = false;
 let rslt = '', newDamage = 0, totDamage = 0;
 let saved = await Number(item.getItemDictionaryFlag('saved'))||0;
 const storDamage = await Number(item.getItemDictionaryFlag('damage'))||0;
-
 if (show) debugger
+
+if (!state) chkFinished = true;
 if (typeof state !== 'undefined' && state) getSave = true;
 if (typeof action !== 'undefined' && action !== null && action.tag === 'check') getSave = true;
 	
