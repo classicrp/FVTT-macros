@@ -1,4 +1,4 @@
-const version = '0.1.15';
+const version = '0.1.16';
 const verbose = true;
 const show = true;
 
@@ -12,7 +12,7 @@ if (show) debugger
 
 if (typeof state !== 'undefined' && !state) chkFinished = true;
 if (typeof state !== 'undefined' && state) getSave = true;
-if (typeof action !== 'undefined' && action !== null && action.tag === 'check') getSave = true;
+if (typeof action !== 'undefined' && action !== null && action.tag === 'save') getSave = true;
 	
 if (getSave) {
 	//	see if there is a save out there
