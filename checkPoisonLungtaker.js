@@ -1,4 +1,4 @@
-const version = '0.1.26';
+const version = '0.1.27';
 const verbose = true;
 const show = true;
 const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.DZNSVVGlNsrxMMQa';
@@ -33,9 +33,9 @@ if (getSave) {
 //		const lm = await game.macros.getName();
 		rslt = await item.getItemDictionaryFlag('chatId1');
 		if (rslt) {
-			cmsg = await lm.execute({ ctype: 'check', chatId: rslt });
+			cmsg = await lm.execute({ item: item, ctype: 'check', chatId: rslt });
 		} else {
-			cmsg = await lm.execute({ ctype: 'check' });
+			cmsg = await lm.execute({ item: item, ctype: 'check' });
 		}
 //	}
 	if (cmsg) {	
