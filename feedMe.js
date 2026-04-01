@@ -28,7 +28,7 @@
 // Try that first.
 
 */
-const curVer = 'v1.0.7';
+const curVer = 'v1.0.8';
 const head = `Macro.feedMe(${curVer}): `;
 let msg = '';
 let failure = false;
@@ -44,14 +44,15 @@ if (action.tag == `havokGash`) {
         // there is a target
 		
 		const vAc = Number( shared.chatData["flags.vsAC.targets"][0].ac.normal );
-		const vRoll = Number( shared.chatAttacks[0].attack.d20.results[0].result );
-		const vTotal = Number( shared.chatData.system.rolls.attacks[0].attack.total );
+		const vRoll = Number( shared.chatAttacks[0].attack.natural );
+		const vTotal = Number( shared.chatAttacks[0].attack.total );
+		
 		// get the current and stored targets
 		const dWho = item.getItemDictionaryFlag('who');
 		const vTarget = shared.targets[0].document.actorId;
 		
 		// check to see if we rolled a `Nat 1`
-		if (vRoll === 1) {
+		if (shared.chatAttacks[0].attack.isNat1) {
 			// scrub the local data, Havok needs to start over
 			await item.setItemDictionaryFlag('bleed', 0);
 			await item.setItemDictionaryFlag('who', '');
@@ -66,7 +67,7 @@ if (action.tag == `havokGash`) {
 					// same target, make it bleed more!
 					
 					let blood = Number(item.getItemDictionaryFlag('bleed'));
-					blood += 1;
+					blood++;
 					await item.setItemDictionaryFlag('bleed', blood );
 					// apply buff to target again
 					
@@ -74,12 +75,14 @@ if (action.tag == `havokGash`) {
 					// logic breaks here---what if they aren't the same target
 					await item.setItemDictionaryFlag('bleed', 1);
 					await item.setItemDictionaryFlag('who', vTarget );
+					dWho = vTarget;
 				}
 				
 			} else {
 				// replace existing target (if any), remember and start bleed at 1
 				await item.setItemDictionaryFlag('bleed', 1);
 				await item.setItemDictionaryFlag('who', vTarget );
+				dWho = vTarget;
 			}
 		// We missed
 		}
