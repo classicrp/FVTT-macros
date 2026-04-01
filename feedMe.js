@@ -28,7 +28,7 @@
 // Try that first.
 
 */
-const curVer = 'v1.0.8';
+const curVer = 'v1.0.9';
 const head = `Macro.feedMe(${curVer}): `;
 let msg = '';
 let failure = false;
@@ -36,7 +36,7 @@ const state = true;
 const show = true;
 
 // Check that the serrated edge was used
-if (action.tag == `havokGash`) {
+if (action.tag == 'havokGash') {
     	
 	if (show) debugger
     // check that there was a target selected
@@ -60,14 +60,13 @@ if (action.tag == `havokGash`) {
 		} else if (vTotal >= vAc) {
 			// we have hit the target's normal AC
 		
-			if (dWho !== ``) {
+			if (dWho !== '') {
 				// see if our saved target and current target match
 
 				if (dWho === vTarget) {
 					// same target, make it bleed more!
-					
 					let blood = Number(item.getItemDictionaryFlag('bleed'));
-					blood++;
+					(shared.chatAttacks[0].attack.isCrit) ? blood += 3 : blood++;
 					await item.setItemDictionaryFlag('bleed', blood );
 					// apply buff to target again
 					
