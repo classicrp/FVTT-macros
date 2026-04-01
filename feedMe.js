@@ -48,7 +48,7 @@ if (action.tag == `havokGash`) {
 		const vTotal = Number( shared.chatAttacks[0].attack.total );
 		
 		// get the current and stored targets
-		const dWho = item.getItemDictionaryFlag('who');
+		let dWho = item.getItemDictionaryFlag('who');
 		const vTarget = shared.targets[0].document.actorId;
 		
 		// check to see if we rolled a `Nat 1`
