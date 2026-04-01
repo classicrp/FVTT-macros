@@ -28,18 +28,17 @@
 // Try that first.
 
 */
-const curVer = 'v1.0.6';
+const curVer = 'v1.0.7';
 const head = `Macro.feedMe(${curVer}): `;
 let msg = '';
 let failure = false;
 const state = true;
+const show = true;
 
 // Check that the serrated edge was used
 if (action.tag == `havokGash`) {
     	
-	const pBleed = `system.flags.dictionary.bleed`;
-	const pWho = `system.flags.dictionary.who`;
-
+	if (show) debugger
     // check that there was a target selected
     if (shared.chatAttacks[0].targets !== null) {
         // there is a target
@@ -50,8 +49,6 @@ if (action.tag == `havokGash`) {
 		// get the current and stored targets
 		const dWho = item.getItemDictionaryFlag('who');
 		const vTarget = shared.targets[0].document.actorId;
-
-//		debugger;
 		
 		// check to see if we rolled a `Nat 1`
 		if (vRoll === 1) {
