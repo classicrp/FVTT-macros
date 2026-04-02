@@ -17,7 +17,7 @@
 	await ui.notifications.info(result);
 	```
 */
-	const version = 'v1.3.1';
+	const version = 'v1.3.3';
 	const head = `Macro.getChatIdForLastType(${version}): `;
 	let msg = '';
 	let failure = false;
@@ -55,6 +55,8 @@
 						msg = `${actor.name} needs to make a new save before checking the roll.`;
 						await ui.notifications.warn(msg);
 						if (verbose) console.log(head + msg);
+						shared.chetMessage = false;
+						shared.rejected = true;
 						return;
 					}
                 }  
@@ -73,7 +75,7 @@
 			if (cmsg.system.save === null) {
 			// this is an 'action' with no <.save> data, recurse
 				lm = await await fromUuid(GETCHATIDFORLASTTYPE);
-				myresult = await lm.execute({ args: n, ctype: ctype });
+				myresult = await lm.execute({ args: n, ctype: ctype, chatId: chatId });
 			} else {
 				myresult = cmsg;
 			};
@@ -83,7 +85,7 @@
 			if (cmsg.rolls.length === 0) {
 			// this is a 'check' with no <.rolls> data, recurse
 				lm = await await fromUuid(GETCHATIDFORLASTTYPE);
-				myresult = await lm.execute({ args: n, ctype: ctype });
+				myresult = await lm.execute({ args: n, ctype: ctype, chatId: chatId });
 			} else {
 				myresult = cmsg;
 			};

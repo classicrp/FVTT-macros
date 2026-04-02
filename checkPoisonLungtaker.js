@@ -1,4 +1,4 @@
-const version = '0.2.2';
+const version = '0.2.4';
 const verbose = true;
 const show = true;
 const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiRAiOBj1x';
@@ -34,14 +34,15 @@ if (actionSave || stateSave) {
 		let count = 0;
 		do {
 			rslt = await item.getItemDictionaryFlag(`chatId${count}`)||'';
+			if (rslt !== '') chatId = rslt;
 			count++;
 		} 
 		while (rslt !== '');
-		if (rslt) {
+		if (chatId) {
 			if (stateSave) {
-				cmsg = await lm.execute({ state: state, item: item, ctype: 'check', chatId: rslt });
+				cmsg = await lm.execute({ state: state, item: item, ctype: 'check', chatId: chatId });
 			} else {
-				cmsg = await lm.execute({ action: action, item: item, ctype: 'check', chatId: rslt });				
+				cmsg = await lm.execute({ action: action, item: item, ctype: 'check', chatId: chatId });				
 			}
 		} else {
 			if (stateSave) {
