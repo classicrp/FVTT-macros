@@ -1,4 +1,4 @@
-const version = '0.2.8';
+const version = '0.2.9';
 const verbose = true;
 const show = true;
 const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiRAiOBj1x';
@@ -53,7 +53,7 @@ if (actionSave || stateSave) {
 		}
 //	}
 	if (cmsg === chatId) return;
-	if (cmsg !== '' && !cmsg.shared.rejected) {	
+	if (cmsg !== '') {	
 		const roll = cmsg.rolls[0];
 		// negative values so 'remove' stored value
 		if (typeof state === 'undefined') {
