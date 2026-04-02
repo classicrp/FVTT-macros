@@ -17,7 +17,7 @@
 	await ui.notifications.info(result);
 	```
 */
-	const version = 'v1.3.4';
+	const version = 'v1.3.5';
 	const head = `Macro.getChatIdForLastType(${version}): `;
 	let msg = '';
 	let failure = false;
@@ -75,7 +75,7 @@
 			if (cmsg.system.save === null) {
 			// this is an 'action' with no <.save> data, recurse
 				lm = await await fromUuid(GETCHATIDFORLASTTYPE);
-				myresult = await lm.execute({ args: n, ctype: ctype, chatId: chatId });
+				myresult = await lm.execute({ args: n, ctype: ctype, chatId: chatId, shared: shared });
 			} else {
 				myresult = cmsg;
 			};
@@ -85,7 +85,7 @@
 			if (cmsg.rolls.length === 0) {
 			// this is a 'check' with no <.rolls> data, recurse
 				lm = await await fromUuid(GETCHATIDFORLASTTYPE);
-				myresult = await lm.execute({ args: n, ctype: ctype, chatId: chatId });
+				myresult = await lm.execute({ args: n, ctype: ctype, chatId: chatId, shared: shared });
 			} else {
 				myresult = cmsg;
 			};
