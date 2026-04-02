@@ -1,6 +1,6 @@
 /*	==========================================================================
 	author: classicrp, @raydenx
-	date: 2026-03-30
+	date: 2026-04-02
 	==========================================================================
 	Special thanks to Discord::FVTT#macro-polo @joaquinp98 for setting me right
 	on how to use 'typeof()'
@@ -17,13 +17,14 @@
 	await ui.notifications.info(result);
 	```
 */
-	const version = 'v1.2.7';
+	const version = 'v1.3.0';
 	const head = `Macro.getChatIdForLastType(${version}): `;
 	let msg = '';
 	let failure = false;
 	let show = true;
 	let verbose = false;
 	//	========================================================= //
+	const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiRAiOBj1x';
 
 	if (show) debugger
 
@@ -61,7 +62,7 @@
 		//	this has a save
 			if (cmsg.system.save === null) {
 			// this is an 'action' with no <.save> data, recurse
-				lm = await game.macros.getName("getChatIdForLastType");
+				lm = await await fromUuid(GETCHATIDFORLASTTYPE);
 				myresult = await lm.execute({ args: n, ctype: ctype });
 			} else {
 				myresult = cmsg;
@@ -71,7 +72,7 @@
 		//	this has a roll
 			if (cmsg.rolls.length === 0) {
 			// this is a 'check' with no <.rolls> data, recurse
-				lm = await game.macros.getName("getChatIdForLastType");
+				lm = await await fromUuid(GETCHATIDFORLASTTYPE);
 				myresult = await lm.execute({ args: n, ctype: ctype });
 			} else {
 				myresult = cmsg;
