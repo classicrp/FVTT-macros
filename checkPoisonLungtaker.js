@@ -1,4 +1,4 @@
-const version = '0.2.9';
+const version = '0.2.10';
 const verbose = true;
 const show = true;
 const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiRAiOBj1x';
@@ -31,13 +31,8 @@ if (actionSave || stateSave) {
 		const lm = await fromUuid(GETCHATIDFORLASTTYPE);
 //		itmData = await game.macros.fromCompendium(lm);
 //		const lm = await game.macros.getName();
-		let count = 0;
-		do {
-			rslt = await item.getItemDictionaryFlag(`chatId${count}`)||'';
-			if (rslt !== '') chatId = rslt;
-			count++;
-		} 
-		while (rslt !== '');
+		rslt = await item.getItemDictionaryFlag('chatId')||'';
+		if (rslt !== '') chatId = rslt;
 		if (chatId) {
 			if (stateSave) {
 				cmsg = await lm.execute({ state: state, item: item, ctype: 'check', chatId: chatId, shared: shared })||'';
@@ -100,14 +95,14 @@ if (actionSave || stateSave) {
 if (chkFinished) {
 	await item.setItemDictionaryFlag('saved', 0);
 	await item.setItemDictionaryFlag('damage', 0);
-	for (let i = 0; i <= 2; i++) {
-		await item.setItemDictionaryFlag(`chatId${i}`, '');
-	}
+	await item.setItemDictionaryFlag('chatId', '');
 	await item.setActive(false);
+	
 } else {
 	if (chkSaved) await item.setItemDictionaryFlag('saved', saved);
 	if (chkDamage) await item.setItemDictionaryFlag('damage', totDamage);
-	await item.setItemDictionaryFlag(`chatId${saved}`, chatId);
+	await item.setItemDictionaryFlag('chatId', chatId);
+	shared.chatMessage = false;
 }
 
 return
