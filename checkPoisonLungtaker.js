@@ -1,4 +1,4 @@
-const version = '0.2.1';
+const version = '0.2.2';
 const verbose = true;
 const show = true;
 const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiRAiOBj1x';
@@ -31,7 +31,12 @@ if (actionSave || stateSave) {
 		const lm = await fromUuid(GETCHATIDFORLASTTYPE);
 //		itmData = await game.macros.fromCompendium(lm);
 //		const lm = await game.macros.getName();
-		rslt = await item.getItemDictionaryFlag('chatId1');
+		let count = 0;
+		do {
+			rslt = await item.getItemDictionaryFlag(`chatId${count}`)||'';
+			count++;
+		} 
+		while (rslt !== '');
 		if (rslt) {
 			if (stateSave) {
 				cmsg = await lm.execute({ state: state, item: item, ctype: 'check', chatId: rslt });
