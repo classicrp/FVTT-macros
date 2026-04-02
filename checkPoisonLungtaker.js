@@ -1,7 +1,7 @@
-const version = '0.1.30';
+const version = '0.2.0';
 const verbose = true;
 const show = true;
-const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.DZNSVVGlNsrxMMQa';
+const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiRAiOBj1x';
 
 const savesNeeded = 2, diceNumber = 1, diceSize = 6;
 let chkFinished = false, chkSaved = false, chkDamage = false, actionSave = false, stateSave = false;
