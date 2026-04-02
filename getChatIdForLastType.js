@@ -17,7 +17,7 @@
 	await ui.notifications.info(result);
 	```
 */
-	const version = 'v1.3.0';
+	const version = 'v1.3.1';
 	const head = `Macro.getChatIdForLastType(${version}): `;
 	let msg = '';
 	let failure = false;
@@ -46,8 +46,18 @@
 	if (mtypes.includes(ctype)) {
 
 		do {
-			if (game.messages.contents.at(n).type = `${ctype}`) {
-			// we want this one	
+			const srcs = game.messages.contents.at(n);
+			if ((srcs.type === `${ctype}`) && (actor._id === speaker.actor)) {
+			// we may want this one
+				if (typeof (chatId) !== 'undefined') {
+					if (chatId === srcs._id) {
+					//	we already used this one, ask to make a save then check again
+						msg = `${actor.name} needs to make a new save before checking the roll.`;
+						await ui.notifications.warn(msg);
+						if (verbose) console.log(head + msg);
+						return;
+					}
+                }  
 				break;
 			} else {
 			// check the next one
@@ -91,4 +101,4 @@
 		cmsg = await game.messages.get(ctype);
 		myresult = cmsg;
 	}
-	return myresult;
+	return myresult
