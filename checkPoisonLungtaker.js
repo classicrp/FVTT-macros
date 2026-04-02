@@ -1,4 +1,4 @@
-const version = '0.1.29';
+const version = '0.1.30';
 const verbose = true;
 const show = true;
 const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.DZNSVVGlNsrxMMQa';
@@ -40,7 +40,7 @@ if (actionSave || stateSave) {
 			}
 		} else {
 			if (stateSave) {
-				cmsg = await lm.execute({ action: action, item: item, ctype: 'check' });
+				cmsg = await lm.execute({ state: state, item: item, ctype: 'check' });
 			} else {
 				cmsg = await lm.execute({ action: action, item: item, ctype: 'check' });
 			}
