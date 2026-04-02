@@ -1,4 +1,4 @@
-const version = '0.2.6';
+const version = '0.2.7';
 const verbose = true;
 const show = true;
 const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiRAiOBj1x';
@@ -40,9 +40,9 @@ if (actionSave || stateSave) {
 		while (rslt !== '');
 		if (chatId) {
 			if (stateSave) {
-				cmsg = await lm.execute({ state: state, item: item, ctype: 'check', chatId: chatId, shared: shared });
+				cmsg = await lm.execute({ state: state, item: item, ctype: 'check', chatId: chatId, shared: shared })||'';
 			} else {
-				cmsg = await lm.execute({ action: action, item: item, ctype: 'check', chatId: chatId, shared: shared });				
+				cmsg = await lm.execute({ action: action, item: item, ctype: 'check', chatId: chatId, shared: shared })||'';				
 			}
 		} else {
 			if (stateSave) {
