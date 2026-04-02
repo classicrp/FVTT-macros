@@ -1,4 +1,4 @@
-const version = '0.2.10';
+const version = '0.2.11';
 const verbose = true;
 const show = true;
 const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiRAiOBj1x';
@@ -20,33 +20,24 @@ if (typeof state !== 'undefined' && state) stateSave = true;
 if (typeof action !== 'undefined' && action !== null && action.tag === 'save') actionSave = true;
 	
 if (actionSave || stateSave) {
-	//	see if there is a save out there
-//	if (show) debugger
 	let cmsg = '', itm = '', itmName = '', itmData = '', pack = '', uuid = '';
-//	itmName = 'getChatIdForLastType';
-//	pack = 'crp-contents.crp-macros';
-//	rslt = await game.packs.get(pack).index.getName(itmName).uuid;
-//	rslt = await game.packs.get(pack).index.find(f => f.name === 'getChatIdForLastType').uuid;
-//	if (rslt) {
-		const lm = await fromUuid(GETCHATIDFORLASTTYPE);
-//		itmData = await game.macros.fromCompendium(lm);
-//		const lm = await game.macros.getName();
-		rslt = await item.getItemDictionaryFlag('chatId')||'';
-		if (rslt !== '') chatId = rslt;
-		if (chatId) {
-			if (stateSave) {
-				cmsg = await lm.execute({ state: state, item: item, ctype: 'check', chatId: chatId, shared: shared })||'';
-			} else {
-				cmsg = await lm.execute({ action: action, item: item, ctype: 'check', chatId: chatId, shared: shared })||'';				
-			}
+	//	see if there is a save out there
+	const lm = await fromUuid(GETCHATIDFORLASTTYPE);
+	rslt = await item.getItemDictionaryFlag('chatId')||'';
+	if (rslt !== '') chatId = rslt;
+	if (chatId) {
+		if (stateSave) {
+			cmsg = await lm.execute({ state: state, item: item, ctype: 'check', chatId: chatId, shared: shared })||'';
 		} else {
-			if (stateSave) {
-				cmsg = await lm.execute({ state: state, item: item, ctype: 'check', shared: shared })||'';
-			} else {
-				cmsg = await lm.execute({ action: action, item: item, ctype: 'check', shared: shared })||'';
-			}
+			cmsg = await lm.execute({ action: action, item: item, ctype: 'check', chatId: chatId, shared: shared })||'';				
 		}
-//	}
+	} else {
+		if (stateSave) {
+			cmsg = await lm.execute({ state: state, item: item, ctype: 'check', shared: shared })||'';
+		} else {
+			cmsg = await lm.execute({ action: action, item: item, ctype: 'check', shared: shared })||'';
+		}
+	}
 	if (cmsg === chatId) return;
 	if (cmsg !== '') {	
 		const roll = cmsg.rolls[0];
@@ -74,23 +65,7 @@ if (actionSave || stateSave) {
 
 } else if (typeof action !== 'undefined' && action) {	
 	if (show) debugger
-	if (action.tag === 'save') {
-		// check the results
-		let count = 0;
-		do {
-			count++;
-			// Pause for x milliseconds
-			const pauseTime = 1000;
-			await new Promise(r => setTimeout(r, pauseTime));
-			//	check for a save
-			if (typeof shared.rollData.rolls !== 'undefined') {
-				break;
-			}
-			console.log(version, "count:", count);
-		} 
-		while (count < 10);
-		//	get local roll values		
-	}
+	if (action.tag === 'cured') chkFinished = true;
 }
 if (chkFinished) {
 	await item.setItemDictionaryFlag('saved', 0);
