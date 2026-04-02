@@ -17,7 +17,7 @@
 	await ui.notifications.info(result);
 	```
 */
-	const version = 'v1.3.7';
+	const version = 'v1.3.8';
 	const head = `Macro.getChatIdForLastType(${version}): `;
 	let msg = '';
 	let failure = false;
@@ -57,7 +57,7 @@
 						if (verbose) console.log(head + msg);
 						shared.chatMessage = false;
 						shared.rejected = true;
-						return "";
+						return chatId;
 					}
                 }  
 				break;
