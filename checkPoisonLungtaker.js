@@ -1,4 +1,4 @@
-const version = '0.2.0';
+const version = '0.2.1';
 const verbose = true;
 const show = true;
 const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiRAiOBj1x';
@@ -92,16 +92,14 @@ if (actionSave || stateSave) {
 if (chkFinished) {
 	await item.setItemDictionaryFlag('saved', 0);
 	await item.setItemDictionaryFlag('damage', 0);
-	for (let i = 1; i <= 2; i++) {
+	for (let i = 0; i <= 2; i++) {
 		await item.setItemDictionaryFlag(`chatId${i}`, '');
 	}
 	await item.setActive(false);
 } else {
-	if (chkSaved) {
-		await item.setItemDictionaryFlag('saved', saved);
-		await item.setItemDictionaryFlag(`chatId${saved}`, chatId);
-	}
+	if (chkSaved) await item.setItemDictionaryFlag('saved', saved);
 	if (chkDamage) await item.setItemDictionaryFlag('damage', totDamage);
+	await item.setItemDictionaryFlag(`chatId${saved}`, chatId);
 }
 
 return
