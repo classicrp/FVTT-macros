@@ -21,7 +21,7 @@ if (typeof action !== 'undefined' && action !== null && action.tag === 'save') a
 	
 if (actionSave || stateSave) {
 	//	see if there is a save out there
-	if (show) debugger
+//	if (show) debugger
 	let cmsg = '', itm = '', itmName = '', itmData = '', pack = '', uuid = '';
 //	itmName = 'getChatIdForLastType';
 //	pack = 'crp-contents.crp-macros';
@@ -59,6 +59,7 @@ if (actionSave || stateSave) {
 		//	we are using an action so need to manually roll {diceNumber}d{diceSize}	
 			newDamage = -diceNumber * Math.floor(Math.random() * diceSize + 1);
 		} else {
+			if (show) debugger
 			newDamage = item.changes.contents[0].value - storDamage;	
 		}
 		rslt = await checkSave(roll, saved, savesNeeded, newDamage, storDamage);

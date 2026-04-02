@@ -17,7 +17,7 @@
 	await ui.notifications.info(result);
 	```
 */
-	const version = 'v1.3.3';
+	const version = 'v1.3.4';
 	const head = `Macro.getChatIdForLastType(${version}): `;
 	let msg = '';
 	let failure = false;
