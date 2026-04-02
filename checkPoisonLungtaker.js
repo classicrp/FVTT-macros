@@ -1,10 +1,10 @@
-const version = '0.1.28';
+const version = '0.1.29';
 const verbose = true;
 const show = true;
 const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.DZNSVVGlNsrxMMQa';
 
 const savesNeeded = 2, diceNumber = 1, diceSize = 6;
-let chkFinished = false, chkSaved = false, chkDamage = false, getSave = false;
+let chkFinished = false, chkSaved = false, chkDamage = false, actionSave = false, stateSave = false;
 let rslt = '', chatId = '', newDamage = 0, totDamage = 0;
 let saved = await Number(item.getItemDictionaryFlag('saved'))||0;
 const storDamage = await Number(item.getItemDictionaryFlag('damage'))||0;
@@ -16,10 +16,10 @@ if (typeof state !== 'undefined' && !state) {
 		if (shared.category === 'toggle') return;
 	}
 }
-if (typeof state !== 'undefined' && state) getSave = true;
-if (typeof action !== 'undefined' && action !== null && action.tag === 'save') getSave = true;
+if (typeof state !== 'undefined' && state) stateSave = true;
+if (typeof action !== 'undefined' && action !== null && action.tag === 'save') actionSave = true;
 	
-if (getSave) {
+if (actionSave || stateSave) {
 	//	see if there is a save out there
 	if (show) debugger
 	let cmsg = '', itm = '', itmName = '', itmData = '', pack = '', uuid = '';
@@ -33,9 +33,17 @@ if (getSave) {
 //		const lm = await game.macros.getName();
 		rslt = await item.getItemDictionaryFlag('chatId1');
 		if (rslt) {
-			cmsg = await lm.execute({ item: item, ctype: 'check', chatId: rslt });
+			if (stateSave) {
+				cmsg = await lm.execute({ state: state, item: item, ctype: 'check', chatId: rslt });
+			} else {
+				cmsg = await lm.execute({ action: action, item: item, ctype: 'check', chatId: rslt });				
+			}
 		} else {
-			cmsg = await lm.execute({ item: item, actor: actor, token: token, ctype: 'check' });
+			if (stateSave) {
+				cmsg = await lm.execute({ action: action, item: item, ctype: 'check' });
+			} else {
+				cmsg = await lm.execute({ action: action, item: item, ctype: 'check' });
+			}
 		}
 //	}
 	if (cmsg) {	
@@ -100,7 +108,7 @@ return
 
 function checkSave(r, s, n, nd, sd) {
 //	non-destructive function utilizing passed-in values
-	let a = [], sav = s, totdmg = 0;
+	let sav = s, totdmg = 0;
 	let cf = false, cd = false, cs = false;
 	if (show) debugger
 	if (r.isNat20) {
