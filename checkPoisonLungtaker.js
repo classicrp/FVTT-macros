@@ -1,4 +1,4 @@
-const version = '0.2.7';
+const version = '0.2.8';
 const verbose = true;
 const show = true;
 const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiRAiOBj1x';
@@ -52,6 +52,7 @@ if (actionSave || stateSave) {
 			}
 		}
 //	}
+	if (cmsg === chatId) return;
 	if (cmsg !== '' && !cmsg.shared.rejected) {	
 		const roll = cmsg.rolls[0];
 		// negative values so 'remove' stored value
@@ -73,7 +74,6 @@ if (actionSave || stateSave) {
 			chatId = cmsg._id;
 		}
 	} else {
-		if (cmsg.shared.rejected) return;
 		await ui.notifications.warn(`Could not find a recent save for ${token.name}`);
 	}
 
