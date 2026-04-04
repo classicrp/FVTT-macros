@@ -1,4 +1,4 @@
-const version = '0.0.2';
+const version = '0.0.3';
 const show = true;
 const verbose = true;
 if (!item.system.active) {
@@ -12,7 +12,7 @@ if (!item.system.active) {
     await item.setItemDictionaryFlag('units', units);
     if (verbose) console.log(version, "units:", units);
     const duration = deepClone(item.system.duration);
-    duration.value = dur - units;
+    duration.value = String(dur - units);
     await item.update({ 'system.duration': duration });
     await item.setActive(true);
   } else {
