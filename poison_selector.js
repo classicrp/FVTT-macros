@@ -1,4 +1,4 @@
-const version = "1.3.14"
+const version = "1.3.15"
 const show = false;
 const verbose = false;
 
@@ -20,7 +20,15 @@ shared.rejected = true;  // don't show the selector's card
 
 //	POISON DATA
 let skip = false;
-let poisons = deepClone(actor._itemTypes.consumable.filter(p => p.system.subType === "poison"));
+let poisons = deepClone(actor._itemTypes.consumable.filter(p => p.system.subType === "poison")).sort(function(a, b){
+  let x = a.name.toLowerCase();
+  let y = b.name.toLowerCase();
+  if (x === 'move') {return -1;}
+  if (x < y) {return -1;}
+  if (x > y) {return 1;}
+  return 0;
+});
+
 let maxSelected = 1;
 // if (show) debugger
 //if (show) return
