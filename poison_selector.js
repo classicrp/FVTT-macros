@@ -1,4 +1,4 @@
-const version = "1.3.13"
+const version = "1.3.14"
 const show = false;
 const verbose = false;
 
@@ -29,7 +29,7 @@ poisons.forEach(p => {
 	//debugger;
 	fPois.push(new Poison(p._id, p.name, p.fullDescription));
 });
-if (verbose) console.log("Poison Data:", fPois)
+if (verbose) console.log(version, "Poison Data:", fPois)
 
 //	HTML BUILDING
 let dHtml = "";
@@ -63,7 +63,7 @@ let pGrp = `
 
 
 let nGrp = tGrp;
-if (verbose) console.log(pGrp, tGrp);
+if (verbose) console.log(version, pGrp, tGrp);
 
 //	LAUNCH DIALOG
 const response = await foundry.applications.api.Dialog.input({
@@ -112,7 +112,7 @@ await item.setItemDictionaryFlag('poison', response.poisonSelect);
 for (let i = 0; i < response.poisonSelect.length; i++) {
 	//	Trigger the selected poison
 	const poison = poisons.find( f => f.id === response.poisonSelect[i] );
-debugger
+    if (show) debugger
 	const rslt = await poison.use();
 	// Pause for x milliseconds
 	const pauseTime = 150;
@@ -174,13 +174,13 @@ function onRender(_event, app){
 			sName = found.name;
 			inner = removeHTML(sDesc);
 			box.innerHTML = inner;
-			if (verbose) console.log ("Name:", sName, "Value:", sValue, "Desc:", sDesc)
+			if (verbose) console.log (version, "Name:", sName, "Value:", sValue, "Desc:", sDesc)
 		}
 		inner = fPois.reduce((acc,e)=>{
 			if (maxSelected >= 0) return acc+=`<option value="${e.id}">${e.name}</option>\n`;
 			return acc;
 		},`<option value=""></option>`);
-		if (verbose) console.log("Poison Select change:", inner);
+		if (verbose) console.log(version, "Poison Select change:", inner);
 		single.querySelector("select").innerHTML = inner;
 		// rebuild the needed html
 	});
