@@ -1,4 +1,4 @@
-const version = '0.1.0';
+const version = '0.1.1';
 const show = true;
 const verbose = true;
 if (!item.system.active) {
@@ -13,11 +13,12 @@ if (!item.system.active) {
 		if (verbose) console.log(version, "units:", units);
 		if (item.system.tags.includes('poison')) {
 			//  handle poison damage increases, check current value and save
+			//  also need to handle saves and making multiples
 			for (let i=0; i < item.system.changes.length; i++) {
             	if (show) debugger
 				const target = item.system.changes[i].target;
 				const value = item.system.changes[i].value;
-				if (verbose) consloe.log(version, targer, value);
+				if (verbose) console.log(version, targer, value);
 				await item.setItemDictionaryFlag(target, value);	
 			}
 		}
