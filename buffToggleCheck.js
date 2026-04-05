@@ -1,4 +1,4 @@
-const version = '0.1.1';
+const version = '0.1.2';
 const show = true;
 const verbose = true;
 if (!item.system.active) {
@@ -16,9 +16,9 @@ if (!item.system.active) {
 			//  also need to handle saves and making multiples
 			for (let i=0; i < item.system.changes.length; i++) {
             	if (show) debugger
-				const target = item.system.changes[i].target;
-				const value = item.system.changes[i].value;
-				if (verbose) console.log(version, targer, value);
+				const target = item.changes.contents[i].target;
+				const value = item.changes.contents[i].value;
+				if (verbose) console.log(version, target, value);
 				await item.setItemDictionaryFlag(target, value);	
 			}
 		}
@@ -29,7 +29,7 @@ if (!item.system.active) {
 		if (item.system.tags.includes('poison')) {
 			//  handle poison damage increases, check current value and save
 			for (let i=0; i < item.system.changes.length; i++) {
-				await item.setItemDictionaryFlag(item.system.changes[i].target, 0);	
+				await item.setItemDictionaryFlag(item.changes.contents[i].target, 0);	
 			}
 		}
 	}
