@@ -1,4 +1,4 @@
-const version = '0.1.2';
+const version = '0.1.3';
 const show = true;
 const verbose = true;
 if (!item.system.active) {
@@ -14,6 +14,7 @@ if (!item.system.active) {
 		if (item.system.tags.includes('poison')) {
 			//  handle poison damage increases, check current value and save
 			//  also need to handle saves and making multiples
+			await item.actions.contents.find(f => f.tag === 'save').use();
 			for (let i=0; i < item.system.changes.length; i++) {
             	if (show) debugger
 				const target = item.changes.contents[i].target;
