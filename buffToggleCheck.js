@@ -1,4 +1,4 @@
-const version = '0.1.10';
+const version = '0.1.11';
 const show = false;
 const verbose = true;
 const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiRAiOBj1x';
@@ -54,6 +54,7 @@ if (!state) {
 	if (chkDone || chkSaved) {
 		// we are done
 		await item.setItemDictionaryFlag('units', 0);
+		await item.setItemDictionaryFlag('lastSaveId', '');
 		if (item.system.tags.includes('poison')) {
 			//  leave damage until cured
 		}
