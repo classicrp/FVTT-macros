@@ -1,4 +1,4 @@
-const version = '0.1.6';
+const version = '0.1.10';
 const show = false;
 const verbose = true;
 const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiRAiOBj1x';
@@ -13,6 +13,8 @@ if (!state) {
 	const dur = await Number(item.getItemDictionaryFlag('frequencyDuration'));
     const savesMade = await Number(item.getItemDictionaryFlag('savesMade'));
     const savesNeeded = await Number(item.getItemDictionaryFlag('savesNeeded'));
+	const chatId = await item.getItemDictionaryFlag('lastSaveId')||'';
+	let cmsg = '';
 	units++;
 	chkDone = await checkUnits(units, dur);
     chkSaved = await checkDuration(savesMade, savesNeeded);
@@ -26,16 +28,19 @@ if (!state) {
 			//  also need to handle saves and making multiples
 			await item.actions.contents.find(f => f.tag === 'save').use();
 			for (let i=0; i<50; i++) {
-				await ui.notification.info('Looking for recent save' + ".".repeat(i));
+				await ui.notifications.info('Looking for recent save'.concat(String('.').repeat(i)));
 				// Pause for x milliseconds at a time - about 10s for search
 				const pauseTime = 200;
 				await new Promise(r => setTimeout(r, pauseTime));
 				//	get the result of the save
 				let	lm = await fromUuid(GETCHATIDFORLASTTYPE);
-				let myresult = await lm.execute({ ctype: 'check', actor: actor, shared: shared });
-				if (myresult) break;
+				cmsg = await lm.execute({ ctype: 'check', actor: actor, chatId: chatId, shared: shared });
+				if (cmsg) break;
 			}
-
+			if (cmsg) {
+              await item.setItemDictionaryFlag('lastSaveId', cmsg._id);
+              console.log(version, cmsg);
+            }
 			for (let i=0; i < item.system.changes.length; i++) {
             	if (show) debugger
 				const target = item.changes.contents[i].target;
