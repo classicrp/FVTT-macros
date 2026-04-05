@@ -1,4 +1,4 @@
-const version = "1.3.17"
+const version = "1.4.1"
 const show = false;
 const verbose = false;
 
@@ -33,7 +33,7 @@ let maxSelected = 1;
 let fPois = [];
 poisons.forEach(p => {
 	//debugger;
-	fPois.push(new Poison(p._id, p.name, p.fullDescription));
+	fPois.push(new Poison(p._id, p.name, removeHTML(p.fullDescription)));
 });
 if (verbose) console.log(version, "Poison Data:", fPois)
 
@@ -161,7 +161,7 @@ function onRender(_event, app){
 			found = fPois.find(f => f.id === sValue);
 			sDesc = found.desc;
 			sName = found.name;
-			inner = removeHTML(sDesc);
+			inner = sDesc; 	// removeHTML(sDesc);
 			box.innerHTML = inner;
 			if (verbose) console.log (version, "Name:", sName, "Value:", sValue, "Desc:", sDesc)
 		}
