@@ -1,4 +1,4 @@
-const version = '0.1.11';
+const version = '0.1.12';
 const show = false;
 const verbose = true;
 const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiRAiOBj1x';
@@ -22,7 +22,6 @@ if (!state) {
 	if (!chkDone && !chkSaved) {
 		await item.setItemDictionaryFlag('units', units);
 		if (verbose) console.log(version, "units:", units);
-        chkDone = true;
 		if (item.system.tags.includes('poison')) {
 			//  handle poison damage increases, check current value and save
 			//  also need to handle saves and making multiples
@@ -40,6 +39,7 @@ if (!state) {
 			if (cmsg) {
               await item.setItemDictionaryFlag('lastSaveId', cmsg._id);
               console.log(version, cmsg);
+			  debugger
             }
 			for (let i=0; i < item.system.changes.length; i++) {
             	if (show) debugger
@@ -53,6 +53,7 @@ if (!state) {
 	}
 	if (chkDone || chkSaved) {
 		// we are done
+		debugger
 		await item.setItemDictionaryFlag('units', 0);
 		await item.setItemDictionaryFlag('lastSaveId', '');
 		if (item.system.tags.includes('poison')) {
