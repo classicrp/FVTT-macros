@@ -1,7 +1,7 @@
-const version = '0.1.3';
+const version = '0.1.4';
 const show = true;
 const verbose = true;
-if (!item.system.active) {
+if (!state) {
 	// this will turn off every <frequencyPerUnit> per <frequencyUnits> for <frequencyDuration>.
 	// <frequencyUnits> are as follows [infinity: "", turn: "turn", mins: "minute", rnds: "round", hrs: "hour"]
 	// increment the units and turn back on
