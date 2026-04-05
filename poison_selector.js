@@ -1,4 +1,4 @@
-const version = "1.3.16"
+const version = "1.3.17"
 const show = false;
 const verbose = false;
 
@@ -8,15 +8,14 @@ if (action.tag === `premoved`) {
 	//	Turn off any active "Poison" buffs
 	const actBuffs = await actor._itemTypes.buff.filter(b => b.system.tag.includes('poison') && b.system.active);
 	await actBuffs.forEach(a => {
-		//a.update({ ['flags[ckl-roll-bonuses].target_weapon']: ''});
-		a.setActive(false);		// (!a.isActive);
-		//a.update({ ['system.active']: false });
+		a.setActive(false);
 	})
 	return;
 	await item.setItemDictionaryFlag('poison', "");
 }
 
 shared.rejected = true;  // don't show the selector's card
+shared.chatMessage = false;
 
 //	POISON DATA
 let skip = false;
@@ -121,6 +120,7 @@ for (let i = 0; i < response.poisonSelect.length; i++) {
 	const poison = poisons.find( f => f.id === response.poisonSelect[i] );
     if (show) debugger
 	const rslt = await poison.use();
+
 	// Pause for x milliseconds
 	const pauseTime = 150;
 	await new Promise(r => setTimeout(r, pauseTime));
@@ -129,24 +129,6 @@ for (let i = 0; i < response.poisonSelect.length; i++) {
 	const msgIdx = await game.collections.get('ChatMessage').contents.findLastIndex(f => f.content.includes(hText));
 	const msgId = await game.collections.get('ChatMessage').contents.at(msgIdx).id;
 	await item.setItemDictionaryFlag('messageId', msgId );
-
-// debugger
-
-//  GET THE COMPENDIUM BUFF FOR POISON AND APPLY TO TARGET
-/*
-	const name = await fPois.find( f => f.id === response.poisonSelect[i]).name;
-	const pack = "world.buffs";
-	const uuid = await game.packs.get(pack).index.getName(`Poison (${name.toLowerCase()})`).uuid;  // this is to apply the buff to the target
-	const sToken = await canvas.tokens.controlled[0];
-	const sTarget = await Array.from(game.user.targets)[0];
-	if ( !sToken ) return ui.notifications.warn("Select token first !");
-	if ( !sTarget ) return ui.notifications.warn("Target token first !");
-	//	Add it to the actor
-	const sActor = await game.actors.get(sTarget.document.actorId);
-	const itemData = await game.items.fromCompendium(poisBuff);
-	await Item.create(itemData, {parent: sActor});
-*/
-
 }
 return
 
