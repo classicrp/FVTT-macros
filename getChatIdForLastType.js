@@ -17,7 +17,7 @@
 	await ui.notifications.info(result);
 	```
 */
-	const version = 'v1.4.1';
+	const version = 'v1.4.2';
 	const head = `Macro.getChatIdForLastType(${version}): `;
 	let msg = '';
 	let failure = false;
@@ -47,7 +47,7 @@
 		if (show) debugger
 		const srcs = game.messages.contents.filter(f => (f.type === ctype) && (actor._id === speaker.actor)).sort(function(a, b){
 			let x = a.timestamp;
-			let y = b.timestamp();
+			let y = b.timestamp;
 			if (x < y) {return 1;}
 			if (x > y) {return -1;}
 			return 0;
