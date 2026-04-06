@@ -1,4 +1,4 @@
-const version = '0.1.16';
+const version = '0.1.17';
 const show = false;
 const verbose = true;
 const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiRAiOBj1x';
@@ -73,8 +73,8 @@ if (!state) {
 			//  leave damage until cured
 		}
     }
-	return
 }
+return
 
 function checkUnits(a, b) {
 	return (a <= b) ? false : true;
