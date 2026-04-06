@@ -1,6 +1,6 @@
 /*	==========================================================================
 	author: classicrp, @raydenx
-	date: 2026-04-02
+	date: 2026-04-06
 	==========================================================================
 	Special thanks to Discord::FVTT#macro-polo @joaquinp98 for setting me right
 	on how to use 'typeof()'
@@ -17,7 +17,7 @@
 	await ui.notifications.info(result);
 	```
 */
-	const version = 'v1.3.8';
+	const version = 'v1.4.0';
 	const head = `Macro.getChatIdForLastType(${version}): `;
 	let msg = '';
 	let failure = false;
@@ -44,32 +44,39 @@
 	let lm = null;
 	const mtypes = ["action", "check", "spell"];
 	if (mtypes.includes(ctype)) {
+		let msg = '';
 
-		do {
-			const srcs = game.messages.contents.at(n);
-			if ((srcs.type === `${ctype}`) && (actor._id === speaker.actor)) {
-			// we may want this one
+		const srcs = game.messages.contents.filter(f => (f.type === ctype) && (actor._id === speaker.actor)).sort(function(a, b){
+			let x = a.timestamp;
+			let y = b.timestamp();
+			if (x < y) {return 1;}
+			if (x > y) {return -1;}
+			return 0;
+		});
+		if (srcs.length === 0) {
+			//	no matching documents
+			msg = `Could not find a saving throw for ${actor.name}.`;
+			await ui.notifications.warn(msg);
+			if (verbose) console.log(head, msg);
+		} else {
+			//	see if this one matches the <chatId> and if it does
+			for (const c of srcs) {
+			// see if this is the we may want this one
 				if (typeof (chatId) !== 'undefined') {
-					if (chatId === srcs._id) {
+					if (chatId === c._id) {
 					//	we already used this one, ask to make a save then check again
 						msg = `${actor.name} needs to make a new save before checking the roll.`;
 						await ui.notifications.warn(msg);
-						if (verbose) console.log(head + msg);
+						if (verbose) console.log(head, msg);
 						shared.chatMessage = false;
 						shared.rejected = true;
 						return chatId;
 					}
-                }  
+                }
+				cmsg = c;
 				break;
-			} else {
-			// check the next one
-				n -= 1;
 			}
-		}
-		while (Math.abs(n) >= game.messages.contents.length);
-		
-		cmsg = await game.messages.contents.at(n);
-	
+		}	
 		if (ctype === "action") {
 		//	this has a save
 			if (cmsg.system.save === null) {
