@@ -17,12 +17,12 @@
 	await ui.notifications.info(result);
 	```
 */
-	const version = 'v1.4.2';
+	const version = 'v1.4.3';
 	const head = `Macro.getChatIdForLastType(${version}): `;
 	let msg = '';
 	let failure = false;
-	let show = true;
-	let verbose = false;
+	let show = false;
+	let verbose = true;
 	//	========================================================= //
 	const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiRAiOBj1x';
 
