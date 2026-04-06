@@ -1,10 +1,14 @@
-const version = '0.1.17';
+const version = '0.2.0';
 const show = false;
 const verbose = true;
 const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiRAiOBj1x';
 
 let chkDone = false, chkSaved = false;
-debugger
+
+// Pause for x milliseconds
+const pauseTime = 100;
+await new Promise(r => setTimeout(r, pauseTime));
+
 if (!state) {
 	// this will turn off every <frequencyPerUnit> per <frequencyUnits> for <frequencyDuration>.
 	// <frequencyUnits> are as follows [infinity: "", turn: "turn", mins: "minute", rnds: "round", hrs: "hour"]
