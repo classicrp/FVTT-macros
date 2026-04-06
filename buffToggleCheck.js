@@ -1,7 +1,8 @@
-const version = '0.2.4';
+const version = '0.2.5';
 const show = false;
 const verbose = true;
 const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiRAiOBj1x';
+const CHECKSAVE = 'Compendium.crp-contents.crp-macros.Macro.xFjVPT4MkdLpoTXM';
 
 let chkDone = false, chkSaved = false;
 
@@ -11,6 +12,7 @@ await new Promise(r => setTimeout(r, pauseTime));
 
 let units = await Number(item.getItemDictionaryFlag('units'));
 let chatId = await item.getItemDictionaryFlag('lastSaveId')||'';
+let savesMade = await Number(item.getItemDictionaryFlag('savesMade'));
 let cmsg = '', lm = '', rslt = '';
 
 if (!state) {
@@ -18,7 +20,6 @@ if (!state) {
 	// <frequencyUnits> are as follows [infinity: "", turn: "turn", mins: "minute", rnds: "round", hrs: "hour"]
 	// increment the units and turn back on
 	const dur = await Number(item.getItemDictionaryFlag('frequencyDuration'));
-    const savesMade = await Number(item.getItemDictionaryFlag('savesMade'));
     const savesNeeded = await Number(item.getItemDictionaryFlag('savesNeeded'));
 	
 	units++;
@@ -31,7 +32,7 @@ if (!state) {
 		if (item.system.tags.includes('poison')) {
 			//  handle poison damage increases, check current value and save
 			//  also need to handle saves and making multiples
-			await item.actions.contents.find(f => f.tag === 'save').use();
+			await item.actions.contents.find(f => f.tag === 'save').use({ chatMessage: false });
 			for (let i=0; i<50; i++) {
 				await ui.notifications.info('Looking for recent save'.concat(String('.').repeat(i)));
 				// Pause for x milliseconds at a time - about 10s for search
@@ -72,6 +73,8 @@ if (!state) {
 		await item.setItemDictionaryFlag('lastSaveId', chatId);		
 		console.log(version, cmsg);
 		// now see if save was a success
+		lm = await fromUuid(CHECKSAVE);
+		rslt = await lm.execute({ cmsg: cmsg, saves: savesMade });
 		debugger
 		return;
 		}
