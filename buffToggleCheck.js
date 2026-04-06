@@ -1,4 +1,4 @@
-const version = '0.2.5';
+const version = '0.2.6';
 const show = false;
 const verbose = true;
 const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiRAiOBj1x';
@@ -10,25 +10,26 @@ let chkDone = false, chkSaved = false;
 const pauseTime = 150;
 await new Promise(r => setTimeout(r, pauseTime));
 
-let units = await Number(item.getItemDictionaryFlag('units'));
+let unitsPassed = await Number(item.getItemDictionaryFlag('unitsPassed'));
+const unit = await item.getItemDictionaryFlag('frequencyUnit');
 let chatId = await item.getItemDictionaryFlag('lastSaveId')||'';
 let savesMade = await Number(item.getItemDictionaryFlag('savesMade'));
 let cmsg = '', lm = '', rslt = '';
 
 if (!state) {
-	// this will turn off every <frequencyPerUnit> per <frequencyUnits> for <frequencyDuration>.
-	// <frequencyUnits> are as follows [infinity: "", turn: "turn", mins: "minute", rnds: "round", hrs: "hour"]
-	// increment the units and turn back on
+	// this will turn off every <frequencyPerUnit> per <frequencyUnit> for <frequencyDuration>.
+	// <frequencyunitsPassed> are as follows [infinity: "", turn: "turn", mins: "minute", rnds: "round", hrs: "hour"]
+	// increment the unitsPassed and turn back on
 	const dur = await Number(item.getItemDictionaryFlag('frequencyDuration'));
     const savesNeeded = await Number(item.getItemDictionaryFlag('savesNeeded'));
 	
-	units++;
-	chkDone = await checkUnits(units, dur);
+	unitsPassed++;
+	chkDone = await checkUnitsPassed(unitsPassed, dur);
     chkSaved = await checkDuration(savesMade, savesNeeded);
 	
 	if (!chkDone && !chkSaved) {
-		await item.setItemDictionaryFlag('units', units);
-		if (verbose) console.log(version, "units:", units);
+		await item.setItemDictionaryFlag('unitsPassed', unitsPassed);
+		if (verbose) console.log(version, unitsPassed, "/", unit, "of", dur, unit + "(s)");
 		if (item.system.tags.includes('poison')) {
 			//  handle poison damage increases, check current value and save
 			//  also need to handle saves and making multiples
@@ -55,7 +56,7 @@ if (!state) {
 	}
 	if (chkDone && chkSaved) {
 		// we are done
-		await item.setItemDictionaryFlag('units', 0);
+		await item.setItemDictionaryFlag('unitsPassed', 0);
 		await item.setItemDictionaryFlag('lastSaveId', '');
 		await item.setItemDictionaryFlag('savesMade', 0);
 		if (item.system.tags.includes('poison')) {
@@ -63,7 +64,7 @@ if (!state) {
 		}
     }
 } else {
-	if (units === 0) {
+	if (unitsPassed === 0) {
 	//	buff just toggled on for first time, see if a save exists
 	ui.notifications.info(`Collecting saving throw for ${actor.name}`);
 	lm = await fromUuid(GETCHATIDFORLASTTYPE);
@@ -83,7 +84,7 @@ if (!state) {
 }
 return
 
-function checkUnits(a, b) {
+function checkUnitsPassed(a, b) {
 	return (a <= b) ? false : true;
 }
 
