@@ -1,4 +1,4 @@
-const version = '0.2.0';
+const version = '0.2.1';
 const show = false;
 const verbose = true;
 const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiRAiOBj1x';
@@ -26,7 +26,7 @@ if (!state) {
 		lm = await fromUuid(GETCHATIDFORLASTTYPE);
 		cmsg = await lm.execute({ ctype: 'check', actor: actor, chatId: chatId, shared: shared });
 		if (cmsg) {
-			chatId = cmsg.at(0)._id;
+			chatId = cmsg._id;
 			await item.setItemDictionaryFlag('lastSaveId', chatId);
 			
 			console.log(version, cmsg);
