@@ -1,4 +1,4 @@
-const version = '0.2.1';
+const version = '0.2.2';
 const show = false;
 const verbose = true;
 const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiRAiOBj1x';
@@ -6,7 +6,7 @@ const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiR
 let chkDone = false, chkSaved = false;
 
 // Pause for x milliseconds
-const pauseTime = 100;
+const pauseTime = 150;
 await new Promise(r => setTimeout(r, pauseTime));
 
 if (!state) {
@@ -19,7 +19,7 @@ if (!state) {
     const savesNeeded = await Number(item.getItemDictionaryFlag('savesNeeded'));
 	let chatId = await item.getItemDictionaryFlag('lastSaveId')||'';
 	let cmsg = '', lm = '', rslt = '';
-
+debugger
 	if (units === 0) {
 		//	buff just toggled on for first time, see if a save exists
 		ui.notifications.info(`Collecting saving throw for ${actor.name}`);
