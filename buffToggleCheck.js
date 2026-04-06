@@ -1,4 +1,4 @@
-const version = '0.1.14';
+const version = '0.1.15';
 const show = false;
 const verbose = true;
 const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiRAiOBj1x';
@@ -13,8 +13,24 @@ if (!state) {
 	const dur = await Number(item.getItemDictionaryFlag('frequencyDuration'));
     const savesMade = await Number(item.getItemDictionaryFlag('savesMade'));
     const savesNeeded = await Number(item.getItemDictionaryFlag('savesNeeded'));
-	const chatId = await item.getItemDictionaryFlag('lastSaveId')||'';
-	let cmsg = '';
+	let chatId = await item.getItemDictionaryFlag('lastSaveId')||'';
+	let cmsg = '', lm = '';
+
+	if (units === 0) {
+		//	buff just toggled on for first time, see if a save exists
+		ui.notifications.info(`Collecting saving throw for ${actor.name}`);
+		lm = await fromUuid(GETCHATIDFORLASTTYPE);
+		cmsg = await lm.execute({ ctype: 'check', actor: actor, chatId: chatId, shared: shared });
+		if (cmsg) {
+			chatId = cmsg.at(0)._id;
+			await item.setItemDictionaryFlag('lastSaveId', chatId);
+			console.log(version, cmsg);
+			shared.chatMessage = false;
+			shared.rejected = true;
+			return;
+		}
+	}
+	
 	units++;
 	chkDone = await checkUnits(units, dur);
     chkSaved = await checkDuration(savesMade, savesNeeded);
@@ -36,11 +52,6 @@ if (!state) {
 				cmsg = await lm.execute({ ctype: 'check', actor: actor, chatId: chatId, shared: shared });
 				if (cmsg) break;
 			}
-			if (cmsg) {
-              await item.setItemDictionaryFlag('lastSaveId', cmsg._id);
-              console.log(version, cmsg);
-			  debugger
-            }
 			for (let i=0; i < item.system.changes.length; i++) {
             	if (show) debugger
 				const target = item.changes.contents[i].target;
@@ -61,6 +72,7 @@ if (!state) {
 			//  leave damage until cured
 		}
     }
+	return
 }
 
 function checkUnits(a, b) {
