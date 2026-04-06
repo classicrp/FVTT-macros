@@ -1,10 +1,10 @@
-const version = '0.1.15';
+const version = '0.1.16';
 const show = false;
 const verbose = true;
 const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiRAiOBj1x';
 
 let chkDone = false, chkSaved = false;
-
+debugger
 if (!state) {
 	// this will turn off every <frequencyPerUnit> per <frequencyUnits> for <frequencyDuration>.
 	// <frequencyUnits> are as follows [infinity: "", turn: "turn", mins: "minute", rnds: "round", hrs: "hour"]
@@ -14,7 +14,7 @@ if (!state) {
     const savesMade = await Number(item.getItemDictionaryFlag('savesMade'));
     const savesNeeded = await Number(item.getItemDictionaryFlag('savesNeeded'));
 	let chatId = await item.getItemDictionaryFlag('lastSaveId')||'';
-	let cmsg = '', lm = '';
+	let cmsg = '', lm = '', rslt = '';
 
 	if (units === 0) {
 		//	buff just toggled on for first time, see if a save exists
@@ -24,6 +24,7 @@ if (!state) {
 		if (cmsg) {
 			chatId = cmsg.at(0)._id;
 			await item.setItemDictionaryFlag('lastSaveId', chatId);
+			
 			console.log(version, cmsg);
 			shared.chatMessage = false;
 			shared.rejected = true;
