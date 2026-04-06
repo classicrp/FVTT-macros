@@ -17,7 +17,7 @@
 	await ui.notifications.info(result);
 	```
 */
-	const version = 'v1.4.0';
+	const version = 'v1.4.1';
 	const head = `Macro.getChatIdForLastType(${version}): `;
 	let msg = '';
 	let failure = false;
@@ -25,8 +25,6 @@
 	let verbose = false;
 	//	========================================================= //
 	const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiRAiOBj1x';
-
-	if (show) debugger
 
 	let myresult = "";
 	let n = 0;
@@ -46,6 +44,7 @@
 	if (mtypes.includes(ctype)) {
 		let msg = '';
 
+		if (show) debugger
 		const srcs = game.messages.contents.filter(f => (f.type === ctype) && (actor._id === speaker.actor)).sort(function(a, b){
 			let x = a.timestamp;
 			let y = b.timestamp();
