@@ -1,4 +1,4 @@
-const version = '0.2.2';
+const version = '0.2.4';
 const show = false;
 const verbose = true;
 const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiRAiOBj1x';
@@ -9,32 +9,17 @@ let chkDone = false, chkSaved = false;
 const pauseTime = 150;
 await new Promise(r => setTimeout(r, pauseTime));
 
+let units = await Number(item.getItemDictionaryFlag('units'));
+let chatId = await item.getItemDictionaryFlag('lastSaveId')||'';
+let cmsg = '', lm = '', rslt = '';
+
 if (!state) {
 	// this will turn off every <frequencyPerUnit> per <frequencyUnits> for <frequencyDuration>.
 	// <frequencyUnits> are as follows [infinity: "", turn: "turn", mins: "minute", rnds: "round", hrs: "hour"]
 	// increment the units and turn back on
-	let units = await Number(item.getItemDictionaryFlag('units'));
 	const dur = await Number(item.getItemDictionaryFlag('frequencyDuration'));
     const savesMade = await Number(item.getItemDictionaryFlag('savesMade'));
     const savesNeeded = await Number(item.getItemDictionaryFlag('savesNeeded'));
-	let chatId = await item.getItemDictionaryFlag('lastSaveId')||'';
-	let cmsg = '', lm = '', rslt = '';
-debugger
-	if (units === 0) {
-		//	buff just toggled on for first time, see if a save exists
-		ui.notifications.info(`Collecting saving throw for ${actor.name}`);
-		lm = await fromUuid(GETCHATIDFORLASTTYPE);
-		cmsg = await lm.execute({ ctype: 'check', actor: actor, chatId: chatId, shared: shared });
-		if (cmsg) {
-			chatId = cmsg._id;
-			await item.setItemDictionaryFlag('lastSaveId', chatId);
-			
-			console.log(version, cmsg);
-			shared.chatMessage = false;
-			shared.rejected = true;
-			return;
-		}
-	}
 	
 	units++;
 	chkDone = await checkUnits(units, dur);
@@ -69,7 +54,6 @@ debugger
 	}
 	if (chkDone && chkSaved) {
 		// we are done
-		debugger
 		await item.setItemDictionaryFlag('units', 0);
 		await item.setItemDictionaryFlag('lastSaveId', '');
 		await item.setItemDictionaryFlag('savesMade', 0);
@@ -77,6 +61,22 @@ debugger
 			//  leave damage until cured
 		}
     }
+} else {
+	if (units === 0) {
+	//	buff just toggled on for first time, see if a save exists
+	ui.notifications.info(`Collecting saving throw for ${actor.name}`);
+	lm = await fromUuid(GETCHATIDFORLASTTYPE);
+	cmsg = await lm.execute({ ctype: 'check', actor: actor, chatId: chatId, shared: shared });
+	if (cmsg) {
+		chatId = cmsg._id;
+		await item.setItemDictionaryFlag('lastSaveId', chatId);		
+		console.log(version, cmsg);
+		// now see if save was a success
+		debugger
+		return;
+		}
+	}
+
 }
 return
 
