@@ -1,4 +1,4 @@
-const version = '0.2.6';
+const version = '0.2.7';
 const show = false;
 const verbose = true;
 const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiRAiOBj1x';
@@ -23,13 +23,13 @@ if (!state) {
 	const dur = await Number(item.getItemDictionaryFlag('frequencyDuration'));
     const savesNeeded = await Number(item.getItemDictionaryFlag('savesNeeded'));
 	
-	unitsPassed++;
 	chkDone = await checkUnitsPassed(unitsPassed, dur);
+	if (!chkDone) unitsPassed++;
     chkSaved = await checkDuration(savesMade, savesNeeded);
 	
 	if (!chkDone && !chkSaved) {
 		await item.setItemDictionaryFlag('unitsPassed', unitsPassed);
-		if (verbose) console.log(version, unitsPassed, "/", unit, "of", dur, unit + "(s)");
+		if (verbose) console.log(version, unitsPassed, "/", unit + "(s)", "of", dur, unit + "(s)");
 		if (item.system.tags.includes('poison')) {
 			//  handle poison damage increases, check current value and save
 			//  also need to handle saves and making multiples
@@ -85,7 +85,7 @@ if (!state) {
 return
 
 function checkUnitsPassed(a, b) {
-	return (a <= b) ? false : true;
+	return (a < b) ? false : true;
 }
 
 function checkDuration(a, b) {
