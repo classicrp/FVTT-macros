@@ -1,7 +1,7 @@
-const version = '0.2.8';
-const show = false;
+const version = '0.2.9';
+const show = true;
 const verbose = true;
-const paused = false;
+const paused = true;
 const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiRAiOBj1x';
 const CHECKSAVE = 'Compendium.crp-contents.crp-macros.Macro.xFjVPT4MkdLpoTXM';
 
@@ -16,7 +16,7 @@ let unitsPassed = await Number(item.getItemDictionaryFlag('unitsPassed'));
 const unit = await item.getItemDictionaryFlag('frequencyUnit');
 let chatId = await item.getItemDictionaryFlag('lastSaveId')||'';
 let savesMade = await Number(item.getItemDictionaryFlag('savesMade'));
-let cmsg = '', lm = '', rslt = '', totDamage = [];
+let cmsg = '', lm = '', rslt = '', damage = [];
 
 if (!state) {
 	// this will turn off every <frequencyPerUnit> per <frequencyUnit> for <frequencyDuration>.
@@ -51,11 +51,16 @@ if (!state) {
 			}
 			for (const c of item.system.changes) {
             	if (show) debugger
+				//  get stored values first
 				const target = c.target;
-				const value = c.value;
-				if (verbose) console.log(version, target, value);
-				await item.setItemDictionaryFlag(target, value);
-				totDamage = totDamage.push(DmgObject(target, value));
+				const storVal = await item.getItemDictionaryFlag(target);
+				const totVal = c.value;
+				const rolledVal = totVal + storVal;
+				if (verbose) console.log(version, target, "old:", storVal, "roll:", rolledVal, "tot:", totVal);
+				damage = damage.push(new DmgObject(target, storVal, rolledVal, totVal));
+
+				// do this last after checking with <checkSave>
+				await item.setItemDictionaryFlag(target, totVal);
 			}
 		}
 		await item.setActive(true);
@@ -97,7 +102,9 @@ function checkDuration(a, b) {
 	return (a < b) ? false : true;
 }
 
-function DmgObject(target, value) {
-	this.target = target;
-	this.value = value;
+function DmgObject(t, sv, nv, tv) {
+	this.target = t;
+	this.stored = sv;
+	this.rolled = nv;
+	this.total = tv;
 }
