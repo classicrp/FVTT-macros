@@ -17,7 +17,7 @@
 	await ui.notifications.info(result);
 	```
 */
-	const version = 'v1.4.4';
+	const version = 'v1.4.5';
 	const head = `Macro.getChatIdForLastType(${version}): `;
 	let msg = '';
 	let failure = false;
@@ -29,15 +29,6 @@
 debugger
 
 	let myresult = "";
-	let n = 0;
-
-	if (typeof args !== "undefined") {
-		// last index from recursion
-		n = Number(args) - 1;
-	} else {
-		// new search
-		n = -1;
-	}
 
 //	need to put in a stop search criteria
 	let cmsg = null;
