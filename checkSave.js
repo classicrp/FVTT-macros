@@ -1,11 +1,11 @@
-const version = '0.0.6';
+const version = '0.0.7';
 const verbose = true;
 const show = true;
-// Passed in: cmsg [chatMessagePF], made [Number], needed [Number], consecutive [Boolean], 
+// Passed in: cmsg [ChatMessagePF], made [Number], needed [Number], consecutive [Boolean], 
 //				damage (Array of [BuffDamageCRP {target, stored, rolled, total}]).
 
 debugger
-let rslt = checkSave(cmsg.rolls[0], made, needed, consecutive, damage);
+let rslt = await checkSave(cmsg.rolls[0], made, needed, consecutive, damage);
 return rslt;
 
 function checkSave(r, s, n, c, dmg) {
@@ -74,10 +74,10 @@ function checkSave(r, s, n, c, dmg) {
 			d.total = d.rolled + d.stored;
 		}
 	}
-	return new checkResultCRP(cf, cs, sav, damage);
+	return new CheckResultCRP(cf, cs, sav, damage);
 }
 
-function checkResultCRP(cf, cs, sav, dmg) {
+function CheckResultCRP(cf, cs, sav, dmg) {
 	this.finished = cf;
 	this.saved = cs;
 	this.number = sav;
