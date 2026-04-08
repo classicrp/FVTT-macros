@@ -1,4 +1,4 @@
-const version = '0.0.4;
+const version = '0.0.4';
 const verbose = true;
 const show = true;
 // Passed in: cmsg [chatMessagePF], made [Number], needed [Number], consecutive [Boolean], 
