@@ -1,4 +1,4 @@
-const version = '0.3.1';
+const version = '0.3.3';
 const show = true;
 const verbose = true;
 const paused = true;
@@ -94,7 +94,8 @@ if (!state) {
 			lm = await fromUuid(CHECKSAVE);
 			rslt = await lm.execute({ cmsg: cmsg, made: savesMade, needed: savesNeeded, consecutive: consecutiveSaves, damage: damage });
 			if (rslt) {
-				if (verbose) console.log('rslt:',rslt);
+				if (verbose) console.log('rslt:', rslt);
+				await item.setItemDictionaryFlag('savesMade', rslt.number);
 			}
 		}
 	}
@@ -109,16 +110,16 @@ function checkDuration(a, b) {
 	return (a < b) ? false : true;
 }
 
-function BuffDamageCRP(t, sv, nv, tv) {
+function BuffDamageCRP(t, sv, rv, tv) {
 	this.target = t;
 	this.stored = sv;
-	this.rolled = nv;
+	this.rolled = rv;
 	this.total = tv;
 }
 
 function collectDamageInfo(c) {
 	const target = c.target;
-	const storVal = item.system.flags.dictionary[target];
+	const storVal = Number(item.system.flags.dictionary[target])||0;
 	const totVal = c.value;
 	const rolledVal = totVal + storVal;
 	if (verbose) console.log(version, target, "old:", storVal, "roll:", rolledVal, "tot:", totVal);
