@@ -1,4 +1,4 @@
-const version = '0.2.13';
+const version = '0.3.0';
 const show = true;
 const verbose = true;
 const paused = true;
@@ -51,19 +51,13 @@ if (!state) {
 				cmsg = await lm.execute({ ctype: 'check', actor: actor, chatId: chatId, shared: shared });
 				if (cmsg) break;
 			}
+			// get current damage info
 			for (const c of item.changes.contents) {
-            	if (show) debugger
 				//  get stored values first
-				const target = c.target;
-				const storVal = await Number(item.getItemDictionaryFlag(target));
-				const totVal = c.value;
-				const rolledVal = totVal + storVal;
-				if (verbose) console.log(version, target, "old:", storVal, "roll:", rolledVal, "tot:", totVal);
-				rslt = new BuffDamageCRP(target, storVal, rolledVal, totVal);
+				rslt = await collectDamageInfo(c)
 				damage.push(rslt);
-
 				// do this last after checking with <checkSave>
-				await item.setItemDictionaryFlag(target, totVal);
+				await item.setItemDictionaryFlag(rslt.target, rslt.totVal);
 			}
 		}
 		await item.setActive(true);
@@ -88,7 +82,15 @@ if (!state) {
 			await item.setItemDictionaryFlag('lastSaveId', chatId);	
 			rslt = await Number(item.getItemDictionaryFlag('consecutiveSaves'));
 			const consecutiveSaves = (rslt === -1) ? false : true;
-			console.log(version, cmsg);
+			if (verbose) console.log(version, cmsg);
+			// get current damage info
+			for (const c of item.changes.contents) {
+				//  get stored values first
+				rslt = await collectDamageInfo(c)
+				damage.push(rslt);
+				// do this last after checking with <checkSave>
+				await item.setItemDictionaryFlag(rslt.target, rslt.totVal);
+			}
 			// now see if save was a success
 			lm = await fromUuid(CHECKSAVE);
 			rslt = await lm.execute({ cmsg: cmsg, made: savesMade, needed: savesNeeded, consecutive: consecutiveSaves, damage: damage });
@@ -113,4 +115,13 @@ function BuffDamageCRP(t, sv, nv, tv) {
 	this.stored = sv;
 	this.rolled = nv;
 	this.total = tv;
+}
+
+function collectDamageInfo(c) {
+	const target = c.target;
+	const storVal = item.system.flags.dictionary[target];
+	const totVal = c.value;
+	const rolledVal = totVal + storVal;
+	if (verbose) console.log(version, target, "old:", storVal, "roll:", rolledVal, "tot:", totVal);
+	return new BuffDamageCRP(target, storVal, rolledVal, totVal);
 }
