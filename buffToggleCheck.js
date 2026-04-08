@@ -1,4 +1,4 @@
-const version = '0.3.3';
+const version = '0.3.6';
 const show = true;
 const verbose = true;
 const paused = true;
@@ -18,6 +18,7 @@ const dur = await Number(item.getItemDictionaryFlag('frequencyDuration'));
 let chatId = await item.getItemDictionaryFlag('lastSaveId')||'';
 let savesMade = await Number(item.getItemDictionaryFlag('savesMade'));
 const savesNeeded = await Number(item.getItemDictionaryFlag('savesNeeded'));
+let consecutiveSaves = await Number(item.getItemDictionaryFlag('consecutiveSaves'));
 let cmsg = '', lm = '', rslt = '', damage = [];
 
 if (!state) {
@@ -35,9 +36,10 @@ if (!state) {
 		if (item.system.tags.includes('poison')) {
 			//  handle poison damage increases, check current value and save
 			//  also need to handle saves and making multiples
-			rslt = await item.actions.contents.find(f => f.tag === 'save').use({ chatMessage: false });
+			rslt = await item.actions.contents.find(f => f.tag === 'save').use({ chatMessage: true, skipDialog: true });
+			if (!rslt) return;  // cancelled
 			if (show) debugger
-			for (let i=1; i<=50; i++) {
+/*			for (let i=1; i<=50; i++) {
 				msg = 'Looking for recent save'.concat(String('.').repeat(i));
 				await ui.notifications.info(msg);
 				if (paused) {
@@ -50,13 +52,20 @@ if (!state) {
 				cmsg = await lm.execute({ ctype: 'check', actor: actor, chatId: chatId, shared: shared });
 				if (cmsg) break;
 			}
-			// get current damage info
+*/			// get current damage info
 			for (const c of item.changes.contents) {
 				//  get stored values first
 				rslt = await collectDamageInfo(c)
 				damage.push(rslt);
 				// do this last after checking with <checkSave>
 				await item.setItemDictionaryFlag(rslt.target, rslt.totVal);
+			}
+			// now see if save was a success
+			lm = await fromUuid(CHECKSAVE);
+			rslt = await lm.execute({ cmsg: cmsg, made: savesMade, needed: savesNeeded, consecutive: consecutiveSaves, damage: damage });
+			if (rslt) {
+				if (verbose) console.log('rslt:', rslt);
+				await item.setItemDictionaryFlag('savesMade', rslt.number);
 			}
 		}
 		await item.setActive(true);
