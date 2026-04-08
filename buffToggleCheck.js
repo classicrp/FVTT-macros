@@ -59,7 +59,7 @@ if (!state) {
 				const totVal = c.value;
 				const rolledVal = totVal + storVal;
 				if (verbose) console.log(version, target, "old:", storVal, "roll:", rolledVal, "tot:", totVal);
-				rslt = new BuffDamageCRP(target, storVal, rolledVal, totVal));
+				rslt = new BuffDamageCRP(target, storVal, rolledVal, totVal);
 				damage.push(rslt);
 
 				// do this last after checking with <checkSave>
