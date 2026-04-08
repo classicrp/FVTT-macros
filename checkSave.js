@@ -1,17 +1,17 @@
-const version = '0.0.3;
+const version = '0.0.4;
 const verbose = true;
 const show = true;
+// Passed in: cmsg [chatMessagePF], made [Number], needed [Number], consecutive [Boolean], 
+//				damage (Array of [BuffDamageCRP {target, stored, rolled, total}]).
 
 debugger
-if (args) {
-	// cmsg, made, needed, damage[];
-	
-}
-return
+if (!args) return;
+let rslt = checkSave(cmsg, made, needed, consecutive, damage);
+return rslt;
 
-function checkSave(r, s, n, nd, sd) {
+function checkSave(r, s, n, c, dmg) {
 //	non-destructive function utilizing passed-in values
-	let sav = s, totdmg = 0;
+	let sav = s, mult = 1;
 	let cf = false, cd = false, cs = false;
 	if (show) debugger
 	if (r.isNat20) {
@@ -23,12 +23,12 @@ function checkSave(r, s, n, nd, sd) {
 			cf = true;
 			cd = false;
 			cs = false;
-			totdmg = 0;
+			mult = 0;
 		} else {
 			cf = false;
 			cs = true;
 			cd = true;
-			totdmg = Math.ceil(nd / 2) + sd;
+			mult = 1/2;
 		}
 		
 	} else if (r.isNat1){
@@ -37,7 +37,7 @@ function checkSave(r, s, n, nd, sd) {
 		cf = false;
 		cs = false;
 		cd = true;
-		totdmg = (2 * nd) + sd;
+		mult = 2;
 		
 	} else if (r.isSuccess) {
 	//	normal success, update the dictionary
@@ -48,12 +48,12 @@ function checkSave(r, s, n, nd, sd) {
 			cf = true;
 			cs = false;
 			cd = false;
-			totdmg = 0;			
+			mult = 0;
 		} else {
 			cf = false;
 			cs = true;
 			cd = true;
-			totdmg = nd + sd;
+			mult = 1;
 		}
 		
 	} else if (r.isFailure) {
@@ -62,16 +62,25 @@ function checkSave(r, s, n, nd, sd) {
 		cf = false;
 		cs = false;
 		cd = true;
-		totdmg = nd + sd;
+		mult = 1;
 	}
-	// not the array I want
-	return new CSresult(cf, cs, sav, cd, totdmg);
+	// now handle damage
+	for (const d of damage) {
+		if (mult === 0) {
+			d.stored = mult;
+			d.rolled = mult;
+			d.total = mult;
+		} else {
+			d.rolled = Math.ceil(d.rolled * mult);
+			d.total = d.rolled + d.stored;
+		}
+	}
+	return new checkResultCRP(cf, cs, sav, damage);
 }
 
-function CSresult(cf, cs, sav, cd, td) {
+function checkResultCRP(cf, cs, sav, dmg) {
 	this.finished = cf;
 	this.saved = cs;
 	this.number = sav;
-	this.damage = cd;
-	this.total = td;
+	this.damage = dmg;
 }
