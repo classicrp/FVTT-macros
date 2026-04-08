@@ -1,4 +1,4 @@
-const version = '0.3.0';
+const version = '0.3.1';
 const show = true;
 const verbose = true;
 const paused = true;
@@ -6,8 +6,6 @@ const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiR
 const CHECKSAVE = 'Compendium.crp-contents.crp-macros.Macro.xFjVPT4MkdLpoTXM';
 
 let chkDone = false, chkSaved = false;
-
-debugger
 
 if (paused) {
 	// Pause for x milliseconds
@@ -37,7 +35,8 @@ if (!state) {
 		if (item.system.tags.includes('poison')) {
 			//  handle poison damage increases, check current value and save
 			//  also need to handle saves and making multiples
-			await item.actions.contents.find(f => f.tag === 'save').use({ chatMessage: false });
+			rslt = await item.actions.contents.find(f => f.tag === 'save').use({ chatMessage: false });
+			if (show) debugger
 			for (let i=1; i<=50; i++) {
 				msg = 'Looking for recent save'.concat(String('.').repeat(i));
 				await ui.notifications.info(msg);
