@@ -1,4 +1,4 @@
-const version = '0.2.9';
+const version = '0.2.10';
 const show = true;
 const verbose = true;
 const paused = true;
@@ -14,16 +14,16 @@ if (paused) {
 }
 let unitsPassed = await Number(item.getItemDictionaryFlag('unitsPassed'));
 const unit = await item.getItemDictionaryFlag('frequencyUnit');
+const dur = await Number(item.getItemDictionaryFlag('frequencyDuration'));
 let chatId = await item.getItemDictionaryFlag('lastSaveId')||'';
 let savesMade = await Number(item.getItemDictionaryFlag('savesMade'));
+const savesNeeded = await Number(item.getItemDictionaryFlag('savesNeeded'));
 let cmsg = '', lm = '', rslt = '', damage = [];
 
 if (!state) {
 	// this will turn off every <frequencyPerUnit> per <frequencyUnit> for <frequencyDuration>.
 	// <frequencyunitsPassed> are as follows [infinity: "", turn: "turn", mins: "minute", rnds: "round", hrs: "hour"]
 	// increment the unitsPassed and turn back on
-	const dur = await Number(item.getItemDictionaryFlag('frequencyDuration'));
-    const savesNeeded = await Number(item.getItemDictionaryFlag('savesNeeded'));
 	
 	chkDone = await checkUnitsPassed(unitsPassed, dur);
 	if (!chkDone) unitsPassed++;
@@ -49,11 +49,11 @@ if (!state) {
 				cmsg = await lm.execute({ ctype: 'check', actor: actor, chatId: chatId, shared: shared });
 				if (cmsg) break;
 			}
-			for (const c of item.system.changes) {
+			for (const c of item.changes.contents) {
             	if (show) debugger
 				//  get stored values first
 				const target = c.target;
-				const storVal = await item.getItemDictionaryFlag(target);
+				const storVal = await Number(item.getItemDictionaryFlag(target));
 				const totVal = c.value;
 				const rolledVal = totVal + storVal;
 				if (verbose) console.log(version, target, "old:", storVal, "roll:", rolledVal, "tot:", totVal);
