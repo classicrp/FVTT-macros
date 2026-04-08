@@ -1,4 +1,4 @@
-const version = '0.3.7';
+const version = '0.3.8';
 const show = true;
 const verbose = true;
 const paused = true;
@@ -42,6 +42,7 @@ if (!state) {
 					// Pause for x milliseconds at a time - about 10s for search
 					const pauseTime = 200;
 					await new Promise(r => setTimeout(r, pauseTime));
+					if (verbose) console.log('Delay:', i, "of", 50, "max");
 				}
 				//	get the result of the save
 				lm = await fromUuid(GETCHATIDFORLASTTYPE);
@@ -61,7 +62,10 @@ if (!state) {
 			rslt = await lm.execute({ cmsg: cmsg, made: savesMade, needed: savesNeeded, consecutive: consecutiveSaves, damage: damage });
 			if (rslt) {
 				if (verbose) console.log('rslt:', rslt);
-				await item.setItemDictionaryFlag('savesMade', rslt.number);
+				chkFinished = rslt.chkFinished;
+				chkSaved = rslt.chkSaved;
+				chkDone = rslt.chkDone;
+				await item.setItemDictionaryFlag('savesMade', rslt.saves);
 			}
 		}
 		await item.setActive(true);
@@ -71,8 +75,13 @@ if (!state) {
 		await item.setItemDictionaryFlag('unitsPassed', 0);
 		await item.setItemDictionaryFlag('lastSaveId', '');
 		await item.setItemDictionaryFlag('savesMade', 0);
-		if (item.system.tags.includes('poison')) {
-			//  leave damage until cured
+		if (chkFinished) {
+			if (item.system.tags.includes('poison')) {
+				//  leave damage until cured
+				for (const c of item.changes.contents) {
+					await item.setItemDictionaryFlag(c.target, 0);
+				}
+			}
 		}
     }
 } else {
@@ -100,7 +109,10 @@ if (!state) {
 			rslt = await lm.execute({ cmsg: cmsg, made: savesMade, needed: savesNeeded, consecutive: consecutiveSaves, damage: damage });
 			if (rslt) {
 				if (verbose) console.log('rslt:', rslt);
-				await item.setItemDictionaryFlag('savesMade', rslt.number);
+				chkFinished = rslt.chkFinished;
+				chkSaved = rslt.chkSaved;
+				chkDone = rslt.chkDone;
+				await item.setItemDictionaryFlag('savesMade', rslt.saves);
 			}
 		}
 	}
