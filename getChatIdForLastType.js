@@ -17,7 +17,7 @@
 	await ui.notifications.info(result);
 	```
 */
-	const version = 'v1.4.3';
+	const version = 'v1.4.4';
 	const head = `Macro.getChatIdForLastType(${version}): `;
 	let msg = '';
 	let failure = false;
@@ -25,6 +25,8 @@
 	let verbose = true;
 	//	========================================================= //
 	const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiRAiOBj1x';
+
+debugger
 
 	let myresult = "";
 	let n = 0;
