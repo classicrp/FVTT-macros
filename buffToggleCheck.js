@@ -1,4 +1,4 @@
-const version = '0.2.10';
+const version = '0.2.11';
 const show = true;
 const verbose = true;
 const paused = true;
@@ -57,7 +57,8 @@ if (!state) {
 				const totVal = c.value;
 				const rolledVal = totVal + storVal;
 				if (verbose) console.log(version, target, "old:", storVal, "roll:", rolledVal, "tot:", totVal);
-				damage = damage.push(new DmgObject(target, storVal, rolledVal, totVal));
+				rslt = new DmgObject(target, storVal, rolledVal, totVal));
+				damage.push(rslt);
 
 				// do this last after checking with <checkSave>
 				await item.setItemDictionaryFlag(target, totVal);
@@ -86,7 +87,7 @@ if (!state) {
 			console.log(version, cmsg);
 			// now see if save was a success
 			lm = await fromUuid(CHECKSAVE);
-			rslt = await lm.execute({ cmsg: cmsg, made: savesMade, needed: savesNeeded });
+			rslt = await lm.execute({ cmsg: cmsg, made: savesMade, needed: savesNeeded, damage: damage });
 			debugger
 			return;
 		}
