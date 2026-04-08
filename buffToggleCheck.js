@@ -1,4 +1,4 @@
-const version = '0.3.10';
+const version = '0.3.11';
 const show = true;
 const verbose = true;
 const paused = true;
@@ -8,13 +8,13 @@ const CHECKSAVE = 'Compendium.crp-contents.crp-macros.Macro.xFjVPT4MkdLpoTXM';
 let chkDone = false, chkSaved = false, chkFinished = false;
 let cmsg = '', lm = '', rslt = '', damage = [];
 
-let unitsPassed = await Number(item.getItemDictionaryFlag('unitsPassed'));
-const unit = await item.getItemDictionaryFlag('frequencyUnit');
-const dur = await Number(item.getItemDictionaryFlag('frequencyDuration'));
+let unitsPassed = await Number(item.getItemDictionaryFlag('unitsPassed'))||0;
+const unit = await item.getItemDictionaryFlag('frequencyUnit')||'';
+const dur = await Number(item.getItemDictionaryFlag('frequencyDuration'))||1;
 let chatId = await item.getItemDictionaryFlag('lastSaveId')||'';
-let savesMade = await Number(item.getItemDictionaryFlag('savesMade'));
-const savesNeeded = await Number(item.getItemDictionaryFlag('savesNeeded'));
-let consecutiveSaves = await Number(item.getItemDictionaryFlag('consecutiveSaves'));
+let savesMade = await Number(item.getItemDictionaryFlag('savesMade'))||0;
+const savesNeeded = await Number(item.getItemDictionaryFlag('savesNeeded'))||1;
+let consecutiveSaves = await Number(item.getItemDictionaryFlag('consecutiveSaves'))||-1;
 
 if (!state) {
 	// this will turn off every <frequencyPerUnit> per <frequencyUnit> for <frequencyDuration>.
@@ -121,11 +121,11 @@ if (!state) {
 return
 
 function checkUnitsPassed(a, b) {
-	return (a < b) ? false : true;
+	return ((a < b) ? false : true);
 }
 
 function checkDuration(a, b) {
-	return (a < b) ? false : true;
+	return ((a < b) ? false : true);
 }
 
 function BuffDamageCRP(t, sv, rv, tv) {
