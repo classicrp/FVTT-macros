@@ -1,4 +1,4 @@
-const version = '0.3.8';
+const version = '0.3.10';
 const show = true;
 const verbose = true;
 const paused = true;
@@ -6,6 +6,7 @@ const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiR
 const CHECKSAVE = 'Compendium.crp-contents.crp-macros.Macro.xFjVPT4MkdLpoTXM';
 
 let chkDone = false, chkSaved = false, chkFinished = false;
+let cmsg = '', lm = '', rslt = '', damage = [];
 
 let unitsPassed = await Number(item.getItemDictionaryFlag('unitsPassed'));
 const unit = await item.getItemDictionaryFlag('frequencyUnit');
@@ -14,15 +15,14 @@ let chatId = await item.getItemDictionaryFlag('lastSaveId')||'';
 let savesMade = await Number(item.getItemDictionaryFlag('savesMade'));
 const savesNeeded = await Number(item.getItemDictionaryFlag('savesNeeded'));
 let consecutiveSaves = await Number(item.getItemDictionaryFlag('consecutiveSaves'));
-let cmsg = '', lm = '', rslt = '', damage = [];
 
 if (!state) {
 	// this will turn off every <frequencyPerUnit> per <frequencyUnit> for <frequencyDuration>.
 	// <frequencyunitsPassed> are as follows [infinity: "", turn: "turn", mins: "minute", rnds: "round", hrs: "hour"]
 	// increment the unitsPassed and turn back on
 	
+	unitsPassed++;
 	chkDone = await checkUnitsPassed(unitsPassed, dur);
-	if (!chkDone) unitsPassed++;
     chkSaved = await checkDuration(savesMade, savesNeeded);
 	
 	if (!chkDone && !chkSaved) {
@@ -50,6 +50,7 @@ if (!state) {
 				if (cmsg) break;
 			}
 			// get current damage info
+			// PROBLEM: Damage will not update until AFTER item is set ACTIVE.
 			for (const c of item.changes.contents) {
 				//  get stored values first
 				rslt = await collectDamageInfo(c)
