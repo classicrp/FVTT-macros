@@ -1,11 +1,10 @@
-const version = '0.0.4';
+const version = '0.0.5';
 const verbose = true;
 const show = true;
 // Passed in: cmsg [chatMessagePF], made [Number], needed [Number], consecutive [Boolean], 
 //				damage (Array of [BuffDamageCRP {target, stored, rolled, total}]).
 
 debugger
-if (!args) return;
 let rslt = checkSave(cmsg, made, needed, consecutive, damage);
 return rslt;
 
