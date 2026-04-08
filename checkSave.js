@@ -1,9 +1,10 @@
-const version = '0.0.1';
+const version = '0.0.3;
 const verbose = true;
 const show = true;
 
 debugger
 if (args) {
+	// cmsg, made, needed, damage[];
 	
 }
 return
