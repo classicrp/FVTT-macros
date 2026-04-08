@@ -1,17 +1,12 @@
-const version = '0.3.6';
+const version = '0.3.7';
 const show = true;
 const verbose = true;
 const paused = true;
 const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiRAiOBj1x';
 const CHECKSAVE = 'Compendium.crp-contents.crp-macros.Macro.xFjVPT4MkdLpoTXM';
 
-let chkDone = false, chkSaved = false;
+let chkDone = false, chkSaved = false, chkFinished = false;
 
-if (paused) {
-	// Pause for x milliseconds
-	const pauseTime = 150;
-	await new Promise(r => setTimeout(r, pauseTime));
-}
 let unitsPassed = await Number(item.getItemDictionaryFlag('unitsPassed'));
 const unit = await item.getItemDictionaryFlag('frequencyUnit');
 const dur = await Number(item.getItemDictionaryFlag('frequencyDuration'));
@@ -39,26 +34,27 @@ if (!state) {
 			rslt = await item.actions.contents.find(f => f.tag === 'save').use({ chatMessage: true, skipDialog: true });
 			if (!rslt) return;  // cancelled
 			if (show) debugger
-/*			for (let i=1; i<=50; i++) {
+
+			for (let i=1; i<=50; i++) {
 				msg = 'Looking for recent save'.concat(String('.').repeat(i));
-				await ui.notifications.info(msg);
+				ui.notifications.info(msg);
 				if (paused) {
 					// Pause for x milliseconds at a time - about 10s for search
 					const pauseTime = 200;
 					await new Promise(r => setTimeout(r, pauseTime));
 				}
 				//	get the result of the save
-				let	lm = await fromUuid(GETCHATIDFORLASTTYPE);
-				cmsg = await lm.execute({ ctype: 'check', actor: actor, chatId: chatId, shared: shared });
+				lm = await fromUuid(GETCHATIDFORLASTTYPE);
+				cmsg = await lm.execute({ ctype: 'check', actor: actor, chatId: chatId });
 				if (cmsg) break;
 			}
-*/			// get current damage info
+			// get current damage info
 			for (const c of item.changes.contents) {
 				//  get stored values first
 				rslt = await collectDamageInfo(c)
 				damage.push(rslt);
 				// do this last after checking with <checkSave>
-				await item.setItemDictionaryFlag(rslt.target, rslt.totVal);
+				await item.setItemDictionaryFlag(rslt.target, rslt.total);
 			}
 			// now see if save was a success
 			lm = await fromUuid(CHECKSAVE);
