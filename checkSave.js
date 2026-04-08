@@ -1,4 +1,4 @@
-const version = '0.0.7';
+const version = '0.0.8';
 const verbose = true;
 const show = true;
 // Passed in: cmsg [ChatMessagePF], made [Number], needed [Number], consecutive [Boolean], 
@@ -74,12 +74,13 @@ function checkSave(r, s, n, c, dmg) {
 			d.total = d.rolled + d.stored;
 		}
 	}
-	return new CheckResultCRP(cf, cs, sav, damage);
+	return new CheckResultCRP(cf, cs, cd, sav, damage);
 }
 
-function CheckResultCRP(cf, cs, sav, dmg) {
-	this.finished = cf;
-	this.saved = cs;
-	this.number = sav;
+function CheckResultCRP(cf, cs, cd, sav, dmg) {
+	this.chkFinished = cf;
+	this.chkSaved = cs;
+	this.chkDone = cd;
+	this.saves = sav;
 	this.damage = dmg;
 }
