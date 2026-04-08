@@ -1,4 +1,4 @@
-const version = '0.2.12';
+const version = '0.2.13';
 const show = true;
 const verbose = true;
 const paused = true;
@@ -6,6 +6,8 @@ const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiR
 const CHECKSAVE = 'Compendium.crp-contents.crp-macros.Macro.xFjVPT4MkdLpoTXM';
 
 let chkDone = false, chkSaved = false;
+
+debugger
 
 if (paused) {
 	// Pause for x milliseconds
@@ -57,7 +59,7 @@ if (!state) {
 				const totVal = c.value;
 				const rolledVal = totVal + storVal;
 				if (verbose) console.log(version, target, "old:", storVal, "roll:", rolledVal, "tot:", totVal);
-				rslt = new CRPBuffDamage(target, storVal, rolledVal, totVal));
+				rslt = new BuffDamageCRP(target, storVal, rolledVal, totVal));
 				damage.push(rslt);
 
 				// do this last after checking with <checkSave>
@@ -106,7 +108,7 @@ function checkDuration(a, b) {
 	return (a < b) ? false : true;
 }
 
-function CRPBuffDamage(t, sv, nv, tv) {
+function BuffDamageCRP(t, sv, nv, tv) {
 	this.target = t;
 	this.stored = sv;
 	this.rolled = nv;
