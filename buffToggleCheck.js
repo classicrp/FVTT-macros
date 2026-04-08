@@ -1,4 +1,4 @@
-const version = '0.3.11';
+const version = '0.3.12';
 const show = true;
 const verbose = true;
 const paused = true;
@@ -65,7 +65,6 @@ if (!state) {
 				if (verbose) console.log('rslt:', rslt);
 				chkFinished = rslt.chkFinished;
 				chkSaved = rslt.chkSaved;
-				chkDone = rslt.chkDone;
 				await item.setItemDictionaryFlag('savesMade', rslt.saves);
 			}
 		}
@@ -103,7 +102,7 @@ if (!state) {
 				rslt = await collectDamageInfo(c)
 				damage.push(rslt);
 				// do this last after checking with <checkSave>
-				await item.setItemDictionaryFlag(rslt.target, rslt.totVal);
+				await item.setItemDictionaryFlag(rslt.target, rslt.total);
 			}
 			// now see if save was a success
 			lm = await fromUuid(CHECKSAVE);
@@ -112,7 +111,6 @@ if (!state) {
 				if (verbose) console.log('rslt:', rslt);
 				chkFinished = rslt.chkFinished;
 				chkSaved = rslt.chkSaved;
-				chkDone = rslt.chkDone;
 				await item.setItemDictionaryFlag('savesMade', rslt.saves);
 			}
 		}
