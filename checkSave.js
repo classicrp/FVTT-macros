@@ -1,86 +1,78 @@
-const version = '0.0.8';
+const version = '0.0.9';
 const verbose = true;
 const show = true;
 // Passed in: cmsg [ChatMessagePF], made [Number], needed [Number], consecutive [Boolean], 
 //				damage (Array of [BuffDamageCRP {target, stored, rolled, total}]).
 
-debugger
 let rslt = await checkSave(cmsg.rolls[0], made, needed, consecutive, damage);
 return rslt;
 
-function checkSave(r, s, n, c, dmg) {
+function checkSave(roll, made, need, consec, dmg) {
 //	non-destructive function utilizing passed-in values
-	let sav = s, mult = 1;
-	let cf = false, cd = false, cs = false;
+	let sav = made, mult = 1;
+	let cf = false, cs = false;
 	if (show) debugger
-	if (r.isNat20) {
+	if (roll.isNat20) {
 	//	critical success, halve the penalty
 		if (verbose) console.log(version, "Save was a critical success");
 		sav++
-		if (sav >= n) {
-		//  finished
-			cf = true;
-			cd = false;
-			cs = false;
+		if (sav >= need) {
+			if ((consec > -1) && (consec >= need)) {
+				cf = true;
+			}
+			cs = true;
 			mult = 0;
 		} else {
-			cf = false;
 			cs = true;
-			cd = true;
 			mult = 1/2;
 		}
 		
-	} else if (r.isNat1){
+	} else if (roll.isNat1){
 	//	critical failure, double the penalty
 		if (verbose) console.log(version, "Save was critical failure");
 		cf = false;
 		cs = false;
-		cd = true;
 		mult = 2;
 		
-	} else if (r.isSuccess) {
+	} else if (roll.isSuccess) {
 	//	normal success, update the dictionary
 		if (verbose) console.log(version, "Save was a success");
 		sav++
-		if (sav >= n) {
-		//  finished
-			cf = true;
-			cs = false;
-			cd = false;
+		if (sav >= need) {
+			if ((consec > -1) && (consec >= need)) {
+				cf = true;
+			}
+			cs = true;
 			mult = 0;
 		} else {
 			cf = false;
 			cs = true;
-			cd = true;
 			mult = 1;
 		}
 		
-	} else if (r.isFailure) {
+	} else if (roll.isFailure) {
 	// normal failure, update the penalty
 		if (verbose) console.log(version, "Save was a failure");
 		cf = false;
 		cs = false;
-		cd = true;
 		mult = 1;
 	}
 	// now handle damage
 	for (const d of damage) {
 		if (mult === 0) {
-			d.stored = mult;
+			d.stored = d.total;
 			d.rolled = mult;
-			d.total = mult;
 		} else {
 			d.rolled = Math.ceil(d.rolled * mult);
 			d.total = d.rolled + d.stored;
 		}
 	}
-	return new CheckResultCRP(cf, cs, cd, sav, damage);
+	return new CheckResultCRP(cf, cs, sav, damage);
 }
 
 function CheckResultCRP(cf, cs, cd, sav, dmg) {
 	this.chkFinished = cf;
 	this.chkSaved = cs;
-	this.chkDone = cd;
 	this.saves = sav;
 	this.damage = dmg;
 }
