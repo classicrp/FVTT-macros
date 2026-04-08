@@ -1,4 +1,4 @@
-const version = '0.2.11';
+const version = '0.2.12';
 const show = true;
 const verbose = true;
 const paused = true;
@@ -57,7 +57,7 @@ if (!state) {
 				const totVal = c.value;
 				const rolledVal = totVal + storVal;
 				if (verbose) console.log(version, target, "old:", storVal, "roll:", rolledVal, "tot:", totVal);
-				rslt = new DmgObject(target, storVal, rolledVal, totVal));
+				rslt = new CRPBuffDamage(target, storVal, rolledVal, totVal));
 				damage.push(rslt);
 
 				// do this last after checking with <checkSave>
@@ -80,16 +80,19 @@ if (!state) {
 		//	buff just toggled on for first time, see if a save exists
 		ui.notifications.info(`Collecting saving throw for ${actor.name}`);
 		lm = await fromUuid(GETCHATIDFORLASTTYPE);
-		cmsg = await lm.execute({ ctype: 'check', actor: actor, chatId: chatId, shared: shared });
+		cmsg = await lm.execute({ ctype: 'check', actor: actor, chatId: chatId });
 		if (cmsg) {
 			chatId = cmsg._id;
-			await item.setItemDictionaryFlag('lastSaveId', chatId);		
+			await item.setItemDictionaryFlag('lastSaveId', chatId);	
+			rslt = await Number(item.getItemDictionaryFlag('consecutiveSaves'));
+			const consecutiveSaves = (rslt === -1) ? false : true;
 			console.log(version, cmsg);
 			// now see if save was a success
 			lm = await fromUuid(CHECKSAVE);
-			rslt = await lm.execute({ cmsg: cmsg, made: savesMade, needed: savesNeeded, damage: damage });
-			debugger
-			return;
+			rslt = await lm.execute({ cmsg: cmsg, made: savesMade, needed: savesNeeded, consecutive: consecutiveSaves, damage: damage });
+			if (rslt) {
+				if (verbose) console.log('rslt:',rslt);
+			}
 		}
 	}
 }
@@ -103,7 +106,7 @@ function checkDuration(a, b) {
 	return (a < b) ? false : true;
 }
 
-function DmgObject(t, sv, nv, tv) {
+function CRPBuffDamage(t, sv, nv, tv) {
 	this.target = t;
 	this.stored = sv;
 	this.rolled = nv;
