@@ -1,4 +1,4 @@
-const version = '0.3.13';
+const version = '0.3.15';
 const show = true;
 const verbose = true;
 const paused = true;
@@ -32,7 +32,9 @@ if (!state) {
 			//  handle poison damage increases, check current value and save
 			//  also need to handle saves and making multiples
 			rslt = await game.messages.get(chatId).renderHTML({ case: 'check' });
-			rslt = await item.actions.contents.find(f => f.tag === 'save').use({ chatMessage: true, skipDialog: true });
+			if (verbose) console.log(version, 'renderHTML result:', rslt);
+			await chatMessage(rslt);
+			rslt = await item.actions.contents.find(f => f.tag === 'save').use({ chatMessage: true, skipDialog: false });
 			if (!rslt) return;  // cancelled
 			if (show) debugger
 
@@ -141,4 +143,15 @@ function collectDamageInfo(c) {
 	const rolledVal = totVal + storVal;
 	if (verbose) console.log(version, target, "old:", storVal, "roll:", rolledVal, "tot:", totVal);
 	return new BuffDamageCRP(target, storVal, rolledVal, totVal);
+}
+
+function chatMessage(messageContent) {
+	if (messageContent !== '') {
+		let chatData = {
+			user: game.user.id,
+			speaker: ChatMessage.getSpeaker(),
+			content: messageContent,
+		};
+		ChatMessage.create(chatData, {});
+	}
 }
