@@ -17,7 +17,7 @@
 	await ui.notifications.info(result);
 	```
 */
-	const version = 'v1.4.5';
+	const version = 'v1.4.6';
 	const head = `Macro.getChatIdForLastType(${version}): `;
 	let msg = '';
 	let failure = false;
@@ -60,8 +60,6 @@ debugger
 						msg = `${actor.name} needs to make a new save before checking the roll.`;
 						await ui.notifications.warn(msg);
 						if (verbose) console.log(head, msg);
-						shared.chatMessage = false;
-						shared.rejected = true;
 						return chatId;
 					}
                 }
