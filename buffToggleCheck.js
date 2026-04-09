@@ -1,4 +1,4 @@
-const version = '0.3.12';
+const version = '0.3.13';
 const show = true;
 const verbose = true;
 const paused = true;
@@ -31,6 +31,7 @@ if (!state) {
 		if (item.system.tags.includes('poison')) {
 			//  handle poison damage increases, check current value and save
 			//  also need to handle saves and making multiples
+			rslt = await game.messages.get(chatId).renderHTML({ case: 'check' });
 			rslt = await item.actions.contents.find(f => f.tag === 'save').use({ chatMessage: true, skipDialog: true });
 			if (!rslt) return;  // cancelled
 			if (show) debugger
