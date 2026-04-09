@@ -1,4 +1,4 @@
-const version = '0.0.9';
+const version = '0.1.0';
 const verbose = true;
 const show = true;
 // Passed in: cmsg [ChatMessagePF], made [Number], needed [Number], consecutive [Boolean], 
@@ -70,7 +70,7 @@ function checkSave(roll, made, need, consec, dmg) {
 	return new CheckResultCRP(cf, cs, sav, damage);
 }
 
-function CheckResultCRP(cf, cs, cd, sav, dmg) {
+function CheckResultCRP(cf, cs, sav, dmg) {
 	this.chkFinished = cf;
 	this.chkSaved = cs;
 	this.saves = sav;
