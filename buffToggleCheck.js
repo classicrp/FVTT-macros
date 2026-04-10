@@ -131,10 +131,10 @@ function checkSaves(a, b) {
 	return ((a < b) ? false : true);
 }
 
-function turnOffDuration();
+function turnOffDuration() {
 	//	turn off duration checks
-return item.update({ ['system.duration.units']: "" });
-
+    return item.update({ ['system.duration.units']: "" });
+}
 
 function BuffDamageCRP(t, sv, rv, tv) {
 	this.target = t;
