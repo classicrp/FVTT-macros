@@ -1,4 +1,4 @@
-const version = '0.3.19';
+const version = '0.3.20';
 const show = true;
 const verbose = true;
 const paused = true;
@@ -32,6 +32,8 @@ if (!state) {
 			//  handle poison damage increases, check current value and save
 			//	scroll the chatLog back to the initial ChatMessage save.
 			rslt = await document.querySelector(`[data-message-id="${chatId}"]`).scrollIntoView();
+			msg = `${actor.name}, please use [ROLL] on your last chat save.`;
+			await ui.notifications.warn(msg);
 			//	returns 'undefined' if already in view.
 //			rslt = await item.actions.contents.find(f => f.tag === 'save').use({ chatMessage: true, skipDialog: false });
 //			if (!rslt) return;  // cancelled
@@ -41,7 +43,7 @@ if (!state) {
 				ui.notifications.info(msg);
 				if (paused) {
 					// Pause for x milliseconds at a time - about 10s for search
-					const pauseTime = 200;
+					const pauseTime = 150;
 					await new Promise(r => setTimeout(r, pauseTime));
 					if (verbose) console.log('Delay:', i, "of", 50, "max");
 				}
@@ -85,7 +87,15 @@ if (!state) {
 				}
 			}
 		}
-    }
+    } else {
+		if (typeof action !== 'undefined') {
+			if (action === 'cure') {
+				await item.delete;
+			}
+		}
+		//	leave it active until cured.
+		await item.setActive(true);		
+	}
 } else {
 	if (unitsPassed === 0) {
 		//	buff just toggled on for first time, see if a save exists
@@ -95,8 +105,7 @@ if (!state) {
 		if (cmsg) {
 			chatId = cmsg._id;
 			await item.setItemDictionaryFlag('lastSaveId', chatId);	
-			rslt = await Number(item.getItemDictionaryFlag('consecutiveSaves'));
-			const consecutiveSaves = (rslt === -1) ? false : true;
+			let consecutiveSaves = await Number(item.getItemDictionaryFlag('consecutiveSaves'));
 			if (verbose) console.log(version, cmsg);
 			// get current damage info
 			for (const c of item.changes.contents) {
@@ -114,6 +123,9 @@ if (!state) {
 				chkFinished = rslt.chkFinished;
 				chkSaved = rslt.chkSaved;
 				await item.setItemDictionaryFlag('savesMade', rslt.saves);
+				if (consecutiveSaves !== rslt.consec) {
+					await item.setItemDictionaryFlag('consecutiveSaves', rslt.consec);
+				}
 			}
 		}
 	}
