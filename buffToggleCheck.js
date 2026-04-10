@@ -1,4 +1,4 @@
-const version = '0.3.21';
+const version = '0.4.0';
 const show = true;
 const verbose = true;
 const paused = true;
@@ -77,19 +77,12 @@ if (!state) {
 			}
 		}
 	}
+	if (chkFinished) await turnOffDuration();
 	if (chkDone && chkSaved) {
 		// we are done
 		await item.setItemDictionaryFlag('unitsPassed', 0);
 		await item.setItemDictionaryFlag('lastSaveId', '');
 		await item.setItemDictionaryFlag('savesMade', 0);
-		if (chkFinished) {
-			if (item.system.tags.includes('poison')) {
-				//  leave damage until cured
-				for (const c of item.changes.contents) {
-					await item.setItemDictionaryFlag(c.target, 0);
-				}
-			}
-		}
     } else {
 		//	leave it active until cured.
 		await item.setActive(true);		
@@ -124,6 +117,7 @@ if (!state) {
 					await item.setItemDictionaryFlag('consecutiveSaves', rslt.consec);
 				}
 			}
+			if (chkFinished) await turnOffDuration();
 		}
 	}
 }
@@ -136,6 +130,11 @@ function checkUnitsPassed(a, b) {
 function checkSaves(a, b) {
 	return ((a < b) ? false : true);
 }
+
+function turnOffDuration();
+	//	turn off duration checks
+return item.update({ ['system.duration.units']: "" });
+
 
 function BuffDamageCRP(t, sv, rv, tv) {
 	this.target = t;
