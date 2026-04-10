@@ -1,4 +1,4 @@
-const version = '0.3.18';
+const version = '0.3.19';
 const show = true;
 const verbose = true;
 const paused = true;
@@ -30,11 +30,9 @@ if (!state) {
 		if (verbose) console.log(version, unitsPassed, "/", unit + "(s)", "of", dur, unit + "(s)");
 		if (item.system.tags.includes('poison')) {
 			//  handle poison damage increases, check current value and save
-debugger
 			//	scroll the chatLog back to the initial ChatMessage save.
 			rslt = await document.querySelector(`[data-message-id="${chatId}"]`).scrollIntoView();
 			//	returns 'undefined' if already in view.
-debugger			
 //			rslt = await item.actions.contents.find(f => f.tag === 'save').use({ chatMessage: true, skipDialog: false });
 //			if (!rslt) return;  // cancelled
 
@@ -141,7 +139,8 @@ function collectDamageInfo(c) {
 	const target = c.target;
 	const storVal = Number(item.system.flags.dictionary[target])||0;
 	const totVal = c.value;
-	const rolledVal = totVal + storVal;
+	const rolledVal = totVal - storVal;  
+		// was adding a negative to a negative making a bigger negative
 	if (verbose) console.log(version, target, "old:", storVal, "roll:", rolledVal, "tot:", totVal);
 	return new BuffDamageCRP(target, storVal, rolledVal, totVal);
 }
