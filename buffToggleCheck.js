@@ -1,4 +1,4 @@
-const version = '0.3.20';
+const version = '0.3.21';
 const show = true;
 const verbose = true;
 const paused = true;
@@ -71,6 +71,9 @@ if (!state) {
 				chkFinished = rslt.chkFinished;
 				chkSaved = rslt.chkSaved;
 				await item.setItemDictionaryFlag('savesMade', rslt.saves);
+				if (consecutiveSaves !== rslt.consec) {
+					await item.setItemDictionaryFlag('consecutiveSaves', rslt.consec);
+				}
 			}
 		}
 	}
@@ -88,11 +91,6 @@ if (!state) {
 			}
 		}
     } else {
-		if (typeof action !== 'undefined') {
-			if (action === 'cure') {
-				await item.delete;
-			}
-		}
 		//	leave it active until cured.
 		await item.setActive(true);		
 	}
@@ -105,7 +103,6 @@ if (!state) {
 		if (cmsg) {
 			chatId = cmsg._id;
 			await item.setItemDictionaryFlag('lastSaveId', chatId);	
-			let consecutiveSaves = await Number(item.getItemDictionaryFlag('consecutiveSaves'));
 			if (verbose) console.log(version, cmsg);
 			// get current damage info
 			for (const c of item.changes.contents) {
