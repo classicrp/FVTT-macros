@@ -1,4 +1,4 @@
-const version = '0.1.1';
+const version = '0.1.2';
 const verbose = true;
 const show = true;
 // Passed in: cmsg [ChatMessagePF], made [Number], needed [Number], consecutive [Boolean], 
@@ -21,6 +21,8 @@ function checkSave(roll, made, need, consec, dmg) {
 				cf = true;
 			} else if (consec !== -1) {
 				consec++;
+			} else if (consec === -1) {
+				cf = true;
 			}
 			cs = true;
 			mult = 0;
@@ -46,6 +48,8 @@ function checkSave(roll, made, need, consec, dmg) {
 				cf = true;
 			} else if (consec !== -1) {
 				consec++;
+			} else if (consec === -1) {
+				cf = true;
 			}
 			cs = true;
 			mult = 0;

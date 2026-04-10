@@ -1,4 +1,4 @@
-const version = '0.4.0';
+const version = '0.4.3';
 const show = true;
 const verbose = true;
 const paused = true;
@@ -32,7 +32,7 @@ if (!state) {
 			//  handle poison damage increases, check current value and save
 			//	scroll the chatLog back to the initial ChatMessage save.
 			rslt = await document.querySelector(`[data-message-id="${chatId}"]`).scrollIntoView();
-			msg = `${actor.name}, please use [ROLL] on your last chat save.`;
+			msg = `${actor.name}, please use the [Roll] button on your last chat save.`;
 			await ui.notifications.warn(msg);
 			//	returns 'undefined' if already in view.
 //			rslt = await item.actions.contents.find(f => f.tag === 'save').use({ chatMessage: true, skipDialog: false });
@@ -40,7 +40,7 @@ if (!state) {
 
 			for (let i=1; i<=50; i++) {
 				msg = 'Looking for recent save'.concat(String('.').repeat(i));
-				ui.notifications.info(msg);
+				if (verbose) console.log(msg);
 				if (paused) {
 					// Pause for x milliseconds at a time - about 10s for search
 					const pauseTime = 150;
@@ -50,7 +50,10 @@ if (!state) {
 				//	get the result of the save
 				lm = await fromUuid(GETCHATIDFORLASTTYPE);
 				cmsg = await lm.execute({ ctype: 'check', actor: actor, chatId: chatId });
-				if (cmsg !== chatId) break;
+				if (cmsg !== chatId) {
+					chatId = cmsg._id;
+					break;
+				}
 			}
 			// get current damage info
 			// PROBLEM: Damage will not update until AFTER item is set ACTIVE.
@@ -71,6 +74,8 @@ if (!state) {
 				chkFinished = rslt.chkFinished;
 				chkSaved = rslt.chkSaved;
 				await item.setItemDictionaryFlag('savesMade', rslt.saves);
+				if (chkSaved) await item.setItemDictionaryFlag('lastSaveId', chatId);
+
 				if (consecutiveSaves !== rslt.consec) {
 					await item.setItemDictionaryFlag('consecutiveSaves', rslt.consec);
 				}
