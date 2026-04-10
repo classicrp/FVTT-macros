@@ -1,4 +1,4 @@
-const version = '0.3.15';
+const version = '0.3.16';
 const show = true;
 const verbose = true;
 const paused = true;
@@ -34,9 +34,11 @@ if (!state) {
 			rslt = await game.messages.get(chatId).renderHTML({ case: 'check' });
 			if (verbose) console.log(version, 'renderHTML result:', rslt);
 			await chatMessage(rslt);
+debugger
+			rslt - document.querySelector(`[data-message-id="${chatId}"]`).scrollIntoView();
+debugger			
 			rslt = await item.actions.contents.find(f => f.tag === 'save').use({ chatMessage: true, skipDialog: false });
 			if (!rslt) return;  // cancelled
-			if (show) debugger
 
 			for (let i=1; i<=50; i++) {
 				msg = 'Looking for recent save'.concat(String('.').repeat(i));
