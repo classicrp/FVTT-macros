@@ -6,7 +6,7 @@ const paused = true;
 	if (show) debugger
 //	TEST CASE "Dragon bile"
 	const name = "Dragon bile";
-	const pack = "crp-contenst.crp-items";
+	const pack = "crp-contents.crp-items";
 //	const type = "attack";
 	const uuid = game.packs.get(pack).index.getName(name).uuid;
 	if (verbose) console.log(version, "uuid", uuid);
