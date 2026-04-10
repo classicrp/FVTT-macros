@@ -1,9 +1,20 @@
-const version = '0.0.1';
-const show = false;
+const version = '0.0.2';
+const show = true;
 const verbose = true;
 const paused = true;
 
+	if (show) debugger
 //	TEST CASE "Dragon bile"
+	const name = "Dragon bile";
+	const pack = "crp-contenst.crp-items";
+//	const type = "attack";
+	const uuid = game.packs.get(pack).index.getName(name).uuid;
+	if (verbose) console.log(version, "uuid", uuid);
+	const item = await fromUuid(uuid);
+	if (verbose) console.log(version, "item", item);
+	const itemData = game.items.fromCompendium(item);
+	if (verbose) console.log(version, "itemData", itemData);
+//	await Item.create(itemData, {parent: actor});
 
 //	GET Poison items from non-CRP Compendium packs.
 
@@ -44,4 +55,4 @@ const paused = true;
 	//		<unitsPassed> (Number) { 0 }.
 	//		<target> (Number) { 0 }, one for each entry in <changes> above.
 	
-	
+return
