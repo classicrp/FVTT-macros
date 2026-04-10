@@ -1,6 +1,6 @@
 /*	==========================================================================
 	author: classicrp, @raydenx
-	date: 2026-04-06
+	date: 2026-04-10
 	==========================================================================
 	Special thanks to Discord::FVTT#macro-polo @joaquinp98 for setting me right
 	on how to use 'typeof()'
@@ -17,7 +17,7 @@
 	await ui.notifications.info(result);
 	```
 */
-	const version = 'v1.4.6';
+	const version = 'v0.4.7';
 	const head = `Macro.getChatIdForLastType(${version}): `;
 	let msg = '';
 	let failure = false;
@@ -57,9 +57,9 @@ debugger
 				if (typeof (chatId) !== 'undefined') {
 					if (chatId === c._id) {
 					//	we already used this one, ask to make a save then check again
-						msg = `${actor.name} needs to make a new save before checking the roll.`;
-						await ui.notifications.warn(msg);
-						if (verbose) console.log(head, msg);
+					//	msg = `${actor.name} needs to make a new save before checking the roll.`;
+					//	await ui.notifications.warn(msg);
+					//	if (verbose) console.log(head, msg);
 						return chatId;
 					}
                 }
