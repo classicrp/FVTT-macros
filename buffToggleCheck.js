@@ -1,5 +1,5 @@
-const version = '0.4.3';
-const show = true;
+const version = '0.4.4';
+const show = false;
 const verbose = true;
 const paused = true;
 const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiRAiOBj1x';
@@ -138,7 +138,15 @@ function checkSaves(a, b) {
 
 function turnOffDuration() {
 	//	turn off duration checks
-    return item.update({ ['system.duration.units']: "" });
+debugger
+	const promise = []
+    promise.push(item.update({ ['system.duration.units']: "" }));
+	for (const c of item.changes.contents) {
+		rslt = collectDamageInfo(c)
+		const storVal = Number(item.system.flags.dictionary[rslt.target])||0;
+		promise.push(c.update({ ['formula']: storVal }));
+	}
+	return promise;
 }
 
 function BuffDamageCRP(t, sv, rv, tv) {
