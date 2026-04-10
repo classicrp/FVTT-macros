@@ -1,4 +1,4 @@
-const version = '0.1.0';
+const version = '0.1.1';
 const verbose = true;
 const show = true;
 // Passed in: cmsg [ChatMessagePF], made [Number], needed [Number], consecutive [Boolean], 
@@ -19,6 +19,8 @@ function checkSave(roll, made, need, consec, dmg) {
 		if (sav >= need) {
 			if ((consec > -1) && (consec >= need)) {
 				cf = true;
+			} else if (consec !== -1) {
+				consec++;
 			}
 			cs = true;
 			mult = 0;
@@ -30,6 +32,7 @@ function checkSave(roll, made, need, consec, dmg) {
 	} else if (roll.isNat1){
 	//	critical failure, double the penalty
 		if (verbose) console.log(version, "Save was critical failure");
+		if (consec > 0) consec--;
 		cf = false;
 		cs = false;
 		mult = 2;
@@ -41,6 +44,8 @@ function checkSave(roll, made, need, consec, dmg) {
 		if (sav >= need) {
 			if ((consec > -1) && (consec >= need)) {
 				cf = true;
+			} else if (consec !== -1) {
+				consec++;
 			}
 			cs = true;
 			mult = 0;
@@ -53,6 +58,7 @@ function checkSave(roll, made, need, consec, dmg) {
 	} else if (roll.isFailure) {
 	// normal failure, update the penalty
 		if (verbose) console.log(version, "Save was a failure");
+		if (consec > 0) consec--;
 		cf = false;
 		cs = false;
 		mult = 1;
@@ -67,12 +73,13 @@ function checkSave(roll, made, need, consec, dmg) {
 			d.total = d.rolled + d.stored;
 		}
 	}
-	return new CheckResultCRP(cf, cs, sav, damage);
+	return new CheckResultCRP(cf, cs, sav, consec, damage);
 }
 
-function CheckResultCRP(cf, cs, sav, dmg) {
+function CheckResultCRP(cf, cs, sav, consec, dmg) {
 	this.chkFinished = cf;
 	this.chkSaved = cs;
 	this.saves = sav;
+	this.consec = consec;
 	this.damage = dmg;
 }
