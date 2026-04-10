@@ -1,4 +1,4 @@
-const version = '0.3.16';
+const version = '0.3.18';
 const show = true;
 const verbose = true;
 const paused = true;
@@ -23,22 +23,20 @@ if (!state) {
 	
 	unitsPassed++;
 	chkDone = await checkUnitsPassed(unitsPassed, dur);
-    chkSaved = await checkDuration(savesMade, savesNeeded);
+    chkSaved = await checkSaves(savesMade, savesNeeded);
 	
 	if (!chkDone && !chkSaved) {
 		await item.setItemDictionaryFlag('unitsPassed', unitsPassed);
 		if (verbose) console.log(version, unitsPassed, "/", unit + "(s)", "of", dur, unit + "(s)");
 		if (item.system.tags.includes('poison')) {
 			//  handle poison damage increases, check current value and save
-			//  also need to handle saves and making multiples
-			rslt = await game.messages.get(chatId).renderHTML({ case: 'check' });
-			if (verbose) console.log(version, 'renderHTML result:', rslt);
-			await chatMessage(rslt);
 debugger
-			rslt - document.querySelector(`[data-message-id="${chatId}"]`).scrollIntoView();
+			//	scroll the chatLog back to the initial ChatMessage save.
+			rslt = await document.querySelector(`[data-message-id="${chatId}"]`).scrollIntoView();
+			//	returns 'undefined' if already in view.
 debugger			
-			rslt = await item.actions.contents.find(f => f.tag === 'save').use({ chatMessage: true, skipDialog: false });
-			if (!rslt) return;  // cancelled
+//			rslt = await item.actions.contents.find(f => f.tag === 'save').use({ chatMessage: true, skipDialog: false });
+//			if (!rslt) return;  // cancelled
 
 			for (let i=1; i<=50; i++) {
 				msg = 'Looking for recent save'.concat(String('.').repeat(i));
@@ -52,10 +50,12 @@ debugger
 				//	get the result of the save
 				lm = await fromUuid(GETCHATIDFORLASTTYPE);
 				cmsg = await lm.execute({ ctype: 'check', actor: actor, chatId: chatId });
-				if (cmsg) break;
+				if (cmsg !== chatId) break;
 			}
 			// get current damage info
 			// PROBLEM: Damage will not update until AFTER item is set ACTIVE.
+			await item.setActive(true);
+			//	this alters the <changes> array for damage
 			for (const c of item.changes.contents) {
 				//  get stored values first
 				rslt = await collectDamageInfo(c)
@@ -73,7 +73,6 @@ debugger
 				await item.setItemDictionaryFlag('savesMade', rslt.saves);
 			}
 		}
-		await item.setActive(true);
 	}
 	if (chkDone && chkSaved) {
 		// we are done
@@ -124,10 +123,10 @@ debugger
 return
 
 function checkUnitsPassed(a, b) {
-	return ((a < b) ? false : true);
+	return ((a <= b) ? false : true);
 }
 
-function checkDuration(a, b) {
+function checkSaves(a, b) {
 	return ((a < b) ? false : true);
 }
 
