@@ -1,15 +1,35 @@
-const version = '0.0.2';
+const version = '0.0.3';
 const show = true;
 const verbose = true;
 const paused = true;
+const test = false;
 
 	if (show) debugger
 //	TEST CASE "Dragon bile"
-	const name = "Dragon bile";
-	const pack = "crp-contents.crp-items";
-//	const type = "attack";
-	const uuid = game.packs.get(pack).index.getName(name).uuid;
-	if (verbose) console.log(version, "uuid", uuid);
+	let srcs = '', fltrd = '', rslt = [];
+	if (test) {
+		const name = "Dragon bile";
+		const pack = "crp-contents.crp-items";
+		//	this handles a specific request that returns all copies in Compendiums
+		srcs = await game.packs?.filter(f => f.title.toLowerCase().includes('item')).map(g => g.index.getName(name)).filter(g => (typeof g !== 'undefined'));
+	} else {
+		//	this handles the top set of items with each index for a Compendium,
+		//	that needs to be manually filtered.
+		srcs = await game.packs?.filter(f=> f.title.toLowerCase().includes('item')).map(g => g.index);
+		//	returns a Collection of Collections
+		for (const c of srcs) {
+			for (const s of c) {
+				if (s.type === 'consumable' && s.system.subType === 'poison') {
+					rslt.push(s);
+				}
+			}
+		}
+	}
+	if (show) debugger
+	
+	if (verbose) console.log(srcs.name, srcs.type, srcs.system.subType, srcs.uuid);
+	const uuid = srcs.uuid;
+	// if (verbose) console.log(version, "uuid", uuid);
 	const item = await fromUuid(uuid);
 	if (verbose) console.log(version, "item", item);
 	const itemData = game.items.fromCompendium(item);
