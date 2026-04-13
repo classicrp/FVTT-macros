@@ -1,4 +1,4 @@
-const version = '0.0.12';
+const version = '0.0.13';
 const show = true;
 const verbose = true;
 const paused = true;
@@ -33,10 +33,11 @@ const test = false;
 			if (x > y) {return 1;}
 			return 0;
 		});
-		fltrd = countOccurrences(rslt, obj);
+		await countOccurrences(rslt, obj);
+		fltrd = obj.filter(f => f.occurs > 1);
 		if (verbose) console.log('fltrd:', fltrd);
 	}
-	if (verbose) console.log('rslt:', rslt, crlf, 'obj:', obj);
+	if (verbose) console.log('rslt:', rslt);
 	if (show) debugger
 
 return;
@@ -92,7 +93,7 @@ return
 
 function countOccurrences(arr) {
 	return arr.reduce((acc, element) => {
-		obj.push(new NameOccursCRP(acc[element.name], (acc[element.name] || 0) + 1 ));
+		obj.push(new NameOccursCRP(element.name, (acc[element.name] || 0) + 1 ));
 		acc[element.name] = (acc[element.name] || 0) + 1;
 		return acc;
 		},
