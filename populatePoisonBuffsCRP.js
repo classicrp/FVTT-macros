@@ -1,4 +1,4 @@
-const version = '0.0.8';
+const version = '0.0.9';
 const show = true;
 const verbose = true;
 const paused = true;
@@ -32,7 +32,7 @@ const test = false;
 			if (x > y) {return 1;}
 			return 0;
 		});
-		const fltrd = countOccurrences(rslt);
+		fltrd = countOccurrences(rslt);
 		if (verbose) console.log('fltrd:', fltrd);
 	}
 	if (verbose) console.log('rslt:', rslt);
