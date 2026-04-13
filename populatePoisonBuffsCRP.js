@@ -1,8 +1,11 @@
-const version = '0.0.13';
+const version = '0.0.14';
 const show = true;
 const verbose = true;
 const paused = true;
 const test = false;
+/*  
+	Special Thanks: @Micheal from Discord::FVTT#macro-polo for the win on .some()
+*/
 
 	if (show) debugger
 	const crlf = String.fromCharCode(13).concat(String.fromCharCode(10));
@@ -38,6 +41,8 @@ const test = false;
 		if (verbose) console.log('fltrd:', fltrd);
 	}
 	if (verbose) console.log('rslt:', rslt);
+	srcs = await rslt.filter(a => !fltrd.some(b => b.name === a.name));
+	if (verbose) console.log('srcs:', srcs);
 	if (show) debugger
 
 return;
