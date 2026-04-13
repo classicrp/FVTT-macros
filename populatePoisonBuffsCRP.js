@@ -1,4 +1,4 @@
-const version = '0.0.9';
+const version = '0.0.10';
 const show = true;
 const verbose = true;
 const paused = true;
@@ -6,7 +6,7 @@ const test = false;
 
 	if (show) debugger
 //	TEST CASE "Dragon bile"
-	let srcs = '', fltrd = '', rslt = [];
+	let srcs = '', fltrd = '', rslt = [], obj = [];
 	if (test) {
 		const name = "Dragon bile";
 		const pack = "crp-contents.crp-items";
@@ -32,7 +32,7 @@ const test = false;
 			if (x > y) {return 1;}
 			return 0;
 		});
-		fltrd = countOccurrences(rslt);
+		fltrd = countOccurrences(rslt, obj);
 		if (verbose) console.log('fltrd:', fltrd);
 	}
 	if (verbose) console.log('rslt:', rslt);
@@ -91,9 +91,15 @@ return
 
 function countOccurrences(arr) {
 	return arr.reduce((acc, element) => {
+		obj.push(new NameOccurs(acc[element.name], (acc[element.name] || 0) + 1 ));
 		acc[element.name] = (acc[element.name] || 0) + 1;
 		return acc;
 		},
 		{}
 	); // Initialize accumulator as empty object
+}
+
+function NameOccurrences(t, n) {
+	this.name = t;
+	this.occurs = n;
 }
