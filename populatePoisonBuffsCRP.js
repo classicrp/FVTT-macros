@@ -1,4 +1,4 @@
-const version = '0.0.5';
+const version = '0.0.6';
 const show = true;
 const verbose = true;
 const paused = true;
@@ -32,8 +32,10 @@ const test = false;
 			if (x > y) {return 1;}
 			return 0;
 		});
+		const fltrd = countOccurrences(rslt);
+		if (verbose) console.log('fltrd:', fltrd);
 	}
-	if (verbose) console.log(rslt);
+	if (verbose) console.log('rslt:', rslt);
 	if (show) debugger
 	
 	const uuid = srcs.uuid;
@@ -84,3 +86,12 @@ const test = false;
 	//		<target> (Number) { 0 }, one for each entry in <changes> above.
 	
 return
+
+function const countOccurrences(arr) {
+	return arr.reduce((acc, element) => {
+		acc[element] = (acc[element] || 0) + 1;
+		return acc;
+		},
+		{}
+	); // Initialize accumulator as empty object
+}
