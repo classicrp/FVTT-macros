@@ -1,4 +1,4 @@
-const version = '0.0.3';
+const version = '0.0.4';
 const show = true;
 const verbose = true;
 const paused = true;
@@ -24,6 +24,13 @@ const test = false;
 				}
 			}
 		}
+		await rslt.sort(function(a, b){
+			let x = a.name.toLowerCase();
+			let y = b.name.toLowerCase();
+			if (x < y) {return -1;}
+			if (x > y) {return 1;}
+			return 0;
+		});
 	}
 	if (show) debugger
 	
