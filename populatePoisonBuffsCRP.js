@@ -1,10 +1,11 @@
-const version = '0.0.11';
+const version = '0.0.12';
 const show = true;
 const verbose = true;
 const paused = true;
 const test = false;
 
 	if (show) debugger
+	const crlf = String.fromCharCode(13).concat(String.fromCharCode(10));
 //	TEST CASE "Dragon bile"
 	let srcs = '', fltrd = '', rslt = [], obj = [];
 	if (test) {
@@ -35,7 +36,7 @@ const test = false;
 		fltrd = countOccurrences(rslt, obj);
 		if (verbose) console.log('fltrd:', fltrd);
 	}
-	if (verbose) console.log('rslt:', rslt);
+	if (verbose) console.log('rslt:', rslt, crlf, 'obj:', obj);
 	if (show) debugger
 
 return;
