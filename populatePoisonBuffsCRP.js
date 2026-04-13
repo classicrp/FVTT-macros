@@ -4,7 +4,9 @@ const verbose = true;
 const paused = true;
 const test = false;
 /*  
-	Special Thanks: @Micheal from Discord::FVTT#macro-polo for the win on .some()
+	Special Thanks: With help from the crew on Discord::FVTT#macro-polo; 
+					@Micheal, @Zhell and mentions to @Freeze amd @Flix for 
+					spectating in this latest round of Code Golf.  Fore!
 */
 
 	if (show) debugger
