@@ -1,4 +1,4 @@
-const version = '0.0.4';
+const version = '0.0.5';
 const show = true;
 const verbose = true;
 const paused = true;
@@ -11,7 +11,8 @@ const test = false;
 		const name = "Dragon bile";
 		const pack = "crp-contents.crp-items";
 		//	this handles a specific request that returns all copies in Compendiums
-		srcs = await game.packs?.filter(f => f.title.toLowerCase().includes('item')).map(g => g.index.getName(name)).filter(g => (typeof g !== 'undefined'));
+		rslt = await game.packs?.filter(f => f.title.toLowerCase().includes('item')).map(g => g.index.getName(name)).filter(g => (typeof g !== 'undefined'));
+		
 	} else {
 		//	this handles the top set of items with each index for a Compendium,
 		//	that needs to be manually filtered.
@@ -32,9 +33,9 @@ const test = false;
 			return 0;
 		});
 	}
+	if (verbose) console.log(rslt);
 	if (show) debugger
 	
-	if (verbose) console.log(srcs.name, srcs.type, srcs.system.subType, srcs.uuid);
 	const uuid = srcs.uuid;
 	// if (verbose) console.log(version, "uuid", uuid);
 	const item = await fromUuid(uuid);
