@@ -1,26 +1,28 @@
-const version = '0.0.15';
-const show = true;
-const verbose = true;
-const paused = true;
-const test = false;
+const _VERSION = '0.1.1';
+const _SHOW = true;		// 	debug point flag
+const _VERBOSE = true;	//	console.log() flag
+const _PAUSED = true;	//	pause at specified point flag
+const _TEST = false;		//	test mode flag
+const _MEMTEST = true;	//	virtual memory heap dump flag
 /*  
 	Special Thanks: With help from the crew on Discord::FVTT#macro-polo; 
 					@Micheal, @Zhell and mentions to @Freeze amd @Flix for 
 					spectating in this latest round of Code Golf.  Fore!
 */
 
-	if (show) debugger
+	if (_SHOW) debugger
 	const crlf = String.fromCharCode(13).concat(String.fromCharCode(10));
 
 //	GET Poison items from non-CRP Compendium packs.
 
-	let srcs = '', fltrd = '', rslt = [], obj = [];
-	if (test) {
-	//	TEST CASE "Dragon bile"
+	let srcs = '', fltrd = '', rslt = '', obj = [];
+	if (_TEST) {
+	//	_TEST CASE "Dragon bile"
 		const name = "Aconite root";
 		const myPack = "crp-contents.crp-items";
 		//	this handles a specific request that returns all copies in Compendiums
 		rslt = await game.packs?.filter(f => f.title.toLowerCase().includes('item')).map(g => g.index.getName(name)).filter(g => (typeof g !== 'undefined'));
+		if (_VERBOSE) console.log(_VERSION, 'rslt:', rslt);
 		
 	} else {
 		//	this handles the top set of items with each index for a Compendium,
@@ -43,23 +45,25 @@ const test = false;
 		});
 		await countOccurrences(rslt, obj);
 		fltrd = obj.filter(f => f.occurs > 1);
-		if (verbose) console.log('fltrd:', fltrd);
+		if (_VERBOSE) console.log(_VERSION, 'fltrd:', fltrd, crlf, 'rslt:', rslt);
+		srcs = await rslt.filter(a => !fltrd.some(b => b.name === a.name));
+		if (_VERBOSE) console.log(_VERSION, 'srcs:', srcs);
 	}
-	if (verbose) console.log('rslt:', rslt);
-	srcs = await rslt.filter(a => !fltrd.some(b => b.name === a.name));
-	if (show) debugger
-	rslt = null;
-	fltrd = null;
-	if (verbose) console.log('srcs:', srcs);
+	if (_MEMTEST) {
+		if (_SHOW) debugger
+		rslt = null;
+		fltrd = null;
+		obj = null;
+	}
 
 return;
 
 	const uuid = srcs.uuid;
-	// if (verbose) console.log(version, "uuid", uuid);
+	// if (_VERBOSE) console.log(_VERSION, "uuid", uuid);
 	const item = await fromUuid(uuid);
-	if (verbose) console.log(version, "item", item);
+	if (_VERBOSE) console.log(_VERSION, "item", item);
 	const itemData = game.items.fromCompendium(item);
-	if (verbose) console.log(version, "itemData", itemData);
+	if (_VERBOSE) console.log(_VERSION, "itemData", itemData);
 //	await Item.create(itemData, {parent: actor});
 
 
