@@ -1,4 +1,4 @@
-const version = '0.0.14';
+const version = '0.0.15';
 const show = true;
 const verbose = true;
 const paused = true;
@@ -11,11 +11,14 @@ const test = false;
 
 	if (show) debugger
 	const crlf = String.fromCharCode(13).concat(String.fromCharCode(10));
-//	TEST CASE "Dragon bile"
+
+//	GET Poison items from non-CRP Compendium packs.
+
 	let srcs = '', fltrd = '', rslt = [], obj = [];
 	if (test) {
-		const name = "Dragon bile";
-		const pack = "crp-contents.crp-items";
+	//	TEST CASE "Dragon bile"
+		const name = "Aconite root";
+		const myPack = "crp-contents.crp-items";
 		//	this handles a specific request that returns all copies in Compendiums
 		rslt = await game.packs?.filter(f => f.title.toLowerCase().includes('item')).map(g => g.index.getName(name)).filter(g => (typeof g !== 'undefined'));
 		
@@ -44,8 +47,10 @@ const test = false;
 	}
 	if (verbose) console.log('rslt:', rslt);
 	srcs = await rslt.filter(a => !fltrd.some(b => b.name === a.name));
-	if (verbose) console.log('srcs:', srcs);
 	if (show) debugger
+	rslt = null;
+	fltrd = null;
+	if (verbose) console.log('srcs:', srcs);
 
 return;
 
@@ -57,7 +62,6 @@ return;
 	if (verbose) console.log(version, "itemData", itemData);
 //	await Item.create(itemData, {parent: actor});
 
-//	GET Poison items from non-CRP Compendium packs.
 
 //	CREATE a copy of Poison item in "Compendium.crp-contents.crp-items" in folder "ITEMS", subfolder "Poisons" for each not already there.
 	//	SET <Unidentified Name> to "Vial of liquid".
