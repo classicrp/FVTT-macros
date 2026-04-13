@@ -1,4 +1,4 @@
-const version = '0.0.6';
+const version = '0.0.8';
 const show = true;
 const verbose = true;
 const paused = true;
@@ -37,7 +37,9 @@ const test = false;
 	}
 	if (verbose) console.log('rslt:', rslt);
 	if (show) debugger
-	
+
+return;
+
 	const uuid = srcs.uuid;
 	// if (verbose) console.log(version, "uuid", uuid);
 	const item = await fromUuid(uuid);
@@ -87,9 +89,9 @@ const test = false;
 	
 return
 
-function const countOccurrences(arr) {
+function countOccurrences(arr) {
 	return arr.reduce((acc, element) => {
-		acc[element] = (acc[element] || 0) + 1;
+		acc[element.name] = (acc[element.name] || 0) + 1;
 		return acc;
 		},
 		{}
