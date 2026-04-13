@@ -1,4 +1,4 @@
-const version = '0.0.10';
+const version = '0.0.11';
 const show = true;
 const verbose = true;
 const paused = true;
@@ -91,7 +91,7 @@ return
 
 function countOccurrences(arr) {
 	return arr.reduce((acc, element) => {
-		obj.push(new NameOccurs(acc[element.name], (acc[element.name] || 0) + 1 ));
+		obj.push(new NameOccursCRP(acc[element.name], (acc[element.name] || 0) + 1 ));
 		acc[element.name] = (acc[element.name] || 0) + 1;
 		return acc;
 		},
@@ -99,7 +99,7 @@ function countOccurrences(arr) {
 	); // Initialize accumulator as empty object
 }
 
-function NameOccurrences(t, n) {
+function NameOccursCRP(t, n) {
 	this.name = t;
 	this.occurs = n;
 }
