@@ -1,4 +1,4 @@
-const _VERSION = '0.1.14';
+const _VERSION = '0.1.15';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -63,11 +63,14 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 	const KNW_PRICE_ATTR = "system.price";
 	const EFF_NOTE_ATTR = "system.actions.0.notes.effect.0";
 	const SAV_NOTE_ATTR = "system.actions.0.save.description";
+	
 	const UKN_NAME = "Vial of liquid";
 	const UKN_DESC = "<p>Some liquid in a vial.</p>";
+	const TXT_CURE = "<strong>Cure</strong> 1 save";
 	const TXT_SAV = `<span style="font-size:1.2em">`;
+	
 	const RGX_FREQ = /<strong>Frequency<\/strong>\s*([^<]+)/;
-	const RGX_CURE = /<strong>Cure<\/strong>\s*\d+\s*saves?/i;
+	const RGX_CURE = /<strong>Cure<\/strong>\s*\d+\s*saves?/;
 	const RGX_LST_P = /<\/p>$/;
 	
 	for (const s of srcs) {
@@ -83,28 +86,31 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 
 		//	SET <Unidentified Name> to "Vial of liquid".
 		foundry.utils.setProperty(itemData, UKN_NAME_ATTR, UKN_NAME);
+		
 		//	SET <Superficial Details> to "Some liquid in a vial."
 		foundry.utils.setProperty(itemData, UKN_DESC_ATTR, UKN_DESC);
+		
 		//	GET <Identified Properties>
 		descHTML = foundry.utils.getProperty(itemData, KNW_DESC_ATTR);
-		//		ADD at top "<h3>" + <Item.name> + "</h3>"
+		//	=>	ADD at top "<h3>" + <Item.name> + "</h3>"
 		name = foundry.utils.getProperty(itemData, 'name');
 		const TXT_HDR = `<h3>${name}</h3>`;
 		descHTML = TXT_HDR + descHTML;
-		//		INSERT after "Cure..." - "</p>" + "; <b>Value</b> " + <price> + " gp.</p>"
+		//	=>	INSERT after "Cure..." - "</p>" + "; <b>Value</b> " + <price> + " gp.</p>"
 		price = foundry.utils.getProperty(itemData, KNW_PRICE_ATTR);
-		const TXT_CURE = `; <strong>Value</strong> ${price} gp.</p>`;
+		const TXT_VALUE = `; <strong>Value</strong> ${price} gp.</p>`;
 		rgxMatch = descHTML.match(RGX_CURE);
 		if (rgxMatch) {
 			cure = rgxMatch[0];
         }
 		if (!descHTML.includes('Cure')) {			
-			descHTML = descHTML + cure + TXT_CURE;
+			descHTML = descHTML + TXT_CURE + TXT_VALUE;
 		} else {
-			descHTML = descHTML.replace(RGX_LST_P, TXT_CURE);
+			descHTML = descHTML.replace(RGX_LST_P, TXT_VALUE);
 		}
-		//		SET updated <Identified Properties>
+		//	=>	SET updated <Identified Properties>
 		foundry.utils.setProperty(itemData, KNW_DESC_ATTR, descHTML);
+		
 		//	SET <action['Use'].SavingThrowEffect> = <span style="font-size:1.2em"><b>Frequency:</b> " + (frequency from details) + "<br><b>Cure:</b> " + 
 		//		(cure from details OR 1 if none exists there) + " save(s)</span>"
 		rgxMatch = descHTML.match(RGX_FREQ);
