@@ -1,4 +1,4 @@
-const _VERSION = '0.1.6';
+const _VERSION = '0.1.7';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -84,12 +84,13 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 		knwDesc = foundry.utils.getProperty(itemData, KNW_DESC_ATTR);
 		const header = `<h3>${itemData.name}</h3>`;
 		knwDesc = header + knwDesc;
+		const price = foundry.utils.getProperty(itemData, KNW_PRICE_ATTR);
 		if (!knwDesc.includes('Cure')) {
-			const cure = `<p><strong>Cure</strong> 1 save; <strong>Value</strong> ${itemData[KNW_PRICE_ATTR]} gp.</p>`;
+			const cure = `<p><strong>Cure</strong> 1 save; <strong>Value</strong> ${price} gp.</p>`;
 			knwDesc = knwDesc + cure;
 		} else {
-			const cure = `; <strong>Value</strong> ${itemData[KNW_PRICE_ATTR]} gp.</p>`;
-			knwDesc = knwDesc.replace(/<\/p>$/, `; <strong>Value</strong> ${itemData[KNW_PRICE_ATTR]} gp.</p>`);
+			const cure = `; <strong>Value</strong> ${price} gp.</p>`;
+			knwDesc = knwDesc.replace(/<\/p>$/, cure);
 		}
 		foundry.utils.setProperty(itemData, KNW_DESC_ATTR, knwDesc);
 		//	SET <action['Use'].SavingThrowEffect> = <span style="font-size:1.2em"><b>Frequency:</b> " + (frequency from details) + "<br><b>Cure:</b> " + 
