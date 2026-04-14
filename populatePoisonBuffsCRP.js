@@ -1,4 +1,4 @@
-const _VERSION = '0.1.12';
+const _VERSION = '0.1.13';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -61,7 +61,7 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 	const UKN_DESC_ATTR = "system.description.unidentified";
 	const KNW_DESC_ATTR = "system.description.value";
 	const KNW_PRICE_ATTR = "system.price";
-	const SAV_NOTE_ATTR = "system.actions.0.notes.effect.0"; itemData.system.actions[0].notes.effect[0]
+	const SAV_NOTE_ATTR = "system.actions.0.notes.effect.0";
 	const UKN_NAME = "Vial of liquid";
 	const UKN_DESC = "<p>Some liquid in a vial.</p>";
 	const TXT_SAV = `<span style="font-size:1.2em">`;
