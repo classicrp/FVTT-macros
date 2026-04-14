@@ -1,4 +1,4 @@
-const _VERSION = '0.1.7';
+const _VERSION = '0.1.8';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -57,21 +57,29 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 		subfolder "Poisons" for each not already there.
 */
 //	Paths
-	const UKN_NAME = "Vial of liquid";
 	const UKN_NAME_ATTR = "system.unidentified.name";
-	const UKN_DESC = "<p>Some liquid in a vial.</p>";
 	const UKN_DESC_ATTR = "system.description.unidentified";
 	const KNW_DESC_ATTR = "system.description.value";
 	const KNW_PRICE_ATTR = "system.price";
 	const SAV_NOTE_ATTR = "system.actions[0].notes.effect[0]";
+	const UKN_NAME = "Vial of liquid";
+	const UKN_DESC = "<p>Some liquid in a vial.</p>";
+	const TXT_HDR = `<h3>${itemData.name}</h3>`;
+	const TXT_CURE = `; <strong>Value</strong> ${price} gp.</p>`;
+	const TXT_SAV = `<span style="font-size:1.2em">`;
+	const RGX_FREQ = /<strong>Frequency<\/strong>\s*([^<]+)/;
+	const RGX_CURE = /<strong>Cure<\/strong>\s*\d+\s*saves?/i;
+	const RGX_LST_P = /<\/p>$/;
 	
-	let knwDesc = "";
 	for (const s of srcs) {
+		let descHTML = "", rgxMatch = [];
+		let cure = "", freq = "";
+		
 		const uuid = s.uuid;
 		if (_VERBOSE) console.log(_VERSION, "uuid", uuid);
 		const item = await fromUuid(uuid);
 		if (_VERBOSE) console.log(_VERSION, "item", item);
-		const itemData = game.items.fromCompendium(item);
+		const itemData = await game.items.fromCompendium(item);
 		if (_VERBOSE) console.log(_VERSION, "itemData", itemData);
 		
 		//	SET <Unidentified Name> to "Vial of liquid".
@@ -79,22 +87,26 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 		//	SET <Superficial Details> to "Some liquid in a vial."
 		foundry.utils.setProperty(itemData, UKN_DESC_ATTR, UKN_DESC);
 		//	GET <Identified Properties>
+		descHTML = foundry.utils.getProperty(itemData, KNW_DESC_ATTR);
 		//		ADD at top "<h3>" + <Item.name> + "</h3>"
+		descHTML = TXT_HDR + descHTML;
 		//		INSERT after "Cure..." - "</p>" + "; <b>Value</b> " + <price> + " gp.</p>"
-		knwDesc = foundry.utils.getProperty(itemData, KNW_DESC_ATTR);
-		const header = `<h3>${itemData.name}</h3>`;
-		knwDesc = header + knwDesc;
-		const price = foundry.utils.getProperty(itemData, KNW_PRICE_ATTR);
-		if (!knwDesc.includes('Cure')) {
-			const cure = `<p><strong>Cure</strong> 1 save; <strong>Value</strong> ${price} gp.</p>`;
-			knwDesc = knwDesc + cure;
+		const price = await foundry.utils.getProperty(itemData, KNW_PRICE_ATTR);
+		if (!descHTML.includes('Cure')) {			
+			rgxMatch = descHTML.match(RGX_CURE);
+			if (rgxMatch)  {
+				cure = match[0];
+			descHTML = descHTML + cure + TXT_CURE;
 		} else {
-			const cure = `; <strong>Value</strong> ${price} gp.</p>`;
-			knwDesc = knwDesc.replace(/<\/p>$/, cure);
+			descHTML = descHTML.replace(RGX_LST_P, TXT_CURE);
 		}
-		foundry.utils.setProperty(itemData, KNW_DESC_ATTR, knwDesc);
+		foundry.utils.setProperty(itemData, KNW_DESC_ATTR, descHTML);
 		//	SET <action['Use'].SavingThrowEffect> = <span style="font-size:1.2em"><b>Frequency:</b> " + (frequency from details) + "<br><b>Cure:</b> " + 
 		//		(cure from details OR 1 if none exists there) + " save(s)</span>"
+		rgxMatch = descHTML.match(RGX_FREQ);
+		if (rgxMatch) freq = match[0];
+		const saveNote = TXT_SAV + freq + "<br>" + cure;
+		foundry.utils.setProperty(itemData, SAV_NOTE_ATTR, saveNote);
 		
 		//	await Item.create(itemData, {parent: actor});
 		if (_SHOW) debugger
