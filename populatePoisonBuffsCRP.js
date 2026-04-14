@@ -1,8 +1,8 @@
-const _VERSION = '0.1.2';
+const _VERSION = '0.1.3';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
-const _TEST = false;		//	test mode flag
+const _TEST = true;		//	test mode flag
 const _MEMTEST = true;	//	virtual memory heap dump flag
 /*  
 	Special Thanks: With help from the crew on Discord::FVTT#macro-polo; 
@@ -20,8 +20,7 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 		const name = "Aconite root";
 		const myPack = "crp-contents.crp-items";
 		//	this handles a specific request that returns all copies in Compendiums
-		rslt = await game.packs?.filter(f => f.title.toLowerCase().includes('item')).map(g => g.index.getName(name)).filter(g => (typeof g !== 'undefined'));
-		if (_VERBOSE) console.log(_VERSION, 'rslt:', rslt);
+		srcs = await game.packs?.filter(f => f.title.toLowerCase().includes('item')).map(g => g.index.getName(name)).filter(g => (typeof g !== 'undefined'));
 		
 	} else {
 		//	this handles the top set of items with each index for a Compendium,
@@ -46,7 +45,6 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 		fltrd = obj.filter(f => f.occurs > 1);
 		if (_VERBOSE) console.log(_VERSION, 'fltrd:', fltrd, crlf, 'rslt:', rslt);
 		srcs = await rslt.filter(a => !fltrd.some(b => b.name === a.name));
-		if (_VERBOSE) console.log(_VERSION, 'srcs:', srcs);
 	}
 	if (_MEMTEST) {
 		if (_SHOW) debugger
@@ -54,6 +52,7 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 		fltrd = null;
 		obj = null;
 	}
+	if (_VERBOSE) console.log(_VERSION, 'srcs:', srcs);
 /*
 	CREATE a copy of Poison item in "Compendium.crp-contents.crp-items" in folder "ITEMS", 
 		subfolder "Poisons" for each not already there.
