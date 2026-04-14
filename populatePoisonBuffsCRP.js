@@ -1,4 +1,4 @@
-const _VERSION = '0.1.10';
+const _VERSION = '0.1.11';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -93,11 +93,11 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 		//		INSERT after "Cure..." - "</p>" + "; <b>Value</b> " + <price> + " gp.</p>"
 		price = foundry.utils.getProperty(itemData, KNW_PRICE_ATTR);
 		const TXT_CURE = `; <strong>Value</strong> ${price} gp.</p>`;
+		rgxMatch = descHTML.match(RGX_CURE);
+		if (rgxMatch) {
+			cure = rgxMatch[0];
+        }
 		if (!descHTML.includes('Cure')) {			
-			rgxMatch = descHTML.match(RGX_CURE);
-			if (rgxMatch) {
-				cure = match[0];
-            }
 			descHTML = descHTML + cure + TXT_CURE;
 		} else {
 			descHTML = descHTML.replace(RGX_LST_P, TXT_CURE);
@@ -108,7 +108,7 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 		//		(cure from details OR 1 if none exists there) + " save(s)</span>"
 		rgxMatch = descHTML.match(RGX_FREQ);
 		if (rgxMatch) {
-			freq = match[0];
+			freq = rgxMatch[0];
         }
 		const saveNote = TXT_SAV + freq + "<br>" + cure;
 		foundry.utils.setProperty(itemData, SAV_NOTE_ATTR, saveNote);
