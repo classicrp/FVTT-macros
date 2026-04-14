@@ -1,4 +1,4 @@
-const _VERSION = '0.1.3';
+const _VERSION = '0.1.4';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -58,7 +58,7 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 		subfolder "Poisons" for each not already there.
 */
 	for (const s of srcs) {
-		const uuid = srcs.uuid;
+		const uuid = s.uuid;
 		if (_VERBOSE) console.log(_VERSION, "uuid", uuid);
 		const item = await fromUuid(uuid);
 		if (_VERBOSE) console.log(_VERSION, "item", item);
