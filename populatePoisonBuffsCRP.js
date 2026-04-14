@@ -1,4 +1,4 @@
-const _VERSION = '0.1.4';
+const _VERSION = '0.1.5';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -57,6 +57,16 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 	CREATE a copy of Poison item in "Compendium.crp-contents.crp-items" in folder "ITEMS", 
 		subfolder "Poisons" for each not already there.
 */
+//	Paths
+	const UKN_NAME = "Vial of liquid";
+	const UKN_NAME_ATTR = "system.unidentified.name";
+	const UKN_DESC = "<p>Some liquid in a vial.</p>";
+	const UKN_DESC_ATTR = "system.description.unidentified";
+	const KNW_DESC_ATTR = "system.description.value";
+	const KNW_PRICE_ATTR = "system.price";
+	const SAV_NOTE_ATTR = "system.actions[0].notes.effect[0]";
+	
+	let knwDesc = "";
 	for (const s of srcs) {
 		const uuid = s.uuid;
 		if (_VERBOSE) console.log(_VERSION, "uuid", uuid);
@@ -64,17 +74,34 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 		if (_VERBOSE) console.log(_VERSION, "item", item);
 		const itemData = game.items.fromCompendium(item);
 		if (_VERBOSE) console.log(_VERSION, "itemData", itemData);
+		
+		//	SET <Unidentified Name> to "Vial of liquid".			[system.unidentified.name]
+		itemData[UKN_NAME_ATTR] = UNK_NAME;
+		//	SET <Superficial Details> to "Some liquid in a vial."  	[system.description.unidentified]
+		itemData[UKN_DESC_ATTR] = UKN_DESC;
+		//	GET <Identified Properties>
+		//		ADD at top "<h3>" + <Item.name> + "</h3>"
+		//		INSERT after "Cure..." - "</p>" + "; <b>Value</b> " + <price> + " gp.</p>"
+		knwDesc = itemData[KNW_DESC_ATTR];
+		const header = `<h3>${itemData.name}</h3>`;
+		knwDesc = header + knwDesc;
+		if (!knwDesc.includes('Cure')) {
+			const cure = `<p><strong>Cure</strong> 1 save; <strong>Value</strong> ${itemData[KNW_PRICE_ATTR]} gp.</p>`;
+			knwDesc = knwDesc + cure;
+		} else {
+			const cure = `; <strong>Value</strong> ${itemData[KNW_PRICE_ATTR]} gp.</p>`;
+			knwDesc = knwDesc.replace(/<\/p>$/, `; <strong>Value</strong> ${itemData[KNW_PRICE_ATTR]} gp.</p>`);
+		}
+		itemData[KNW_DESC_ATTR] = knwDesc;
+		//	SET <action['Use'].SavingThrowEffect> = <span style="font-size:1.2em"><b>Frequency:</b> " + (frequency from details) + "<br><b>Cure:</b> " + 
+		//		(cure from details OR 1 if none exists there) + " save(s)</span>"
+		
 	//	await Item.create(itemData, {parent: actor});
 	}
 
 return;
 
 
-	//	SET <Unidentified Name> to "Vial of liquid".
-	//	SET <Superficial Details> to "Some liquid in a vial."
-	//	GET <Identified Properties>
-	//		ADD at top "<h3>" + <Item.name> + "</h3>"
-	//		INSERT after "Cure..." - "</p>" + "; <b>Value</b> " + <price> + " gp.</p>"
 	//	SET <effectNotes> = "<span style="font-size:1.2em"><b>Effect:</b> + effect from details + @Apply[ (place uuid for the poison's buff here)]<br> + 
 	//		IF a secondary item exists add "<b>Secondary:</b> " + 
 	//		IF a Condition exists, add; "@Condition[ (condition lowercase name)" + ";duration=" + Set duration as a die roll/number only for "rnds"
