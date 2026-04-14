@@ -1,4 +1,4 @@
-const _VERSION = '0.1.13';
+const _VERSION = '0.1.14';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -61,7 +61,8 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 	const UKN_DESC_ATTR = "system.description.unidentified";
 	const KNW_DESC_ATTR = "system.description.value";
 	const KNW_PRICE_ATTR = "system.price";
-	const SAV_NOTE_ATTR = "system.actions.0.notes.effect.0";
+	const EFF_NOTE_ATTR = "system.actions.0.notes.effect.0";
+	const SAV_NOTE_ATTR = "system.actions.0.save.description";
 	const UKN_NAME = "Vial of liquid";
 	const UKN_DESC = "<p>Some liquid in a vial.</p>";
 	const TXT_SAV = `<span style="font-size:1.2em">`;
@@ -112,6 +113,7 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
         }
 		const saveNote = TXT_SAV + freq + "<br>" + cure + "</span>";
 		foundry.utils.setProperty(itemData, SAV_NOTE_ATTR, saveNote);
+		foundry.utils.setProperty(itemData, EFF_NOTE_ATTR, "");
 		
 		//	await Item.create(itemData, {parent: actor});
 		if (_SHOW) debugger
