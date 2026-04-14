@@ -1,4 +1,4 @@
-const _VERSION = '0.1.1';
+const _VERSION = '0.1.2';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -9,12 +9,11 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 					@Micheal, @Zhell and mentions to @Freeze amd @Flix for 
 					spectating in this latest round of Code Golf.  Fore!
 */
-
 	if (_SHOW) debugger
 	const crlf = String.fromCharCode(13).concat(String.fromCharCode(10));
-
-//	GET Poison items from non-CRP Compendium packs.
-
+/*
+	GET Poison items from non-CRP Compendium packs.
+*/
 	let srcs = '', fltrd = '', rslt = '', obj = [];
 	if (_TEST) {
 	//	_TEST CASE "Dragon bile"
@@ -55,19 +54,23 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 		fltrd = null;
 		obj = null;
 	}
+/*
+	CREATE a copy of Poison item in "Compendium.crp-contents.crp-items" in folder "ITEMS", 
+		subfolder "Poisons" for each not already there.
+*/
+	for (const s of srcs) {
+		const uuid = srcs.uuid;
+		if (_VERBOSE) console.log(_VERSION, "uuid", uuid);
+		const item = await fromUuid(uuid);
+		if (_VERBOSE) console.log(_VERSION, "item", item);
+		const itemData = game.items.fromCompendium(item);
+		if (_VERBOSE) console.log(_VERSION, "itemData", itemData);
+	//	await Item.create(itemData, {parent: actor});
+	}
 
 return;
 
-	const uuid = srcs.uuid;
-	// if (_VERBOSE) console.log(_VERSION, "uuid", uuid);
-	const item = await fromUuid(uuid);
-	if (_VERBOSE) console.log(_VERSION, "item", item);
-	const itemData = game.items.fromCompendium(item);
-	if (_VERBOSE) console.log(_VERSION, "itemData", itemData);
-//	await Item.create(itemData, {parent: actor});
 
-
-//	CREATE a copy of Poison item in "Compendium.crp-contents.crp-items" in folder "ITEMS", subfolder "Poisons" for each not already there.
 	//	SET <Unidentified Name> to "Vial of liquid".
 	//	SET <Superficial Details> to "Some liquid in a vial."
 	//	GET <Identified Properties>
