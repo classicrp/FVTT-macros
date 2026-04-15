@@ -1,4 +1,4 @@
-const _VERSION = '0.1.17';
+const _VERSION = '0.2.0';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -148,7 +148,14 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 		//	await Item.create(itemData, {parent: actor});
 
 	//	CREATE a new BUFF item placed in "Compendium.crp-contents.crp-items" in folder "BUFFS", subfolder "Poisons"
-	
+		const poisonBuff = new Item({ 
+			name: `Poison (${name.toLowerCase()})`,
+			type: "buff",
+			_id: randomID(16),
+			system.description.value = removeHTML(itemData.description.value),
+			img = itemData.img,		
+		});
+		if (_VERBOSE) console.log(_VERSION, 'poisonBuff', poisonBuff);
 		if (_SHOW) debugger
 	}
 
@@ -190,4 +197,32 @@ function countOccurrences(arr) {
 function NameOccursCRP(t, n) {
 	this.name = t;
 	this.occurs = n;
+}
+
+function removeHTML(htm) {
+//	if (show) debugger
+	let rslt = "", srcs = "";
+	srcs = foundry.utils.parseHTML(htm);
+	if (_VERBOSE) console.log(_VERSION, "HTML source:", srcs);
+	for (let i = 0; i < srcs.length; i++) {
+		//	picked apart based on <p>
+		let raw = srcs[i].innerHTML;
+		const coded = foundry.utils.parseHTML(raw);
+		if (_VERBOSE) console.log(_VERSION, "HTML sub-source:", coded);
+		if (typeof coded !== "undefined") { 
+			if (typeof coded.length === "undefined") {
+				//  only one instance present
+				raw = raw.replaceAll( coded.outerHTML, `[${coded.outerText.toUpperCase()}]` );
+			} else {
+				for (let j =0; j < coded.length; j++) {
+				//	picked apart based on <strong>... or other codes?
+					raw = raw.replaceAll( coded[j].outerHTML, `[${coded[j].outerText.toUpperCase()}]` );
+				}
+			}
+		}
+		const crlf = String.fromCharCode(13).concat(String.fromCharCode(10));
+		rslt += raw.concat(crlf);
+	}
+	if (_VERBOSE) console.log(_VERSION, "Text:", rslt);
+	return rslt;
 }
