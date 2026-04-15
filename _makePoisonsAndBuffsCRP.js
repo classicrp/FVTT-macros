@@ -1,4 +1,4 @@
-const _VERSION = '0.2.1';
+const _VERSION = '0.2.2';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -82,7 +82,7 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 		if (_VERBOSE) console.log(_VERSION, "uuid", uuid);
 		const item = await fromUuid(uuid);
 		if (_VERBOSE) console.log(_VERSION, "item", item);
-		const itemData = await game.items.fromCompendium(item);
+		let itemData = await game.items.fromCompendium(item);
 		if (_VERBOSE) console.log(_VERSION, "itemData", itemData);
 		/*
 			SET <Unidentified Name> to "Vial of liquid".
@@ -132,6 +132,7 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 		foundry.utils.setProperty(itemData, ACTSAV_NOTE_ATTR, saveNote);
 		foundry.utils.setProperty(itemData, ACTEFF_NOTE_ATTR, "");
 		foundry.utils.setProperty(itemData, ITM_IDNT, false);
+//		foundry.utils.setProperty(itemData, ITM_IDNT, false);
 		
 		/*
 			SET <effectNotes> = "<span style="font-size:1.2em"><b>Effect:</b> + effect from details + @Apply[ (place uuid for the poison's buff here)]<br> + 
@@ -152,9 +153,11 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 			name: `Poison (${name.toLowerCase()})`,
 			type: "buff",
 			_id: randomID(16),
-			[system.description.value] : removeHTML(itemData.description.value),
 			img : itemData.img,		
 		});
+		rslt = removeHTML(itemData.description.value),
+		foundry.utils.setProperty(poisonBuff, KNW_DESC_ATTR, rslt);
+
 		if (_VERBOSE) console.log(_VERSION, 'poisonBuff', poisonBuff);
 		if (_SHOW) debugger
 	}
