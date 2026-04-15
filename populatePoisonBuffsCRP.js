@@ -1,4 +1,4 @@
-const _VERSION = '0.1.16';
+const _VERSION = '0.1.17';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -61,9 +61,10 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 	const UKN_DESC_ATTR = "system.description.unidentified";
 	const KNW_DESC_ATTR = "system.description.value";
 	const KNW_PRICE_ATTR = "system.price";
+	const ITM_IDNT = "system.identified"'
 	const ACTEFF_NOTE_ATTR = "system.actions.0.notes.effect.0";
 	const ACTSAV_NOTE_ATTR = "system.actions.0.save.description";
-	const EFF_NOTE_ATTR = "system.actions.0.save.description";
+	const EFF_NOTE_ATTR = "system.effectNotes.0";
 	
 	const UKN_NAME = "Vial of liquid";
 	const UKN_DESC = "<p>Some liquid in a vial.</p>";
@@ -130,6 +131,8 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 		const saveNote = TXT_SAV + freq + "<br>" + cure + "</span>";
 		foundry.utils.setProperty(itemData, ACTSAV_NOTE_ATTR, saveNote);
 		foundry.utils.setProperty(itemData, ACTEFF_NOTE_ATTR, "");
+		foundry.utils.setProperty(itemData, ITM_IDNT, false);
+		
 		/*
 			SET <effectNotes> = "<span style="font-size:1.2em"><b>Effect:</b> + effect from details + @Apply[ (place uuid for the poison's buff here)]<br> + 
 				IF a secondary item exists add "<b>Secondary:</b> " + 
