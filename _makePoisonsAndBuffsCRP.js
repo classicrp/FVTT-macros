@@ -1,4 +1,4 @@
-const _VERSION = '0.2.0';
+const _VERSION = '0.2.1';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -61,7 +61,7 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 	const UKN_DESC_ATTR = "system.description.unidentified";
 	const KNW_DESC_ATTR = "system.description.value";
 	const KNW_PRICE_ATTR = "system.price";
-	const ITM_IDNT = "system.identified"'
+	const ITM_IDNT = "system.identified";
 	const ACTEFF_NOTE_ATTR = "system.actions.0.notes.effect.0";
 	const ACTSAV_NOTE_ATTR = "system.actions.0.save.description";
 	const EFF_NOTE_ATTR = "system.effectNotes.0";
@@ -152,8 +152,8 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 			name: `Poison (${name.toLowerCase()})`,
 			type: "buff",
 			_id: randomID(16),
-			system.description.value = removeHTML(itemData.description.value),
-			img = itemData.img,		
+			[system.description.value] : removeHTML(itemData.description.value),
+			img : itemData.img,		
 		});
 		if (_VERBOSE) console.log(_VERSION, 'poisonBuff', poisonBuff);
 		if (_SHOW) debugger
