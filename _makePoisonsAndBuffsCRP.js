@@ -1,4 +1,4 @@
-const _VERSION = '0.2.5';
+const _VERSION = '0.2.6';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -57,7 +57,8 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 */
 	const CRP_ITEMS = "crp-contents.crp-items";
 	const CRP_MACROS = "crp-contents.crp-macros";
-	const CRP_BFF_FLDR = "DGNHw19qOPUjYRMy";  // Compendium.crp-contents.crp-items.Folder. + this
+	const CRP_BFF_PSN_FLDR = "DGNHw19qOPUjYRMy";		//	Compendium.crp-contents.crp-items.Folder. + this
+	const CRP_ITM_PSN_FLDR = "Bn4K7b0X6r1WHKmN";		//	Compendium.crp-contents.crp-items.Folder. + this
 
 	const UKN_NAME_ATTR = "system.unidentified.name";
 	const UKN_DESC_ATTR = "system.description.unidentified";
@@ -148,7 +149,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 						OR number + "m" or "t" or "h" or "d" + "]</span>"
 		*/
 		
-		await Item.create(itemData, {pack: CRP_ITEMS, folder: CRP_BFF_FLDR});
+		rslt = await Item.create(itemData, {pack: CRP_ITEMS, folder: CRP_ITM_PSN_FLDR, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_ITM_PSN_FLDR), duplicate: true});
 
 	//	CREATE a new BUFF item placed in "Compendium.crp-contents.crp-items" in folder "BUFFS", subfolder "Poisons"
 		const poisonBuff = new Item({ 
