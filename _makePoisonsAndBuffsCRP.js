@@ -1,4 +1,4 @@
-const _VERSION = '0.2.2';
+const _VERSION = '0.2.4';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -19,6 +19,7 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 	//	_TEST CASE
 		const name = "Aconite root";
 		const crpItems = "crp-contents.crp-items";
+		const crpBuffFolder = "Compendium.crp-contents.crp-items.Folder.DGNHw19qOPUjYRMy";
 		const crpMacros = "crp-contents.crp-macros";
 		//	this handles a specific request that returns all copies in Compendiums
 		srcs = await game.packs?.filter(f => f.title.toLowerCase().includes('item')).map(g => g.index.getName(name)).filter(g => (typeof g !== 'undefined'));
@@ -146,7 +147,7 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 						OR number + "m" or "t" or "h" or "d" + "]</span>"
 		*/
 		
-		//	await Item.create(itemData, {parent: actor});
+		await Item.create(itemData, {pack: crpItems, folder: 'DGNHw19qOPUjYRMy'});
 
 	//	CREATE a new BUFF item placed in "Compendium.crp-contents.crp-items" in folder "BUFFS", subfolder "Poisons"
 		const poisonBuff = new Item({ 
@@ -155,7 +156,7 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 			_id: randomID(16),
 			img : itemData.img,		
 		});
-		rslt = removeHTML(itemData.description.value),
+		rslt = removeHTML(descHTML),
 		foundry.utils.setProperty(poisonBuff, KNW_DESC_ATTR, rslt);
 
 		if (_VERBOSE) console.log(_VERSION, 'poisonBuff', poisonBuff);
