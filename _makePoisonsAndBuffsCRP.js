@@ -1,4 +1,4 @@
-const _VERSION = '0.2.8';
+const _VERSION = '0.2.9';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -139,8 +139,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		foundry.utils.setProperty(itemData, ACTEFF_NOTE_ATTR, "");
 		foundry.utils.setProperty(itemData, ITM_IDNT, false);
 		foundry.utils.setProperty(itemData, ITM_FLDR, CRP_ITM_PSN_FLDR);
-		foundry.utils.setProperty(itemData, ITM_STS_DSRC, true);
-		foundry.utils.setProperty(itemData, ITM_STS_CSRC, uuid);
+		foundry.utils.setProperty(itemData, ITM_STS_DSRC, uuid);
 		/*
 			SET <effectNotes> = "<span style="font-size:1.2em"><b>Effect:</b> + effect from details + @Apply[ (place uuid for the poison's buff here)]<br> + 
 				IF a secondary item exists add "<b>Secondary:</b> " + 
