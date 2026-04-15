@@ -1,9 +1,9 @@
-const _VERSION = '0.2.4';
+const _VERSION = '0.2.5';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
 const _TEST = true;		//	test mode flag
-const _MEMTEST = true;	//	virtual memory heap dump flag
+const _MEMTEST = false;	//	virtual memory heap dump flag
 /*  
 	Special Thanks: With help from the crew on Discord::FVTT#macro-polo; 
 					@Micheal, @Zhell and mentions to @Freeze amd @Flix for 
@@ -18,9 +18,6 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 	if (_TEST) {
 	//	_TEST CASE
 		const name = "Aconite root";
-		const crpItems = "crp-contents.crp-items";
-		const crpBuffFolder = "Compendium.crp-contents.crp-items.Folder.DGNHw19qOPUjYRMy";
-		const crpMacros = "crp-contents.crp-macros";
 		//	this handles a specific request that returns all copies in Compendiums
 		srcs = await game.packs?.filter(f => f.title.toLowerCase().includes('item')).map(g => g.index.getName(name)).filter(g => (typeof g !== 'undefined'));
 		
@@ -58,6 +55,10 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 	CREATE a copy of Poison item in "Compendium.crp-contents.crp-items" in folder "ITEMS", 
 		subfolder "Poisons" for each not already there.
 */
+	const CRP_ITEMS = "crp-contents.crp-items";
+	const CRP_MACROS = "crp-contents.crp-macros";
+	const CRP_BFF_FLDR = "DGNHw19qOPUjYRMy";  // Compendium.crp-contents.crp-items.Folder. + this
+
 	const UKN_NAME_ATTR = "system.unidentified.name";
 	const UKN_DESC_ATTR = "system.description.unidentified";
 	const KNW_DESC_ATTR = "system.description.value";
@@ -147,7 +148,7 @@ const _MEMTEST = true;	//	virtual memory heap dump flag
 						OR number + "m" or "t" or "h" or "d" + "]</span>"
 		*/
 		
-		await Item.create(itemData, {pack: crpItems, folder: 'DGNHw19qOPUjYRMy'});
+		await Item.create(itemData, {pack: CRP_ITEMS, folder: CRP_BFF_FLDR});
 
 	//	CREATE a new BUFF item placed in "Compendium.crp-contents.crp-items" in folder "BUFFS", subfolder "Poisons"
 		const poisonBuff = new Item({ 
