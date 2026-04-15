@@ -1,4 +1,4 @@
-const _VERSION = '0.2.6';
+const _VERSION = '0.2.7';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -65,6 +65,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	const KNW_DESC_ATTR = "system.description.value";
 	const KNW_PRICE_ATTR = "system.price";
 	const ITM_IDNT = "system.identified";
+	const ITM_FLDR = "folder";
 	const ACTEFF_NOTE_ATTR = "system.actions.0.notes.effect.0";
 	const ACTSAV_NOTE_ATTR = "system.actions.0.save.description";
 	const EFF_NOTE_ATTR = "system.effectNotes.0";
@@ -135,8 +136,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		foundry.utils.setProperty(itemData, ACTSAV_NOTE_ATTR, saveNote);
 		foundry.utils.setProperty(itemData, ACTEFF_NOTE_ATTR, "");
 		foundry.utils.setProperty(itemData, ITM_IDNT, false);
-//		foundry.utils.setProperty(itemData, ITM_IDNT, false);
-		
+		foundry.utils.setProperty(itemData, ITM_FLDR, CRP_ITM_PSN_FLDR);
 		/*
 			SET <effectNotes> = "<span style="font-size:1.2em"><b>Effect:</b> + effect from details + @Apply[ (place uuid for the poison's buff here)]<br> + 
 				IF a secondary item exists add "<b>Secondary:</b> " + 
@@ -149,6 +149,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 						OR number + "m" or "t" or "h" or "d" + "]</span>"
 		*/
 		
+		if (_SHOW) debugger
 		rslt = await Item.create(itemData, {pack: CRP_ITEMS, folder: CRP_ITM_PSN_FLDR, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_ITM_PSN_FLDR), duplicate: true});
 
 	//	CREATE a new BUFF item placed in "Compendium.crp-contents.crp-items" in folder "BUFFS", subfolder "Poisons"
@@ -162,7 +163,6 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		foundry.utils.setProperty(poisonBuff, KNW_DESC_ATTR, rslt);
 
 		if (_VERBOSE) console.log(_VERSION, 'poisonBuff', poisonBuff);
-		if (_SHOW) debugger
 	}
 
 return;
