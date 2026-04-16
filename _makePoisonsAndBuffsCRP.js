@@ -1,4 +1,4 @@
-const _VERSION = '0.3.10';
+const _VERSION = '0.3.11';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -139,6 +139,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			=>	SET updated <Identified Properties>
 		*/
 		foundry.utils.setProperty(itemData, KNW_DESC_ATTR, descHTML);
+		const descHTMLParsed = foundry.utils.parseHTML(descHTML);
 		/*	
 			SET <action['Use'].SavingThrowEffect> = <span style="font-size:1.2em"><b>Frequency:</b> " + (frequency from details) + "<br><b>Cure:</b> " + 
 				(cure from details OR 1 if none exists there) + " save(s)</span>"
@@ -155,7 +156,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		foundry.utils.setProperty(itemData, ITM_STS_DSRC, uuid);
 		//	This needs be done after we have the uuid for the buff		
 		/*
-			SET <effectNotes> = "<span style="font-size:1.2em"><b>Effect:</b> + effect from details + @Apply[ (place uuid for the poison's buff here)]<br> + 
+			SET <effectNotes> = "<span style="font-size:1.2em"><b>Onset:</b> + onset from details + @Apply[ (place uuid for the poison's buff here)]<br> + 
 				IF a secondary item exists add "<b>Secondary:</b> " + 
 				IF a Condition exists, add; "@Condition[ (condition lowercase name)" + ";duration=" + Set duration as a die roll/number only for "rnds"
 						content (if you want it to last random "m" minutes, "t" turns, "h" hours, "d" days, then multilpy by
@@ -165,8 +166,11 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 						14400 for "d" )
 						OR number + "m" or "t" or "h" or "d" + "]</span>"
 		*/
-		const effect = getTag(descHTML, "Effect")
-		let effectNote = TXT_NOTE_START + effect + TXT_NOTE_APPLY + getTag(descHTML, "Secondary") + getTag(descHTML, "Condition") + "</span>";
+		const onset = getTag(descHTMLParsed, "Onset");
+		const primary = getTag(descHTMLParsed, "Primary");
+		const secondary = getTag(descHTMLParsed, "Secondary");
+		const effect = getTag(descHTMLParsed, "Effect");
+		let effectNote = TXT_NOTE_START + onset + TXT_NOTE_APPLY + "</span>";
 		if (_SHOW) debugger
 
 		/*
@@ -267,13 +271,12 @@ function removeHTML(htm) {
 	return rslt;
 }
 
-function getTag(htm, tag) {
+function getTag(srcs, tag) {
 	if (_SHOW) debugger
-	let rslt = "", line = "";
-	const srcs = foundry.utils.parseHTML(htm)
+	let rslt = "";
     for (const s of srcs) {
         if (s.innerHTML.includes(tag)) {
-          line = s.innerHTML;
+          rslt = s.innerHTML;
           break;
         }
     }
