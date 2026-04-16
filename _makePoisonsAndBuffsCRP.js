@@ -1,4 +1,4 @@
-const _VERSION = '0.3.11';
+const _VERSION = '0.3.12';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -97,20 +97,22 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	for (const s of srcs) {
 		let descHTML = "", rgxMatch = [];
 		let cure = "", freq = "", price = "", name = "";
-		const uuid = s.uuid;
-		if (_VERBOSE) console.log(_VERSION, "uuid", uuid);
-		const item = await fromUuid(uuid);
+		const itemUuid = s.itemUuid;
+		if (_VERBOSE) console.log(_VERSION, "itemUuid", itemUuid);
+		const item = await fromUuid(itemUuid);
 		if (_VERBOSE) console.log(_VERSION, "item", item);
 		let itemData = await game.items.fromCompendium(item);
 		if (_VERBOSE) console.log(_VERSION, "itemData", itemData);
 		/*
 			SET <Unidentified Name> to "Vial of liquid".
 		*/
-		foundry.utils.setProperty(itemData, UKN_NAME_ATTR, TXT_UNK_NAME);
+		result = await foundry.utils.setProperty(itemData, UKN_NAME_ATTR, TXT_UNK_NAME);
+		if (!result) console.warn(_VERSION, "itemData property [", UKN_NAME_ATTR, "] not set to:", TXT_UNK_NAME);
 		/*
 			SET <Superficial Details> to "Some liquid in a vial."
 		*/
-		foundry.utils.setProperty(itemData, UKN_DESC_ATTR, TXT_UNK_DESC);
+		result = await foundry.utils.setProperty(itemData, UKN_DESC_ATTR, TXT_UNK_DESC);
+		if (!result) console.warn(_VERSION, "itemData property [", UKN_DESC_ATTR, "] not set to:", TXT_UNK_DESC );
 		/*
 			GET <Identified Properties>
 		*/
@@ -138,7 +140,8 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		/*
 			=>	SET updated <Identified Properties>
 		*/
-		foundry.utils.setProperty(itemData, KNW_DESC_ATTR, descHTML);
+		result = await foundry.utils.setProperty(itemData, KNW_DESC_ATTR, descHTML);
+		if (!result) console.warn(_VERSION, "itemData property [", KNW_DESC_ATTR, "] not set to:", descHTML );
 		const descHTMLParsed = foundry.utils.parseHTML(descHTML);
 		/*	
 			SET <action['Use'].SavingThrowEffect> = <span style="font-size:1.2em"><b>Frequency:</b> " + (frequency from details) + "<br><b>Cure:</b> " + 
@@ -149,14 +152,19 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			freq = rgxMatch[0];
         }
 		const saveNote = TXT_NOTE_START + freq + "<br>" + cure + "</span>";
-		foundry.utils.setProperty(itemData, ACTSAV_NOTE_ATTR, saveNote);
-		foundry.utils.setProperty(itemData, ACTEFF_NOTE_ATTR, "");
-		foundry.utils.setProperty(itemData, ITM_IDNT, false);
-		foundry.utils.setProperty(itemData, ITM_FLDR, CRP_ITM_PSN_FLDR);
-		foundry.utils.setProperty(itemData, ITM_STS_DSRC, uuid);
+		result = await foundry.utils.setProperty(itemData, ACTSAV_NOTE_ATTR, saveNote);
+		if (!result) console.warn(_VERSION, "itemData property [", ACTSAV_NOTE_ATTR, "] not set to:", saveNote );
+		result = await foundry.utils.setProperty(itemData, ACTEFF_NOTE_ATTR, "");
+		if (!result) console.warn(_VERSION, "itemData property [", ACTEFF_NOTE_ATTR, "] not set to:", " " );
+		result = await foundry.utils.setProperty(itemData, ITM_IDNT, false);
+		if (!result) console.warn(_VERSION, "itemData property [", ITM_IDNT, "] not set to:", false );
+		result = await foundry.utils.setProperty(itemData, ITM_FLDR, CRP_ITM_PSN_FLDR);
+		if (!result) console.warn(_VERSION, "itemData property [", ITM_FLDR, "] not set to:", CRP_ITM_PSN_FLDR );
+		result = await foundry.utils.setProperty(itemData, ITM_STS_DSRC, itemUuid);
+		if (!result) console.warn(_VERSION, "itemData property [", ITM_STS_DSRC, "] not set to:", saveNote );
 		//	This needs be done after we have the uuid for the buff		
 		/*
-			SET <effectNotes> = "<span style="font-size:1.2em"><b>Onset:</b> + onset from details + @Apply[ (place uuid for the poison's buff here)]<br> + 
+			SET <effectNotes> = "<span style="font-size:1.2em"><b>Onset:</b> + onset from details + @Apply[ (place itemUuid for the poison's buff here)]<br> + 
 				IF a secondary item exists add "<b>Secondary:</b> " + 
 				IF a Condition exists, add; "@Condition[ (condition lowercase name)" + ";duration=" + Set duration as a die roll/number only for "rnds"
 						content (if you want it to last random "m" minutes, "t" turns, "h" hours, "d" days, then multilpy by
@@ -166,7 +174,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 						14400 for "d" )
 						OR number + "m" or "t" or "h" or "d" + "]</span>"
 		*/
-		const onset = getTag(descHTMLParsed, "Onset");
+		const onset = getTag(descHTMLParsed, "Onset").replace(`; ${freq}`, '');
 		const primary = getTag(descHTMLParsed, "Primary");
 		const secondary = getTag(descHTMLParsed, "Secondary");
 		const effect = getTag(descHTMLParsed, "Effect");
@@ -185,16 +193,19 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		});
 		if (_VERBOSE) console.log(_VERSION, 'buff', buff);
 		/*
-			=>	SET uuid of associated Poison Item to newly created BUFF uuid.
+			=>	SET itemUuid of associated Poison Item to newly created BUFF itemUuid.
 		*/
 		const buffUuid = "Compendium." + CRP_PACK_ITEMS + ".Item." + buff._id;
 		effectNote = await effectNote.replace(REPLACE_THIS_WITH_BUFF_UUID, buffUuid);
-		foundry.utils.setProperty(itemData, EFF_NOTE_ATTR, effectNote);
+		result = await foundry.utils.setProperty(itemData, EFF_NOTE_ATTR, effectNote);
+		if (!result) console.warn(_VERSION, "itemData property [", EFF_NOTE_ATTR, "] not set to:", effectNote );
 		
 		let buffData = await game.items.fromCompendium(buff);
 		rslt = removeHTML(descHTML);
-		foundry.utils.setProperty(buffData, KNW_DESC_ATTR, rslt);
-		foundry.utils.setProperty(buffData, ITM_PACK, CRP_PACK_ITEMS);
+		result = await foundry.utils.setProperty(buffData, KNW_DESC_ATTR, rslt);
+		if (!result) console.warn(_VERSION, "itemData property [", KNW_DESC_ATTR, "] not set to:", rslt );
+		result = await foundry.utils.setProperty(buffData, ITM_PACK, CRP_PACK_ITEMS);
+		if (!result) console.warn(_VERSION, "itemData property [", ITM_PACK, "] not set to:", CRP_PACK_ITEMS );
 		if (_VERBOSE) console.log(_VERSION, 'buffData', buffData);
 		/*
 			INSERT Item and Buff into Compendium
@@ -208,7 +219,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 return;
 
 //	CREATE a new BUFF item placed in "Compendium.crp-contents.crp-items" in folder "BUFFS", subfolder "Poisons"
-	//	SET uuid of associated Poison Item to newly created BUFF uuid.
+	//	SET itemUuid of associated Poison Item to newly created BUFF itemUuid.
 	//	COPY over <details> from Poison Item and write to <Identified Properties>.
 	//	SET "on-use" macro "buffCureCheck" to "Compendium.crp-contents.crp-macros.Macro.wEGLTOmr7iSa5E3l"
 	//	SET "on-toggle" macro "buffToggleCheck" to "Compendium.crp-contents.crp-macros.Macro.0kwyj53zVj6I6rKs"
@@ -283,9 +294,9 @@ function getTag(srcs, tag) {
 	return rslt;
 }
 
-function getConditionsFromJournal(uuid) {
+function getConditionsFromJournal(itemUuid) {
 	if (_SHOW) debugger
-	const journal = fromUuid(uuid);
+	const journal = fromUuid(itemUuid);
 	const journalData = game.journal.fromCompendium(journal);
 	const srcs = foundry.utils.parseHTML(journalData.contents);
 }
