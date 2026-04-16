@@ -1,4 +1,4 @@
-const _VERSION = '0.3.1';
+const _VERSION = '0.3.2';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -75,10 +75,11 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	const ACTSAV_NOTE_ATTR = "system.actions.0.save.description";
 	const EFF_NOTE_ATTR = "system.effectNotes.0";
 	
-	const UKN_NAME = "Vial of liquid";
-	const UKN_DESC = "<p>Some liquid in a vial.</p>";
+	const TXT_UNK_NAME = "Vial of liquid";
+	const TXT_UNK_DESC = "<p>Some liquid in a vial.</p>";
 	const TXT_CURE = "<strong>Cure</strong> 1 save";
-	const TXT_SAV = `<span style="font-size:1.2em">`;
+	const TXT_NOTE_START = `<span style="font-size:1.2em">`;
+	const TXT_NOTE_APPLY = " @Apply[REPLACE_THIS_WITH_BUFF_UUID]<br>"
 	
 	const RGX_FREQ = /<strong>Frequency<\/strong>\s*([^<]+)/;
 	const RGX_CURE = /<strong>Cure<\/strong>\s*\d+\s*saves?/;
@@ -96,11 +97,11 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		/*
 			SET <Unidentified Name> to "Vial of liquid".
 		*/
-		foundry.utils.setProperty(itemData, UKN_NAME_ATTR, UKN_NAME);
+		foundry.utils.setProperty(itemData, UKN_NAME_ATTR, TXT_UNK_NAME);
 		/*
 			SET <Superficial Details> to "Some liquid in a vial."
 		*/
-		foundry.utils.setProperty(itemData, UKN_DESC_ATTR, UKN_DESC);
+		foundry.utils.setProperty(itemData, UKN_DESC_ATTR, TXT_UNK_DESC);
 		/*
 			GET <Identified Properties>
 		*/
@@ -137,13 +138,13 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		if (rgxMatch) {
 			freq = rgxMatch[0];
         }
-		const saveNote = TXT_SAV + freq + "<br>" + cure + "</span>";
+		const saveNote = TXT_NOTE_START + freq + "<br>" + cure + "</span>";
 		foundry.utils.setProperty(itemData, ACTSAV_NOTE_ATTR, saveNote);
 		foundry.utils.setProperty(itemData, ACTEFF_NOTE_ATTR, "");
 		foundry.utils.setProperty(itemData, ITM_IDNT, false);
 		foundry.utils.setProperty(itemData, ITM_FLDR, CRP_ITM_PSN_FLDR);
 		foundry.utils.setProperty(itemData, ITM_STS_DSRC, uuid);
-//		This needs be done after we have the uuid for the buff		
+		//	This needs be done after we have the uuid for the buff		
 		/*
 			SET <effectNotes> = "<span style="font-size:1.2em"><b>Effect:</b> + effect from details + @Apply[ (place uuid for the poison's buff here)]<br> + 
 				IF a secondary item exists add "<b>Secondary:</b> " + 
@@ -155,9 +156,8 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 						14400 for "d" )
 						OR number + "m" or "t" or "h" or "d" + "]</span>"
 		*/
+		let effectNote = TXT_NOTE_START + getTag(descHTML, "Effects") + TXT_NOTE_APPLY + getTag(descHTML, "Secondary") + getTag(descHTML, "Condition");
 		if (_SHOW) debugger
-		rslt = await Item.create(itemData, {pack: CRP_PACK_ITEMS, folder: CRP_ITM_PSN_FLDR, source: ("Compendium." + CRP_PACK_ITEMS + ".Folder." + CRP_ITM_PSN_FLDR) });
-		if (_VERBOSE) console.log(_VERSION, 'create item result:', rslt);
 
 		/*
 			CREATE a new BUFF item placed in "Compendium.crp-contents.crp-items" in folder "BUFFS", subfolder "Poisons"
@@ -168,15 +168,27 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			folder: CRP_BFF_PSN_FLDR,
 			img: itemData.img,
 			_id: randomID(16),
-//			uuid: ("Compendium." + CRP_PACK_ITEMS + ".Folder." + CRP_ITM_PSN_FLDR)
 		});
 		if (_VERBOSE) console.log(_VERSION, 'buff', buff);
+		/*
+			=>	SET uuid of associated Poison Item to newly created BUFF uuid.
+		*/
+		const buffUuid = "Compendium." + CRP_PACK_ITEMS + ".Item." + buff._id;
+		
 		const buffData = await game.items.fromCompendium(buff);
 		rslt = removeHTML(descHTML);
 		foundry.utils.setProperty(buffData, KNW_DESC_ATTR, rslt);
 		foundry.utils.setProperty(buffData, ITM_PACK, CRP_PACK_ITEMS);
 		
+		
+		
 		if (_VERBOSE) console.log(_VERSION, 'buffData', buffData);
+
+		/*
+			INSERT Item and Buff into Compendium
+		*/
+		rslt = await Item.create(itemData, {pack: CRP_PACK_ITEMS, folder: CRP_ITM_PSN_FLDR, source: ("Compendium." + CRP_PACK_ITEMS + ".Folder." + CRP_ITM_PSN_FLDR) });
+		if (_VERBOSE) console.log(_VERSION, 'create item result:', rslt);
 		rslt = await Item.create(buffData, {pack: CRP_PACK_ITEMS, folder: CRP_ITM_PSN_FLDR, source: ("Compendium." + CRP_PACK_ITEMS + ".Folder." + CRP_ITM_PSN_FLDR) });
 		if (_VERBOSE) console.log(_VERSION, 'create buff results:', rslt);
 	}
@@ -246,5 +258,13 @@ function removeHTML(htm) {
 		rslt += raw.concat(crlf);
 	}
 	if (_VERBOSE) console.log(_VERSION, "Text:", rslt);
+	return rslt;
+}
+
+function getTag(htm, tag) {
+	let rslt = "";
+	const srcs = foundry.utils.parseHTML(htm).find(f => f.has(tag));
+	if (_SHOW) debugger
+
 	return rslt;
 }
