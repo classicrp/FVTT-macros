@@ -1,4 +1,4 @@
-const _VERSION = '0.3.7';
+const _VERSION = '0.3.9';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -10,7 +10,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 					spectating in this latest round of Code Golf.  Fore!
 */
 	if (_SHOW) debugger
-	const crlf = String.fromCharCode(13).concat(String.fromCharCode(10));
+	const CRLF = String.fromCharCode(13).concat(String.fromCharCode(10));
 	const BUFF_CURE_CHECK = "Compendium.crp-contents.crp-macros.Macro.wEGLTOmr7iSa5E3l";
 	const BUFF_TOGGLE_CHECK = "Compendium.crp-contents.crp-macros.Macro.0kwyj53zVj6I6rKs";
 	const JRNL_CONDITIONS = "Compendium.pf-content.pf-rules.JournalEntry.FH4DP3oqkBwhLFNS";
@@ -22,8 +22,8 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	const jrnl = await fromUuid(JRNL_CONDITIONS);
 	const jrnlData = await game.journal.fromCompendium(jrnl);
 	const JRNL_CONTENT = "pages.0.text.content";
-	const content = await foundry.utils.getProperty(jrnlData, JRNL_CONTENT);
-	srcs = await foundry.utils.parseHTML(content);
+	const contentHTML = await foundry.utils.getProperty(jrnlData, JRNL_CONTENT);
+	let condions = await foundry.utils.parseHTML(contentHTML);
 
 	if (_TEST) {
 	//	_TEST CASE
@@ -52,7 +52,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		});
 		await countOccurrences(rslt, obj);
 		fltrd = obj.filter(f => f.occurs > 1);
-		if (_VERBOSE) console.log(_VERSION, 'fltrd:', fltrd, crlf, 'rslt:', rslt);
+		if (_VERBOSE) console.log(_VERSION, 'fltrd:', fltrd, CRLF, 'rslt:', rslt);
 		srcs = await rslt.filter(a => !fltrd.some(b => b.name === a.name));
 	}
 	if (_MEMTEST) {
@@ -165,8 +165,8 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 						14400 for "d" )
 						OR number + "m" or "t" or "h" or "d" + "]</span>"
 		*/
-		
-		let effectNote = TXT_NOTE_START + getTag(descHTML, "Effect") + TXT_NOTE_APPLY + getTag(descHTML, "Secondary") + getTag(descHTML, "Condition") + "</span>";
+		const effect = getTag(descHTML, "Effect")
+		let effectNote = TXT_NOTE_START + effect + TXT_NOTE_APPLY + getTag(descHTML, "Secondary") + getTag(descHTML, "Condition") + "</span>";
 		if (_SHOW) debugger
 
 		/*
@@ -184,10 +184,10 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			=>	SET uuid of associated Poison Item to newly created BUFF uuid.
 		*/
 		const buffUuid = "Compendium." + CRP_PACK_ITEMS + ".Item." + buff._id;
-		await effectNote.replace(REPLACE_THIS_WITH_BUFF_UUID, buffUuid);
+		effectNote = await effectNote.replace(REPLACE_THIS_WITH_BUFF_UUID, buffUuid);
 		foundry.utils.setProperty(itemData, EFF_NOTE_ATTR, effectNote);
 		
-		const buffData = await game.items.fromCompendium(buff);
+		let buffData = await game.items.fromCompendium(buff);
 		rslt = removeHTML(descHTML);
 		foundry.utils.setProperty(buffData, KNW_DESC_ATTR, rslt);
 		foundry.utils.setProperty(buffData, ITM_PACK, CRP_PACK_ITEMS);
@@ -260,8 +260,8 @@ function removeHTML(htm) {
 				}
 			}
 		}
-		const crlf = String.fromCharCode(13).concat(String.fromCharCode(10));
-		rslt += raw.concat(crlf);
+		const CRLF = String.fromCharCode(13).concat(String.fromCharCode(10));
+		rslt += raw.concat(CRLF);
 	}
 	if (_VERBOSE) console.log(_VERSION, "Text:", rslt);
 	return rslt;
