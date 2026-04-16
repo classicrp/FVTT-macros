@@ -1,4 +1,4 @@
-const _VERSION = '0.3.18';
+const _VERSION = '0.3.19';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -215,9 +215,9 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		/*
 			INSERT Item and Buff into Compendium
 		*/
-		rslt = await Item.create(itemData);	//, {pack: CRP_PACK_ITEMS, folder: CRP_ITM_PSN_FLDR, source: ("Compendium." + CRP_PACK_ITEMS + ".Folder." + CRP_ITM_PSN_FLDR) });
+		rslt = await Item.create(itemData, {pack: CRP_PACK_ITEMS, folder: CRP_ITM_PSN_FLDR, source: ("Compendium." + CRP_PACK_ITEMS + ".Folder." + CRP_ITM_PSN_FLDR) });
 		if (_VERBOSE) console.log(_VERSION, 'create item result:', rslt);
-		rslt = await Item.create(buffData);	//, {pack: CRP_PACK_ITEMS, folder: CRP_BFF_PSN_FLDR, source: ("Compendium." + CRP_PACK_ITEMS + ".Folder." + CRP_BFF_PSN_FLDR) });
+		rslt = await Item.create(buffData, {pack: CRP_PACK_ITEMS, folder: CRP_BFF_PSN_FLDR, source: ("Compendium." + CRP_PACK_ITEMS + ".Folder." + CRP_BFF_PSN_FLDR) });
 		if (_VERBOSE) console.log(_VERSION, 'create buff results:', rslt);
 	}
 
