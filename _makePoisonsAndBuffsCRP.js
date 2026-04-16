@@ -1,4 +1,4 @@
-const _VERSION = '0.3.13';
+const _VERSION = '0.3.14';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -23,7 +23,8 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	const jrnlData = await game.journal.fromCompendium(jrnl);
 	const JRNL_CONTENT = "pages.0.text.content";
 	const contentHTML = await foundry.utils.getProperty(jrnlData, JRNL_CONTENT);
-	let condions = await foundry.utils.parseHTML(contentHTML);
+	const RGX_CND_LIST = /(?s)<h2>s*(.*?)<\/h2>/g;
+	let conditons = await contentHTML.match(RGX_CND_LIST);
 
 	if (_TEST) {
 	//	_TEST CASE
