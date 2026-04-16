@@ -1,4 +1,4 @@
-const _VERSION = '0.3.17';
+const _VERSION = '0.3.18';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -264,6 +264,7 @@ function removeHTML(htm, state) {
 	let rslt = "", srcs = "";
 	srcs = foundry.utils.parseHTML(htm);
 	if (_VERBOSE) console.log(_VERSION, "HTML source:", srcs);
+	if ((!Array.isArray(srcs)) && srcs) return srcs.innerText;
 	for (let i = 0; i < srcs.length; i++) {
 		//	picked apart based on <p>
 		let raw = srcs[i].innerHTML;
