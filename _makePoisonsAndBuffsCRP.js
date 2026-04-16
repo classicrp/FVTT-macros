@@ -1,4 +1,4 @@
-const _VERSION = '0.3.9';
+const _VERSION = '0.3.10';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
