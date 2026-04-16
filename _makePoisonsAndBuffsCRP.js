@@ -1,4 +1,4 @@
-const _VERSION = '0.3.15';
+const _VERSION = '0.3.16';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -26,7 +26,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	const RGX_CND_LIST = /(?s)<h2>s*(.*?)<\/h2>/g;
 	let conditions = await contentHTML.toLowerCase().match(RGX_CND_LIST);
 	for (let c of conditions) {
-		c = c.removeHTML(c);
+		c = c.removeHTML(c, false);
 	}
 	if (_VERBOSE) console.log(_VERSION, 'conditions:', conditions);
 
@@ -206,7 +206,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		if (!result) console.warn(_VERSION, "itemData property [", EFF_NOTE_ATTR, "] not set to:", effectNote );
 		
 		let buffData = await game.items.fromCompendium(buff);
-		rslt = removeHTML(descHTML);
+		rslt = removeHTML(descHTML, true);
 		result = await foundry.utils.setProperty(buffData, KNW_DESC_ATTR, rslt);
 		if (!result) console.warn(_VERSION, "itemData property [", KNW_DESC_ATTR, "] not set to:", rslt );
 		result = await foundry.utils.setProperty(buffData, ITM_PACK, CRP_PACK_ITEMS);
@@ -259,7 +259,7 @@ function NameOccursCRP(t, n) {
 	this.occurs = n;
 }
 
-function removeHTML(htm) {
+function removeHTML(htm, state) {
 //	if (show) debugger
 	let rslt = "", srcs = "";
 	srcs = foundry.utils.parseHTML(htm);
@@ -281,7 +281,11 @@ function removeHTML(htm) {
 			}
 		}
 		const CRLF = String.fromCharCode(13).concat(String.fromCharCode(10));
-		rslt += raw.concat(CRLF);
+		if (state) {
+			rslt += raw.concat(CRLF);
+		} else {
+			rslt += raw;
+		}
 	}
 	if (_VERBOSE) console.log(_VERSION, "Text:", rslt);
 	return rslt;
