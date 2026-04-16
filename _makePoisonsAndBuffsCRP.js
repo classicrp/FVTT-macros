@@ -1,4 +1,4 @@
-const _VERSION = '0.3.2';
+const _VERSION = '0.3.3';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -61,6 +61,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	const CRP_PACK_MACROS = "crp-contents.crp-macros";
 	const CRP_BFF_PSN_FLDR = "DGNHw19qOPUjYRMy";		//	Compendium.crp-contents.crp-items.Folder. + this
 	const CRP_ITM_PSN_FLDR = "Bn4K7b0X6r1WHKmN";		//	Compendium.crp-contents.crp-items.Folder. + this
+	const REPLACE_THIS_WITH_BUFF_UUID = "REPLACE_THIS_WITH_BUFF_UUID";
 
 	const UKN_NAME_ATTR = "system.unidentified.name";
 	const UKN_DESC_ATTR = "system.description.unidentified";
@@ -79,7 +80,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	const TXT_UNK_DESC = "<p>Some liquid in a vial.</p>";
 	const TXT_CURE = "<strong>Cure</strong> 1 save";
 	const TXT_NOTE_START = `<span style="font-size:1.2em">`;
-	const TXT_NOTE_APPLY = " @Apply[REPLACE_THIS_WITH_BUFF_UUID]<br>"
+	const TXT_NOTE_APPLY = " @Apply[" + REPLACE_THIS_WITH_BUFF_UUID + "]<br>";
 	
 	const RGX_FREQ = /<strong>Frequency<\/strong>\s*([^<]+)/;
 	const RGX_CURE = /<strong>Cure<\/strong>\s*\d+\s*saves?/;
@@ -174,29 +175,25 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			=>	SET uuid of associated Poison Item to newly created BUFF uuid.
 		*/
 		const buffUuid = "Compendium." + CRP_PACK_ITEMS + ".Item." + buff._id;
+		await effectNote.replace(REPLACE_THIS_WITH_BUFF_UUID, buffUuid);
+		foundry.utils.setProperty(itemData, EFF_NOTE_ATTR, effectNote);
 		
 		const buffData = await game.items.fromCompendium(buff);
 		rslt = removeHTML(descHTML);
 		foundry.utils.setProperty(buffData, KNW_DESC_ATTR, rslt);
 		foundry.utils.setProperty(buffData, ITM_PACK, CRP_PACK_ITEMS);
-		
-		
-		
 		if (_VERBOSE) console.log(_VERSION, 'buffData', buffData);
-
 		/*
 			INSERT Item and Buff into Compendium
 		*/
-		rslt = await Item.create(itemData, {pack: CRP_PACK_ITEMS, folder: CRP_ITM_PSN_FLDR, source: ("Compendium." + CRP_PACK_ITEMS + ".Folder." + CRP_ITM_PSN_FLDR) });
+		rslt = await Item.create(itemData);	//, {pack: CRP_PACK_ITEMS, folder: CRP_ITM_PSN_FLDR, source: ("Compendium." + CRP_PACK_ITEMS + ".Folder." + CRP_ITM_PSN_FLDR) });
 		if (_VERBOSE) console.log(_VERSION, 'create item result:', rslt);
-		rslt = await Item.create(buffData, {pack: CRP_PACK_ITEMS, folder: CRP_ITM_PSN_FLDR, source: ("Compendium." + CRP_PACK_ITEMS + ".Folder." + CRP_ITM_PSN_FLDR) });
+		rslt = await Item.create(buffData);	//, {pack: CRP_PACK_ITEMS, folder: CRP_BFF_PSN_FLDR, source: ("Compendium." + CRP_PACK_ITEMS + ".Folder." + CRP_BFF_PSN_FLDR) });
 		if (_VERBOSE) console.log(_VERSION, 'create buff results:', rslt);
 	}
 
 return;
 
-
-	
 //	CREATE a new BUFF item placed in "Compendium.crp-contents.crp-items" in folder "BUFFS", subfolder "Poisons"
 	//	SET uuid of associated Poison Item to newly created BUFF uuid.
 	//	COPY over <details> from Poison Item and write to <Identified Properties>.
