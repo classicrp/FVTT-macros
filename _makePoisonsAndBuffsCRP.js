@@ -1,4 +1,4 @@
-const _VERSION = '0.3.5';
+const _VERSION = '0.3.7';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -18,7 +18,13 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	GET Poison items from non-CRP Compendium packs.
 */
 	let srcs = '', fltrd = '', rslt = '', obj = [];
-	rslt = getConditionsFromJournal(JRNL_CONDITIONS);
+
+	const jrnl = await fromUuid(JRNL_CONDITIONS);
+	const jrnlData = await game.journal.fromCompendium(jrnl);
+	const JRNL_CONTENT = "pages.0.text.content";
+	const content = await foundry.utils.getProperty(jrnlData, JRNL_CONTENT);
+	srcs = await foundry.utils.parseHTML(content);
+
 	if (_TEST) {
 	//	_TEST CASE
 		const name = "Aconite root";
@@ -274,7 +280,7 @@ function getTag(htm, tag) {
 	return rslt;
 }
 
-static function getConditionsFromJournal(uuid) {
+function getConditionsFromJournal(uuid) {
 	if (_SHOW) debugger
 	const journal = fromUuid(uuid);
 	const journalData = game.journal.fromCompendium(journal);
