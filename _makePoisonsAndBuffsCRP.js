@@ -1,4 +1,4 @@
-const _VERSION = '0.2.9';
+const _VERSION = '0.2.10';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -11,6 +11,8 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 */
 	if (_SHOW) debugger
 	const crlf = String.fromCharCode(13).concat(String.fromCharCode(10));
+	const BUFF_CURE_CHECK = "Compendium.crp-contents.crp-macros.Macro.wEGLTOmr7iSa5E3l";
+	const BUFF_TOGGLE_CHECK = "Compendium.crp-contents.crp-macros.Macro.0kwyj53zVj6I6rKs";
 /*
 	GET Poison items from non-CRP Compendium packs.
 */
@@ -140,6 +142,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		foundry.utils.setProperty(itemData, ITM_IDNT, false);
 		foundry.utils.setProperty(itemData, ITM_FLDR, CRP_ITM_PSN_FLDR);
 		foundry.utils.setProperty(itemData, ITM_STS_DSRC, uuid);
+//		This needs be done after we have the uuid for the buff		
 		/*
 			SET <effectNotes> = "<span style="font-size:1.2em"><b>Effect:</b> + effect from details + @Apply[ (place uuid for the poison's buff here)]<br> + 
 				IF a secondary item exists add "<b>Secondary:</b> " + 
@@ -151,21 +154,27 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 						14400 for "d" )
 						OR number + "m" or "t" or "h" or "d" + "]</span>"
 		*/
-		
 		if (_SHOW) debugger
-		rslt = await Item.create(itemData, {pack: CRP_ITEMS, folder: CRP_ITM_PSN_FLDR, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_ITM_PSN_FLDR), duplicate: true});
+		rslt = await Item.create(itemData, {pack: CRP_ITEMS, folder: CRP_ITM_PSN_FLDR, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_ITM_PSN_FLDR) });
+		if (_VERBOSE) console.log(_VERSION, 'create item result:', rslt);
 
-	//	CREATE a new BUFF item placed in "Compendium.crp-contents.crp-items" in folder "BUFFS", subfolder "Poisons"
-		const poisonBuff = new Item({ 
+		/*
+			CREATE a new BUFF item placed in "Compendium.crp-contents.crp-items" in folder "BUFFS", subfolder "Poisons"
+		*/
+		const buff = await new pf1.documents.item.ItemBuffPF({
 			name: `Poison (${name.toLowerCase()})`,
 			type: "buff",
-			_id: randomID(16),
-			img : itemData.img,		
+			folder: CRP_BFF_PSN_FLDR,
+			img: itemData.img,
+			_id: randomID(16)
 		});
+		if (_VERBOSE) console.log(_VERSION, 'buff', buff);
 		rslt = removeHTML(descHTML),
-		foundry.utils.setProperty(poisonBuff, KNW_DESC_ATTR, rslt);
-
-		if (_VERBOSE) console.log(_VERSION, 'poisonBuff', poisonBuff);
+		foundry.utils.setProperty(buff, KNW_DESC_ATTR, rslt);
+		const buffData = await game.items.fromCompendium(rslt);
+		if (_VERBOSE) console.log(_VERSION, 'buffData', buffData);
+		rslt = await Item.create(itemData, {pack: CRP_ITEMS, folder: CRP_ITM_PSN_FLDR, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_ITM_PSN_FLDR) });
+		if (_VERBOSE) console.log(_VERSION, 'poison buff creation:', rslt);
 	}
 
 return;
