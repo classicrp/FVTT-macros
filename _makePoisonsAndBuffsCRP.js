@@ -1,4 +1,4 @@
-const _VERSION = '0.3.19';
+const _VERSION = '0.4.0';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -25,8 +25,8 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	const contentHTML = await foundry.utils.getProperty(jrnlData, JRNL_CONTENT);
 	const RGX_CND_LIST = /<h2>s*(.*?)<\/h2>/g;
 	let conditions = await contentHTML.toLowerCase().match(RGX_CND_LIST);
-	for (let c of conditions) {
-		c = removeHTML(c, false);
+	for (let i = 0; i < conditions.length; i++) {
+		conditions[i] = removeHTML(conditions[i], false);
 	}
 	if (_VERBOSE) console.log(_VERSION, 'conditions:', conditions);
 
@@ -206,8 +206,8 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		if (!result) console.warn(_VERSION, "itemData property [", EFF_NOTE_ATTR, "] not set to:", effectNote );
 		
 		let buffData = await game.items.fromCompendium(buff);
-		rslt = removeHTML(descHTML, true);
-		result = await foundry.utils.setProperty(buffData, KNW_DESC_ATTR, rslt);
+		//rslt = removeHTML(descHTML, true);
+		result = await foundry.utils.setProperty(buffData, KNW_DESC_ATTR, descHTML);
 		if (!result) console.warn(_VERSION, "itemData property [", KNW_DESC_ATTR, "] not set to:", rslt );
 		result = await foundry.utils.setProperty(buffData, ITM_PACK, CRP_PACK_ITEMS);
 		if (!result) console.warn(_VERSION, "itemData property [", ITM_PACK, "] not set to:", CRP_PACK_ITEMS );
@@ -216,8 +216,10 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			INSERT Item and Buff into Compendium
 		*/
 		rslt = await Item.create(itemData, {pack: CRP_PACK_ITEMS, folder: CRP_ITM_PSN_FLDR, source: ("Compendium." + CRP_PACK_ITEMS + ".Folder." + CRP_ITM_PSN_FLDR) });
+		if (!rslt) console.warn(_VERSION, "Item:", itemData.name, "failed to create.");
 		if (_VERBOSE) console.log(_VERSION, 'create item result:', rslt);
 		rslt = await Item.create(buffData, {pack: CRP_PACK_ITEMS, folder: CRP_BFF_PSN_FLDR, source: ("Compendium." + CRP_PACK_ITEMS + ".Folder." + CRP_BFF_PSN_FLDR) });
+		if (!rslt) console.warn(_VERSION, "Buff:", buffData.name, "failed to create.");
 		if (_VERBOSE) console.log(_VERSION, 'create buff results:', rslt);
 	}
 
@@ -263,13 +265,13 @@ function removeHTML(htm, state) {
 //	if (show) debugger
 	let rslt = "", srcs = "";
 	srcs = foundry.utils.parseHTML(htm);
-	if (_VERBOSE) console.log(_VERSION, "HTML source:", srcs);
+//	if (_VERBOSE) console.log(_VERSION, "HTML source:", srcs);
 	if ((!Array.isArray(srcs)) && srcs) return srcs.innerText;
 	for (let i = 0; i < srcs.length; i++) {
 		//	picked apart based on <p>
 		let raw = srcs[i].innerHTML;
 		const coded = foundry.utils.parseHTML(raw);
-		if (_VERBOSE) console.log(_VERSION, "HTML sub-source:", coded);
+//		if (_VERBOSE) console.log(_VERSION, "HTML sub-source:", coded);
 		if (typeof coded !== "undefined") { 
 			if (typeof coded.length === "undefined") {
 				//  only one instance present
@@ -288,12 +290,12 @@ function removeHTML(htm, state) {
 			rslt += raw;
 		}
 	}
-	if (_VERBOSE) console.log(_VERSION, "Text:", rslt);
+//	if (_VERBOSE) console.log(_VERSION, "Text:", rslt);
 	return rslt;
 }
 
 function getTag(srcs, tag) {
-	if (_SHOW) debugger
+//	if (_SHOW) debugger
 	let rslt = "";
     for (const s of srcs) {
         if (s.innerHTML.includes(tag)) {
