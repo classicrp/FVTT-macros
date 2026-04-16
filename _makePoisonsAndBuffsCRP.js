@@ -1,4 +1,4 @@
-const _VERSION = '0.3.14';
+const _VERSION = '0.3.15';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -24,7 +24,11 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	const JRNL_CONTENT = "pages.0.text.content";
 	const contentHTML = await foundry.utils.getProperty(jrnlData, JRNL_CONTENT);
 	const RGX_CND_LIST = /(?s)<h2>s*(.*?)<\/h2>/g;
-	let conditons = await contentHTML.match(RGX_CND_LIST);
+	let conditions = await contentHTML.toLowerCase().match(RGX_CND_LIST);
+	for (let c of conditions) {
+		c = c.removeHTML(c);
+	}
+	if (_VERBOSE) console.log(_VERSION, 'conditions:', conditions);
 
 	if (_TEST) {
 	//	_TEST CASE
