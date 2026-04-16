@@ -1,4 +1,4 @@
-const _VERSION = '0.3.4';
+const _VERSION = '0.3.5';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -13,6 +13,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	const crlf = String.fromCharCode(13).concat(String.fromCharCode(10));
 	const BUFF_CURE_CHECK = "Compendium.crp-contents.crp-macros.Macro.wEGLTOmr7iSa5E3l";
 	const BUFF_TOGGLE_CHECK = "Compendium.crp-contents.crp-macros.Macro.0kwyj53zVj6I6rKs";
+	const JRNL_CONDITIONS = "Compendium.pf-content.pf-rules.JournalEntry.FH4DP3oqkBwhLFNS";
 /*
 	GET Poison items from non-CRP Compendium packs.
 */
@@ -24,6 +25,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		srcs = await game.packs?.filter(f => f.title.toLowerCase().includes('item')).map(g => g.index.getName(name)).filter(g => (typeof g !== 'undefined'));
 		
 	} else {
+		rslt = getConditionsFromJournal(JRNL_CONDITIONS);
 		//	this handles the top set of items with each index for a Compendium,
 		//	that needs to be manually filtered.
 		srcs = await game.packs?.filter(f=> f.title.toLowerCase().includes('item')).map(g => g.index);
@@ -157,7 +159,8 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 						14400 for "d" )
 						OR number + "m" or "t" or "h" or "d" + "]</span>"
 		*/
-		let effectNote = TXT_NOTE_START + getTag(descHTML, "Effects") + TXT_NOTE_APPLY + getTag(descHTML, "Secondary") + getTag(descHTML, "Condition");
+		
+		let effectNote = TXT_NOTE_START + getTag(descHTML, "Effect") + TXT_NOTE_APPLY + getTag(descHTML, "Secondary") + getTag(descHTML, "Condition") + "</span>";
 		if (_SHOW) debugger
 
 		/*
@@ -269,4 +272,11 @@ function getTag(htm, tag) {
         }
     }
 	return rslt;
+}
+
+static function getConditionsFromJournal(uuid) {
+	if (_SHOW) debugger
+	const journal = fromUuid(uuid);
+	const journalData = game.journal.fromCompendium(journal);
+	const srcs = foundry.utils.parseHTML(journalData.contents);
 }
