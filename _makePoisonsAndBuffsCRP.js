@@ -1,4 +1,4 @@
-const _VERSION = '0.3.12';
+const _VERSION = '0.3.13';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -97,7 +97,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	for (const s of srcs) {
 		let descHTML = "", rgxMatch = [];
 		let cure = "", freq = "", price = "", name = "";
-		const itemUuid = s.itemUuid;
+		const itemUuid = s.uuid;
 		if (_VERBOSE) console.log(_VERSION, "itemUuid", itemUuid);
 		const item = await fromUuid(itemUuid);
 		if (_VERBOSE) console.log(_VERSION, "item", item);
