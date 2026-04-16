@@ -1,4 +1,4 @@
-const _VERSION = '0.3.0';
+const _VERSION = '0.3.1';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -168,7 +168,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			folder: CRP_BFF_PSN_FLDR,
 			img: itemData.img,
 			_id: randomID(16),
-			uuid: ("Compendium." + CRP_PACK_ITEMS + ".Folder." + CRP_ITM_PSN_FLDR)
+//			uuid: ("Compendium." + CRP_PACK_ITEMS + ".Folder." + CRP_ITM_PSN_FLDR)
 		});
 		if (_VERBOSE) console.log(_VERSION, 'buff', buff);
 		const buffData = await game.items.fromCompendium(buff);
@@ -177,8 +177,8 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		foundry.utils.setProperty(buffData, ITM_PACK, CRP_PACK_ITEMS);
 		
 		if (_VERBOSE) console.log(_VERSION, 'buffData', buffData);
-		rslt = await Item.create(itemData, {pack: CRP_PACK_ITEMS, folder: CRP_ITM_PSN_FLDR, source: ("Compendium." + CRP_PACK_ITEMS + ".Folder." + CRP_ITM_PSN_FLDR) });
-		if (_VERBOSE) console.log(_VERSION, 'poison buff creation:', rslt);
+		rslt = await Item.create(buffData, {pack: CRP_PACK_ITEMS, folder: CRP_ITM_PSN_FLDR, source: ("Compendium." + CRP_PACK_ITEMS + ".Folder." + CRP_ITM_PSN_FLDR) });
+		if (_VERBOSE) console.log(_VERSION, 'create buff results:', rslt);
 	}
 
 return;
