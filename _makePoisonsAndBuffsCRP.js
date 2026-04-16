@@ -1,4 +1,4 @@
-const _VERSION = '0.3.3';
+const _VERSION = '0.3.4';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -259,9 +259,14 @@ function removeHTML(htm) {
 }
 
 function getTag(htm, tag) {
-	let rslt = "";
-	const srcs = foundry.utils.parseHTML(htm).find(f => f.has(tag));
 	if (_SHOW) debugger
-
+	let rslt = "", line = "";
+	const srcs = foundry.utils.parseHTML(htm)
+    for (const s of srcs) {
+        if (s.innerHTML.includes(tag)) {
+          line = s.innerHTML;
+          break;
+        }
+    }
 	return rslt;
 }
