@@ -1,4 +1,4 @@
-const _VERSION = '0.2.10';
+const _VERSION = '0.3.0';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -57,8 +57,8 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	CREATE a copy of Poison item in "Compendium.crp-contents.crp-items" in folder "ITEMS", 
 		subfolder "Poisons" for each not already there.
 */
-	const CRP_ITEMS = "crp-contents.crp-items";
-	const CRP_MACROS = "crp-contents.crp-macros";
+	const CRP_PACK_ITEMS = "crp-contents.crp-items";
+	const CRP_PACK_MACROS = "crp-contents.crp-macros";
 	const CRP_BFF_PSN_FLDR = "DGNHw19qOPUjYRMy";		//	Compendium.crp-contents.crp-items.Folder. + this
 	const CRP_ITM_PSN_FLDR = "Bn4K7b0X6r1WHKmN";		//	Compendium.crp-contents.crp-items.Folder. + this
 
@@ -68,6 +68,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	const KNW_PRICE_ATTR = "system.price";
 	const ITM_IDNT = "system.identified";
 	const ITM_FLDR = "folder";
+	const ITM_PACK = "pack";
 	const ITM_STS_DSRC = "_stats.duplicateSource";
 	const ITM_STS_CSRC = "_stats.compendiumSource";
 	const ACTEFF_NOTE_ATTR = "system.actions.0.notes.effect.0";
@@ -155,7 +156,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 						OR number + "m" or "t" or "h" or "d" + "]</span>"
 		*/
 		if (_SHOW) debugger
-		rslt = await Item.create(itemData, {pack: CRP_ITEMS, folder: CRP_ITM_PSN_FLDR, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_ITM_PSN_FLDR) });
+		rslt = await Item.create(itemData, {pack: CRP_PACK_ITEMS, folder: CRP_ITM_PSN_FLDR, source: ("Compendium." + CRP_PACK_ITEMS + ".Folder." + CRP_ITM_PSN_FLDR) });
 		if (_VERBOSE) console.log(_VERSION, 'create item result:', rslt);
 
 		/*
@@ -166,14 +167,17 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			type: "buff",
 			folder: CRP_BFF_PSN_FLDR,
 			img: itemData.img,
-			_id: randomID(16)
+			_id: randomID(16),
+			uuid: ("Compendium." + CRP_PACK_ITEMS + ".Folder." + CRP_ITM_PSN_FLDR)
 		});
 		if (_VERBOSE) console.log(_VERSION, 'buff', buff);
-		rslt = removeHTML(descHTML),
-		foundry.utils.setProperty(buff, KNW_DESC_ATTR, rslt);
-		const buffData = await game.items.fromCompendium(rslt);
+		const buffData = await game.items.fromCompendium(buff);
+		rslt = removeHTML(descHTML);
+		foundry.utils.setProperty(buffData, KNW_DESC_ATTR, rslt);
+		foundry.utils.setProperty(buffData, ITM_PACK, CRP_PACK_ITEMS);
+		
 		if (_VERBOSE) console.log(_VERSION, 'buffData', buffData);
-		rslt = await Item.create(itemData, {pack: CRP_ITEMS, folder: CRP_ITM_PSN_FLDR, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_ITM_PSN_FLDR) });
+		rslt = await Item.create(itemData, {pack: CRP_PACK_ITEMS, folder: CRP_ITM_PSN_FLDR, source: ("Compendium." + CRP_PACK_ITEMS + ".Folder." + CRP_ITM_PSN_FLDR) });
 		if (_VERBOSE) console.log(_VERSION, 'poison buff creation:', rslt);
 	}
 
