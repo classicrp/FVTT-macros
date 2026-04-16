@@ -18,6 +18,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	GET Poison items from non-CRP Compendium packs.
 */
 	let srcs = '', fltrd = '', rslt = '', obj = [];
+	rslt = getConditionsFromJournal(JRNL_CONDITIONS);
 	if (_TEST) {
 	//	_TEST CASE
 		const name = "Aconite root";
@@ -25,7 +26,6 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		srcs = await game.packs?.filter(f => f.title.toLowerCase().includes('item')).map(g => g.index.getName(name)).filter(g => (typeof g !== 'undefined'));
 		
 	} else {
-		rslt = getConditionsFromJournal(JRNL_CONDITIONS);
 		//	this handles the top set of items with each index for a Compendium,
 		//	that needs to be manually filtered.
 		srcs = await game.packs?.filter(f=> f.title.toLowerCase().includes('item')).map(g => g.index);
