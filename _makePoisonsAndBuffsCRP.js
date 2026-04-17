@@ -1,4 +1,4 @@
-const _VERSION = '0.4.0';
+const _VERSION = '0.4.1';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -42,7 +42,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		const ERR_MSG_TEST = "Unable to retrieve specified poison from pack data.";
 		//	this handles a specific request that returns all copies in Compendiums
 		srcs = await game.packs?.filter(f => f.title.toLowerCase().includes('item')).map(g => g.index.getName(name)).filter(g => (typeof g !== 'undefined'));
-		If (!srcs) {
+		if (!srcs) {
 			msg = 
 			ui.notifications.error(ERR_MSG_TEST);
 			console.error(_VERSION, ERR_MSG_TEST);
@@ -57,7 +57,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		const ERR_MSG_OCRS = "Could not count occurrences of Poisons already converted.";
 		const ERR_MSG_SOME = "Unable to filter out any pre-existing poisons."
 		srcs = await game.packs?.filter(f=> f.title.toLowerCase().includes('item')).map(g => g.index);
-		If (!srcs) {
+		if (!srcs) {
 			ui.notifications.error(ERR_MSG_LIVE);
 			console.error(_VERSION, ERR_MSG_LIVE);
 			return;
