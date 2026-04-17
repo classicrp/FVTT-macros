@@ -6,48 +6,71 @@ const _TEST = true;		//	test mode flag
 const _MEMTEST = false;	//	virtual memory heap dump flag
 /*  
 	Special Thanks: With help from the crew on Discord::FVTT#macro-polo; 
-					@Micheal, @Zhell and mentions to @Freeze amd @Flix for 
+					@Micheal, @Zhell and mentions to @Freeze and @Flix for 
 					spectating in this latest round of Code Golf.  Fore!
 */
 	if (_SHOW) debugger
 	const CRLF = String.fromCharCode(13).concat(String.fromCharCode(10));
 	const BUFF_CURE_CHECK = "Compendium.crp-contents.crp-macros.Macro.wEGLTOmr7iSa5E3l";
 	const BUFF_TOGGLE_CHECK = "Compendium.crp-contents.crp-macros.Macro.0kwyj53zVj6I6rKs";
-	const JRNL_CONDITIONS = "Compendium.pf-content.pf-rules.JournalEntry.FH4DP3oqkBwhLFNS";
-/*
-	GET Poison items from non-CRP Compendium packs.
-*/
-	let srcs = '', fltrd = '', rslt = '', obj = [];
+	let srcs = '', fltrd = '', rslt = '', msg = '', obj = [];
 
-	const jrnl = await fromUuid(JRNL_CONDITIONS);
+/* ----	Get an array of all "Conditions" listed in the rules journal ------- */
+	const JRNL_CONDITIONS_UUID = "Compendium.pf-content.pf-rules.JournalEntry.FH4DP3oqkBwhLFNS";
+	const jrnl = await fromUuid(JRNL_CONDITIONS_UUID);
 	const jrnlData = await game.journal.fromCompendium(jrnl);
-	const JRNL_CONTENT = "pages.0.text.content";
-	const contentHTML = await foundry.utils.getProperty(jrnlData, JRNL_CONTENT);
-	const RGX_CND_LIST = /<h2>s*(.*?)<\/h2>/g;
+	const JRNL_CONTENT_ATTR = "pages.0.text.content";
+	const contentHTML = await foundry.utils.getProperty(jrnlData, JRNL_CONTENT_ATTR);
+	const RGX_CND_LIST = /<h2>(.*?)<\/h2>/g;
+	//	Use REGEX to extract only the <h2></h2> tags and text
 	let conditions = await contentHTML.toLowerCase().match(RGX_CND_LIST);
+	//	Remove the wrapping tags 
 	for (let i = 0; i < conditions.length; i++) {
 		conditions[i] = removeHTML(conditions[i], false);
 	}
-	if (_VERBOSE) console.log(_VERSION, 'conditions:', conditions);
+	if (_VERBOSE) {
+		console.log(_VERSION, 'conditions:', conditions);
+	}
 
+/* ----	GET Poison items from non-CRP Compendium packs. -------------------- */
+	const FLTR_TYPE = "consumable";
+	const FLTR_SUBTYPE = "poison";
+	
 	if (_TEST) {
-	//	_TEST CASE
+	/* ----	TEST CASE BEGIN ------------------------------------------------ */
 		const name = "Aconite root";
+		const ERR_MSG_TEST = "Unable to retrieve specified poison from pack data.";
 		//	this handles a specific request that returns all copies in Compendiums
 		srcs = await game.packs?.filter(f => f.title.toLowerCase().includes('item')).map(g => g.index.getName(name)).filter(g => (typeof g !== 'undefined'));
-		
+		If (!srcs) {
+			msg = 
+			ui.notifications.error(ERR_MSG_TEST);
+			console.error(_VERSION, ERR_MSG_TEST);
+			return;
+		}
+	/* ----	TEST CASE END -------------------------------------------------- */		
 	} else {
+	/* ---- LIVE CASE BEGIN ------------------------------------------------ */
 		//	this handles the top set of items with each index for a Compendium,
 		//	that needs to be manually filtered.
+		const ERR_MSG_LIVE = "Unable to retrieve any poisons from pack data.";
+		const ERR_MSG_OCRS = "Could not count occurrences of Poisons already converted.";
+		const ERR_MSG_SOME = "Unable to filter out any pre-existing poisons."
 		srcs = await game.packs?.filter(f=> f.title.toLowerCase().includes('item')).map(g => g.index);
-		//	returns a Collection of Collections
+		If (!srcs) {
+			ui.notifications.error(ERR_MSG_LIVE);
+			console.error(_VERSION, ERR_MSG_LIVE);
+			return;
+		}
+		//	filters Collections for only the appropriate request
 		for (const c of srcs) {
 			for (const s of c) {
-				if (s.type === 'consumable' && s.system.subType === 'poison') {
+				if (s.type === FLTR_TYPE && s.system.subType === FLTR_SUBTYPE) {
 					rslt.push(s);
 				}
 			}
 		}
+		//	sorts that collection alphabetically by "name".
 		await rslt.sort(function(a, b){
 			let x = a.name.toLowerCase();
 			let y = b.name.toLowerCase();
@@ -55,20 +78,41 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			if (x > y) {return 1;}
 			return 0;
 		});
-		await countOccurrences(rslt, obj);
+		//	counts the number of times a poison (by "name") occurs in all packs.
+		result = await countOccurrences(rslt, obj);
+		if (!result) {
+			ui.notifications.error(ERR_MSG_OCRS);
+			console.error(_VERSION, ERR_MSG_OCRS);
+			return;
+		}
+		//	get a list of each poison that shows up more than once.
 		fltrd = obj.filter(f => f.occurs > 1);
-		if (_VERBOSE) console.log(_VERSION, 'fltrd:', fltrd, CRLF, 'rslt:', rslt);
-		srcs = await rslt.filter(a => !fltrd.some(b => b.name === a.name));
-	}
-	if (_MEMTEST) {
+		if (_VERBOSE) {
+			console.log(_VERSION, 'fltrd:', fltrd, CRLF, 'rslt:', rslt);
+		}
+		if (fltrd) {
+			//	we want to ignore those "name".
+			srcs = await rslt.filter(a => !fltrd.some(b => b.name === a.name));
+			if (!srcs) {
+				ui.notifications.error(ERR_MSG_SOME);
+				console.error(_VERSION, ERR_MSG_SOME);
+				return;
+			}
+		} else {
+			//	no poisons occur more than once.
+			srcs = rslt;
+		}
+		//	clear large memory objects
 		rslt = null;
 		fltrd = null;
 		obj = null;
+	/* ---- LIVE CASE END -------------------------------------------------- */
 	}
-	if (_VERBOSE) console.log(_VERSION, 'srcs:', srcs);
-/*
-	CREATE a copy of Poison item in "Compendium.crp-contents.crp-items" in folder "ITEMS", 
-		subfolder "Poisons" for each not already there.
+	if (_VERBOSE) {
+		console.log(_VERSION, 'srcs:', srcs);
+	}
+/* ----	CREATE a copy of Poison item in "Compendium.crp-contents.crp-items"
+		in folder "ITEMS", subfolder "Poisons" for each not already there.
 */
 	const CRP_PACK_ITEMS = "crp-contents.crp-items";
 	const CRP_PACK_MACROS = "crp-contents.crp-macros";
@@ -76,18 +120,21 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	const CRP_ITM_PSN_FLDR = "Bn4K7b0X6r1WHKmN";		//	Compendium.crp-contents.crp-items.Folder. + this
 	const REPLACE_THIS_WITH_BUFF_UUID = "REPLACE_THIS_WITH_BUFF_UUID";
 
-	const UKN_NAME_ATTR = "system.unidentified.name";
-	const UKN_DESC_ATTR = "system.description.unidentified";
-	const KNW_DESC_ATTR = "system.description.value";
-	const KNW_PRICE_ATTR = "system.price";
-	const ITM_IDNT = "system.identified";
-	const ITM_FLDR = "folder";
-	const ITM_PACK = "pack";
-	const ITM_STS_DSRC = "_stats.duplicateSource";
-	const ITM_STS_CSRC = "_stats.compendiumSource";
-	const ACTEFF_NOTE_ATTR = "system.actions.0.notes.effect.0";
-	const ACTSAV_NOTE_ATTR = "system.actions.0.save.description";
-	const EFF_NOTE_ATTR = "system.effectNotes.0";
+	const ATTR_UKN_NAME = "system.unidentified.name";
+	const ATTR_UKN_DESC = "system.description.unidentified";
+	const ATTR_KNWN_DESC = "system.description.value";
+	const ATTR_KNWN_PRC = "system.price";
+	const ATTR_ITM_IDNT = "system.identified";
+	const ATTR_FLDR = "folder";
+	const ATTR_PACK = "pack";
+	const ATTR_ITM_CARRIED = "system.carried";
+	const ATTR_ITM_EQP = "system.equipped";
+	const ATTR_ITM_STS_DSRC = "_stats.duplicateSource";
+	const ATTR_ITM_STS_CSRC = "_stats.compendiumSource";
+	const ATTR_ACT_NOTE_EFF = "system.actions.0.notes.effect.0";
+	const ATTR_ACT_SAV_DESC = "system.actions.0.save.description";
+	const ATTR_EFF_NOTE = "system.effectNotes.0";
+	const ATTR_QUICKBAR = "system.showInQuickbar";
 	
 	const TXT_UNK_NAME = "Vial of liquid";
 	const TXT_UNK_DESC = "<p>Some liquid in a vial.</p>";
@@ -101,126 +148,207 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	
 	for (const s of srcs) {
 		let descHTML = "", rgxMatch = [];
-		let cure = "", freq = "", price = "", name = "";
+		let cure = "", frequency = "", price = "", name = "";
+		//	Grab the needed <uuid>.
 		const itemUuid = s.uuid;
-		if (_VERBOSE) console.log(_VERSION, "itemUuid", itemUuid);
+		if (_VERBOSE) {
+			console.log(_VERSION, "itemUuid", itemUuid);
+		}
+		//	Create an instance of [ItemPF].
 		const item = await fromUuid(itemUuid);
-		if (_VERBOSE) console.log(_VERSION, "item", item);
+		if (_VERBOSE) {
+			console.log(_VERSION, "item", item);
+		}
+		//	Extract the data structure from <item> for further processing.
 		let itemData = await game.items.fromCompendium(item);
-		if (_VERBOSE) console.log(_VERSION, "itemData", itemData);
-		/*
-			SET <Unidentified Name> to "Vial of liquid".
-		*/
-		result = await foundry.utils.setProperty(itemData, UKN_NAME_ATTR, TXT_UNK_NAME);
-		if (!result) console.warn(_VERSION, "itemData property [", UKN_NAME_ATTR, "] not set to:", TXT_UNK_NAME);
-		/*
-			SET <Superficial Details> to "Some liquid in a vial."
-		*/
-		result = await foundry.utils.setProperty(itemData, UKN_DESC_ATTR, TXT_UNK_DESC);
-		if (!result) console.warn(_VERSION, "itemData property [", UKN_DESC_ATTR, "] not set to:", TXT_UNK_DESC );
-		/*
-			GET <Identified Properties>
-		*/
-		descHTML = foundry.utils.getProperty(itemData, KNW_DESC_ATTR);
-		/*
-			=>	ADD at top "<h3>" + <Item.name> + "</h3>"
-		*/
-		name = foundry.utils.getProperty(itemData, "name");
-		const TXT_HDR = `<h3>${name}</h3>`;
+		if (_VERBOSE) {
+			console.log(_VERSION, "itemData", itemData);
+		}
+	/* ----	SET <Unidentified Name> to "Vial of liquid". ------------------- */
+		result = await foundry.utils.setProperty(itemData, ATTR_UKN_NAME, TXT_UNK_NAME);
+		if (!result) {
+			console.warn(_VERSION, "itemData property [", ATTR_UKN_NAME, "] not set to:", TXT_UNK_NAME);
+		}
+	/* ----	SET <Superficial Details> to "Some liquid in a vial. ----------- */
+		result = await foundry.utils.setProperty(itemData, ATTR_UKN_DESC, TXT_UNK_DESC);
+		if (!result) {
+			console.warn(_VERSION, "itemData property [", ATTR_UKN_DESC, "] not set to:", TXT_UNK_DESC );
+		}
+	/* ----	SET	<equipped> to FALSE. --------------------------------------- */
+		result = await foundry.utils.setProperty(itemData, ATTR_ITM_EQP, false);
+		if (!result) {
+			console.warn(_VERSION, "itemData property [", ATTR_ITM_EQP, "] not set to:", false );
+		}
+	/* ---- SET <carried> to FALSE. ---------------------------------------- */
+		result = await foundry.utils.setProperty(itemData, ATTR_ITM_CARRIED, false);
+		if (!result) {
+			console.warn(_VERSION, "itemData property [", ATTR_ITM_CARRIED, "] not set to:", false );
+		}
+	/* ----	GET <Identified Properties> ------------------------------------ */
+		descHTML = foundry.utils.getProperty(itemData, ATTR_KNWN_DESC);
+	/*	=>	ADD at top "<h3>" + <Item.name> + "</h3>" ---------------------- */
+		itemName = foundry.utils.getProperty(itemData, "name");
+		const TXT_HDR = `<h3>${itemName}</h3>`;
 		descHTML = TXT_HDR + descHTML;
-		/*
-			=>	INSERT after "Cure..." - "</p>" + "; <b>Value</b> " + <price> + " gp.</p>"
-		*/
-		price = foundry.utils.getProperty(itemData, KNW_PRICE_ATTR);
-		const TXT_VALUE = `; <strong>Value</strong> ${price} gp.</p>`;
+	/*	=>	INSERT after "Cure..." - "</p>" + "; <b>Value</b> " + <price> +_
+			" gp.</p>" -----------------------------------------------------
+	*/
+		//	Create "Value".
+		price = foundry.utils.getProperty(itemData, ATTR_KNWN_PRC);
+		const TXT_VALUE = `<strong>Value</strong> ${price} gp.</p>`;
+		//	Isolate "Cure".
 		rgxMatch = descHTML.match(RGX_CURE);
 		if (rgxMatch) {
 			cure = rgxMatch[0];
-        }
-		if (!descHTML.includes('Cure')) {			
-			descHTML = descHTML + TXT_CURE + TXT_VALUE;
-		} else {
-			descHTML = descHTML.replace(RGX_LST_P, TXT_VALUE);
 		}
-		/*
-			=>	SET updated <Identified Properties>
-		*/
-		result = await foundry.utils.setProperty(itemData, KNW_DESC_ATTR, descHTML);
-		if (!result) console.warn(_VERSION, "itemData property [", KNW_DESC_ATTR, "] not set to:", descHTML );
+		//	Build "Cure; Value" line.
+		if (!descHTML.includes('Cure')) {			
+			descHTML = descHTML + TXT_CURE + "; " + TXT_VALUE;
+		} else {
+			descHTML = descHTML.replace(RGX_LST_P, ("; " + TXT_VALUE));
+		}
+	/*	=>	SET updated <Identified Properties> ---------------------------- */
+		result = await foundry.utils.setProperty(itemData, ATTR_KNWN_DESC, descHTML);
+		if (!result) {
+			console.warn(_VERSION, "itemData property [", ATTR_KNWN_DESC, "] not set to:", descHTML );
+		}
+		//	Convert descHTML into an Array
 		const descHTMLParsed = foundry.utils.parseHTML(descHTML);
-		/*	
-			SET <action['Use'].SavingThrowEffect> = <span style="font-size:1.2em"><b>Frequency:</b> " + (frequency from details) + "<br><b>Cure:</b> " + 
-				(cure from details OR 1 if none exists there) + " save(s)</span>"
-		*/
+	/* ---- SET <action['Use'].SavingThrowEffect> = <span style="font-size:_
+			1.2em"><b>Frequency:</b> " + (frequency from details) + "<br>_
+			<b>Cure:</b> " + (cure from details OR 1 if none exists there)_
+			+ " save(s)</span>" -------------------------------------------- 
+	*/
+		//	Isolate "Frequency"
 		rgxMatch = descHTML.match(RGX_FREQ);
 		if (rgxMatch) {
-			freq = rgxMatch[0];
+			frequency = rgxMatch[0];
         }
-		const saveNote = TXT_NOTE_START + freq + "<br>" + cure + "</span>";
-		result = await foundry.utils.setProperty(itemData, ACTSAV_NOTE_ATTR, saveNote);
-		if (!result) console.warn(_VERSION, "itemData property [", ACTSAV_NOTE_ATTR, "] not set to:", saveNote );
-		result = await foundry.utils.setProperty(itemData, ACTEFF_NOTE_ATTR, "");
-		if (!result) console.warn(_VERSION, "itemData property [", ACTEFF_NOTE_ATTR, "] not set to:", " " );
-		result = await foundry.utils.setProperty(itemData, ITM_IDNT, false);
-		if (!result) console.warn(_VERSION, "itemData property [", ITM_IDNT, "] not set to:", false );
-		result = await foundry.utils.setProperty(itemData, ITM_FLDR, CRP_ITM_PSN_FLDR);
-		if (!result) console.warn(_VERSION, "itemData property [", ITM_FLDR, "] not set to:", CRP_ITM_PSN_FLDR );
-		result = await foundry.utils.setProperty(itemData, ITM_STS_DSRC, itemUuid);
-		if (!result) console.warn(_VERSION, "itemData property [", ITM_STS_DSRC, "] not set to:", saveNote );
-		//	This needs be done after we have the uuid for the buff		
-		/*
-			SET <effectNotes> = "<span style="font-size:1.2em"><b>Onset:</b> + onset from details + @Apply[ (place itemUuid for the poison's buff here)]<br> + 
-				IF a secondary item exists add "<b>Secondary:</b> " + 
-				IF a Condition exists, add; "@Condition[ (condition lowercase name)" + ";duration=" + Set duration as a die roll/number only for "rnds"
-						content (if you want it to last random "m" minutes, "t" turns, "h" hours, "d" days, then multilpy by
-						10 for "m",
-						100 for "t", 
-						600 for "h" 
-						14400 for "d" )
-						OR number + "m" or "t" or "h" or "d" + "]</span>"
-		*/
-		const onset = getTag(descHTMLParsed, "Onset").replace(`; ${freq}`, '');
+		//	Create <savingThrowEffect>.
+		const savingThrowEffect = TXT_NOTE_START + frequency + "<br>" + cure + "</span>";
+		//	SET <savingThrowEffect>.
+		result = await foundry.utils.setProperty(itemData, ATTR_ACT_SAV_DESC, savingThrowEffect);
+		if (!result) {
+			console.warn(_VERSION, "itemData property [", ATTR_ACT_SAV_DESC, "] not set to:", savingThrowEffect );
+		}
+		//	CLEAR any pre-existing <actionEffect>. 
+		result = await foundry.utils.setProperty(itemData, ATTR_ACT_NOTE_EFF, "");
+		if (!result) {
+			console.warn(_VERSION, "itemData property [", ATTR_ACT_NOTE_EFF, "] not set to:", " " );
+		}
+		//	SET <identified> flag to FALSE.
+		result = await foundry.utils.setProperty(itemData, ATTR_ITM_IDNT, false);
+		if (!result) {
+			console.warn(_VERSION, "itemData property [", ATTR_ITM_IDNT, "] not set to:", false );
+		}
+		//	SET Compendium.Folder
+		result = await foundry.utils.setProperty(itemData, ATTR_FLDR, CRP_ITM_PSN_FLDR);
+		if (!result) {
+			console.warn(_VERSION, "itemData property [", ATTR_FLDR, "] not set to:", CRP_ITM_PSN_FLDR );
+		}
+		//	SET <duplicateSource> to originating item UUID.
+		result = await foundry.utils.setProperty(itemData, ATTR_ITM_STS_DSRC, itemUuid);
+		if (!result) {
+			console.warn(_VERSION, "itemData property [", ATTR_ITM_STS_DSRC, "] not set to:", savingThrowEffect );
+		}
+	/* ---- SET <effectNote> = "<span style="font-size:1.2em"><b>Onset:</b>_
+			+ onset from details + @Apply[ (place itemUuid for the poison's_
+			buff here)]<br> + IF a secondary item exists add "<b>Secondary:_
+			</b> " + IF a Condition exists, add; "@Condition[ (condition_ 
+			lowercase name)" + ";duration=" + Set duration as a die roll/_
+			number only for "rnds" (if you want it to last random "m" _
+			minutes, "t" turns, "h" hours, "d" days, then multilpy by_
+				10 for "m",
+				100 for "t", 
+				600 for "h" 
+				14400 for "d" )
+				OR number + "m" or "t" or "h" or "d" + "]</span>" ---------- 
+	*/
+		//	Isolate "Onset".
+		const onset = getTag(descHTMLParsed, "Onset").replace(`; ${frequency}`, '');
+		//	Isolate "Primary".
 		const primary = getTag(descHTMLParsed, "Primary");
+		//	Isolate "Secondary".
 		const secondary = getTag(descHTMLParsed, "Secondary");
+		//	Isolate "Effect".
 		const effect = getTag(descHTMLParsed, "Effect");
+		//	Create <effectNote>
 		let effectNote = TXT_NOTE_START + onset + TXT_NOTE_APPLY + "</span>";
+	
 		if (_SHOW) debugger
 
-		/*
-			CREATE a new BUFF item placed in "Compendium.crp-contents.crp-items" in folder "BUFFS", subfolder "Poisons"
-		*/
+	/* ---- CREATE a new BUFF item placed in "Compendium.crp-contents._
+			crp-items" in folder "BUFFS", subfolder "Poisons" --------------
+	*/
+		//	Create an instance of [ItemBuffPF].
 		const buff = await new pf1.documents.item.ItemBuffPF({
 			name: `Poison (${name.toLowerCase()})`,
 			type: "buff",
+			pack: CRP_PACK_ITEMS,
 			folder: CRP_BFF_PSN_FLDR,
 			img: itemData.img,
 			_id: randomID(16),
 		});
-		if (_VERBOSE) console.log(_VERSION, 'buff', buff);
-		/*
-			=>	SET itemUuid of associated Poison Item to newly created BUFF itemUuid.
-		*/
+		if (_VERBOSE) {
+			console.log(_VERSION, 'buff', buff);
+		}
+	/* 	=>	SET buffUuid of associated Poison Item to newly created BUFF_ 
+			buffUuid. ------------------------------------------------------
+	*/
+		//	Create <buffUuid>.
 		const buffUuid = "Compendium." + CRP_PACK_ITEMS + ".Item." + buff._id;
+		//	Update Item <effectNote> with <buffUuid>.
 		effectNote = await effectNote.replace(REPLACE_THIS_WITH_BUFF_UUID, buffUuid);
-		result = await foundry.utils.setProperty(itemData, EFF_NOTE_ATTR, effectNote);
-		if (!result) console.warn(_VERSION, "itemData property [", EFF_NOTE_ATTR, "] not set to:", effectNote );
-		
+		//	SET <effectNote> in <itemData>.
+		result = await foundry.utils.setProperty(itemData, ATTR_EFF_NOTE, effectNote);
+		if (!result) {
+			console.warn(_VERSION, "itemData property [", ATTR_EFF_NOTE, "] not set to:", effectNote );
+		}
+	
+		//	Extract the data structure from <buff> for further processing.
 		let buffData = await game.items.fromCompendium(buff);
-		//rslt = removeHTML(descHTML, true);
-		result = await foundry.utils.setProperty(buffData, KNW_DESC_ATTR, descHTML);
-		if (!result) console.warn(_VERSION, "itemData property [", KNW_DESC_ATTR, "] not set to:", rslt );
-		result = await foundry.utils.setProperty(buffData, ITM_PACK, CRP_PACK_ITEMS);
-		if (!result) console.warn(_VERSION, "itemData property [", ITM_PACK, "] not set to:", CRP_PACK_ITEMS );
-		if (_VERBOSE) console.log(_VERSION, 'buffData', buffData);
-		/*
-			INSERT Item and Buff into Compendium
-		*/
-		rslt = await Item.create(itemData, {pack: CRP_PACK_ITEMS, folder: CRP_ITM_PSN_FLDR, source: ("Compendium." + CRP_PACK_ITEMS + ".Folder." + CRP_ITM_PSN_FLDR) });
-		if (!rslt) console.warn(_VERSION, "Item:", itemData.name, "failed to create.");
-		if (_VERBOSE) console.log(_VERSION, 'create item result:', rslt);
-		rslt = await Item.create(buffData, {pack: CRP_PACK_ITEMS, folder: CRP_BFF_PSN_FLDR, source: ("Compendium." + CRP_PACK_ITEMS + ".Folder." + CRP_BFF_PSN_FLDR) });
-		if (!rslt) console.warn(_VERSION, "Buff:", buffData.name, "failed to create.");
-		if (_VERBOSE) console.log(_VERSION, 'create buff results:', rslt);
+		//	SET <description> to same description from <item>.
+		result = await foundry.utils.setProperty(buffData, ATTR_KNWN_DESC, descHTML);
+		if (!result) {
+			console.warn(_VERSION, "buffData property [", ATTR_KNWN_DESC, "] not set to:", result );
+		}
+		//	SET <pack> to proper Compendium.
+//		result = await foundry.utils.setProperty(buffData, ATTR_PACK, CRP_PACK_ITEMS);
+//		if (!result) {
+//			console.warn(_VERSION, "buffData property [", ATTR_PACK, "] not set to:", CRP_PACK_ITEMS );
+//		}
+		//	SET <showInQuickbar> to TRUE.
+		result = await foundry.utils.setProperty(buffData, ATTR_QUICKBAR, true);
+		if (!result) {
+			console.warn(_VERSION, "buffData property [", ATTR_QUICKBAR, "] not set to:", true );
+		}
+		
+		
+		
+		
+		
+		
+		if (_VERBOSE) {
+			console.log(_VERSION, 'buffData', buffData);
+		}
+	/*	CREATE new Item in Compendium -------------------------------------- */
+		result = await Item.create(itemData, {pack: CRP_PACK_ITEMS, folder: CRP_ITM_PSN_FLDR, source: ("Compendium." + CRP_PACK_ITEMS + ".Folder." + CRP_ITM_PSN_FLDR) });
+		if (!result) {
+			console.error(_VERSION, "Item:", itemData.name, "failed to create.");
+			return;
+		}
+		if (_VERBOSE) {
+			console.log(_VERSION, 'create item result:', rslt);
+		}
+	/*	CREATE new Buff in Compendium -------------------------------------- */	
+		result = await Item.create(buffData, {pack: CRP_PACK_ITEMS, folder: CRP_BFF_PSN_FLDR, source: ("Compendium." + CRP_PACK_ITEMS + ".Folder." + CRP_BFF_PSN_FLDR) });
+		if (!result) {
+			console.error(_VERSION, "Buff:", buffData.name, "failed to create.");
+			return;
+		}
+		if (_VERBOSE) {
+			console.log(_VERSION, 'create buff results:', rslt);
+		}
 	}
 
 return;
