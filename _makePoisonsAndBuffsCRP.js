@@ -1,4 +1,4 @@
-const _VERSION = '0.4.1';
+const _VERSION = '0.4.2';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -11,19 +11,24 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 */
 	if (_SHOW) debugger
 	const CRLF = String.fromCharCode(13).concat(String.fromCharCode(10));
-	const BUFF_CURE_CHECK = "Compendium.crp-contents.crp-macros.Macro.wEGLTOmr7iSa5E3l";
-	const BUFF_TOGGLE_CHECK = "Compendium.crp-contents.crp-macros.Macro.0kwyj53zVj6I6rKs";
+	const UUID_CURE_CHK = "Compendium.crp-contents.crp-macros.Macro.wEGLTOmr7iSa5E3l";
+	const UUID_TOGGLE_CHK = "Compendium.crp-contents.crp-macros.Macro.0kwyj53zVj6I6rKs";
+
 	let srcs = '', fltrd = '', rslt = '', msg = '', obj = [];
 
 /* ----	Get an array of all "Conditions" listed in the rules journal ------- */
-	const JRNL_CONDITIONS_UUID = "Compendium.pf-content.pf-rules.JournalEntry.FH4DP3oqkBwhLFNS";
-	const jrnl = await fromUuid(JRNL_CONDITIONS_UUID);
+	const ATTR_JRNL_CONT = "pages.0.text.content";
+	const RGX_COND_LIST = /<h2>(.*?)<\/h2>/g;
+	const UUID_JRNL_COND = "Compendium.pf-content.pf-rules.JournalEntry.FH4DP3oqkBwhLFNS";
+
+	//	Create an instance of the specified [ItemJournalPF].
+	const jrnl = await fromUuid(UUID_JRNL_COND);
+	//	Extract the data & structure from <jrnl> for processing.
 	const jrnlData = await game.journal.fromCompendium(jrnl);
-	const JRNL_CONTENT_ATTR = "pages.0.text.content";
-	const contentHTML = await foundry.utils.getProperty(jrnlData, JRNL_CONTENT_ATTR);
-	const RGX_CND_LIST = /<h2>(.*?)<\/h2>/g;
+	//	GET the HTML contents from <jrnlData>.
+	const contentHTML = await foundry.utils.getProperty(jrnlData, ATTR_JRNL_CONT);
 	//	Use REGEX to extract only the <h2></h2> tags and text
-	let conditions = await contentHTML.toLowerCase().match(RGX_CND_LIST);
+	let conditions = await contentHTML.toLowerCase().match(RGX_COND_LIST);
 	//	Remove the wrapping tags 
 	for (let i = 0; i < conditions.length; i++) {
 		conditions[i] = removeHTML(conditions[i], false);
@@ -114,10 +119,10 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 /* ----	CREATE a copy of Poison item in "Compendium.crp-contents.crp-items"
 		in folder "ITEMS", subfolder "Poisons" for each not already there.
 */
-	const CRP_PACK_ITEMS = "crp-contents.crp-items";
-	const CRP_PACK_MACROS = "crp-contents.crp-macros";
-	const CRP_BFF_PSN_FLDR = "DGNHw19qOPUjYRMy";		//	Compendium.crp-contents.crp-items.Folder. + this
-	const CRP_ITM_PSN_FLDR = "Bn4K7b0X6r1WHKmN";		//	Compendium.crp-contents.crp-items.Folder. + this
+	const CRP_ITEMS = "crp-contents.crp-items";
+	const CRP_MACROS = "crp-contents.crp-macros";
+	const CRP_FLDR_BFF_PSN = "DGNHw19qOPUjYRMy";		//	Compendium.crp-contents.crp-items.Folder. + this
+	const CRP_FLDR_ITM_PSN = "Bn4K7b0X6r1WHKmN";		//	Compendium.crp-contents.crp-items.Folder. + this
 	const REPLACE_THIS_WITH_BUFF_UUID = "REPLACE_THIS_WITH_BUFF_UUID";
 
 	const ATTR_UKN_NAME = "system.unidentified.name";
@@ -148,21 +153,21 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	
 	for (const s of srcs) {
 		let descHTML = "", rgxMatch = [];
-		let cure = "", frequency = "", price = "", name = "";
+		let cure = "", frequency = "", price = "", itemName = "", buffName = "";
 		//	Grab the needed <uuid>.
 		const itemUuid = s.uuid;
 		if (_VERBOSE) {
-			console.log(_VERSION, "itemUuid", itemUuid);
+			console.log(_VERSION, "itemUuid:", itemUuid);
 		}
-		//	Create an instance of [ItemPF].
+		//	Create an instance of the current [ItemConsumablePF].
 		const item = await fromUuid(itemUuid);
 		if (_VERBOSE) {
-			console.log(_VERSION, "item", item);
+			console.log(_VERSION, "item:", item);
 		}
 		//	Extract the data structure from <item> for further processing.
 		let itemData = await game.items.fromCompendium(item);
 		if (_VERBOSE) {
-			console.log(_VERSION, "itemData", itemData);
+			console.log(_VERSION, "itemData:", itemData);
 		}
 	/* ----	SET <Unidentified Name> to "Vial of liquid". ------------------- */
 		result = await foundry.utils.setProperty(itemData, ATTR_UKN_NAME, TXT_UNK_NAME);
@@ -242,14 +247,24 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			console.warn(_VERSION, "itemData property [", ATTR_ITM_IDNT, "] not set to:", false );
 		}
 		//	SET Compendium.Folder
-		result = await foundry.utils.setProperty(itemData, ATTR_FLDR, CRP_ITM_PSN_FLDR);
+		result = await foundry.utils.setProperty(itemData, ATTR_FLDR, CRP_FLDR_ITM_PSN);
 		if (!result) {
-			console.warn(_VERSION, "itemData property [", ATTR_FLDR, "] not set to:", CRP_ITM_PSN_FLDR );
+			console.warn(_VERSION, "itemData property [", ATTR_FLDR, "] not set to:", CRP_FLDR_ITM_PSN );
 		}
 		//	SET <duplicateSource> to originating item UUID.
 		result = await foundry.utils.setProperty(itemData, ATTR_ITM_STS_DSRC, itemUuid);
 		if (!result) {
 			console.warn(_VERSION, "itemData property [", ATTR_ITM_STS_DSRC, "] not set to:", savingThrowEffect );
+		}
+		//	SET <pack> to proper Compendium.
+		result = await foundry.utils.setProperty(itemData, ATTR_PACK, CRP_ITEMS);
+		if (!result) {
+			console.warn(_VERSION, "itemData property [", ATTR_PACK, "] not set to:", CRP_ITEMS );
+		}
+		//	SET <folder> to proper Folder in the Compendium.
+		result = await foundry.utils.setProperty(itemData, ATTR_FLDR, CRP_FLDR_ITM_PSN);
+		if (!result) {
+			console.warn(_VERSION, "buffData property [", ATTR_FLDR, "] not set to:", CRP_FLDR_ITM_PSN );
 		}
 	/* ---- SET <effectNote> = "<span style="font-size:1.2em"><b>Onset:</b>_
 			+ onset from details + @Apply[ (place itemUuid for the poison's_
@@ -282,10 +297,10 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	*/
 		//	Create an instance of [ItemBuffPF].
 		const buff = await new pf1.documents.item.ItemBuffPF({
-			name: `Poison (${name.toLowerCase()})`,
+			name: `Poison (${itemName.toLowerCase()})`,
 			type: "buff",
-			pack: CRP_PACK_ITEMS,
-			folder: CRP_BFF_PSN_FLDR,
+			pack: CRP_ITEMS,
+			folder: CRP_FLDR_BFF_PSN,
 			img: itemData.img,
 			_id: randomID(16),
 		});
@@ -296,7 +311,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			buffUuid. ------------------------------------------------------
 	*/
 		//	Create <buffUuid>.
-		const buffUuid = "Compendium." + CRP_PACK_ITEMS + ".Item." + buff._id;
+		const buffUuid = "Compendium." + CRP_ITEMS + ".Item." + buff._id;
 		//	Update Item <effectNote> with <buffUuid>.
 		effectNote = await effectNote.replace(REPLACE_THIS_WITH_BUFF_UUID, buffUuid);
 		//	SET <effectNote> in <itemData>.
@@ -313,10 +328,15 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			console.warn(_VERSION, "buffData property [", ATTR_KNWN_DESC, "] not set to:", result );
 		}
 		//	SET <pack> to proper Compendium.
-//		result = await foundry.utils.setProperty(buffData, ATTR_PACK, CRP_PACK_ITEMS);
-//		if (!result) {
-//			console.warn(_VERSION, "buffData property [", ATTR_PACK, "] not set to:", CRP_PACK_ITEMS );
-//		}
+		result = await foundry.utils.setProperty(buffData, ATTR_PACK, CRP_ITEMS);
+		if (!result) {
+			console.warn(_VERSION, "buffData property [", ATTR_PACK, "] not set to:", CRP_ITEMS );
+		}
+		//	SET <folder> to proper Folder in the Compendium.
+		result = await foundry.utils.setProperty(buffData, ATTR_FLDR, CRP_FLDR_BFF_PSN);
+		if (!result) {
+			console.warn(_VERSION, "buffData property [", ATTR_FLDR, "] not set to:", CRP_FLDR_BFF_PSN );
+		}
 		//	SET <showInQuickbar> to TRUE.
 		result = await foundry.utils.setProperty(buffData, ATTR_QUICKBAR, true);
 		if (!result) {
@@ -332,22 +352,22 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			console.log(_VERSION, 'buffData', buffData);
 		}
 	/*	CREATE new Item in Compendium -------------------------------------- */
-		result = await Item.create(itemData, {pack: CRP_PACK_ITEMS, folder: CRP_ITM_PSN_FLDR, source: ("Compendium." + CRP_PACK_ITEMS + ".Folder." + CRP_ITM_PSN_FLDR) });
+		result = await Item.create(itemData, {pack: CRP_ITEMS, folder: CRP_FLDR_ITM_PSN, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_ITM_PSN) });
 		if (!result) {
 			console.error(_VERSION, "Item:", itemData.name, "failed to create.");
 			return;
 		}
 		if (_VERBOSE) {
-			console.log(_VERSION, 'create item result:', rslt);
+			console.log(_VERSION, 'create item result:', result);
 		}
 	/*	CREATE new Buff in Compendium -------------------------------------- */	
-		result = await Item.create(buffData, {pack: CRP_PACK_ITEMS, folder: CRP_BFF_PSN_FLDR, source: ("Compendium." + CRP_PACK_ITEMS + ".Folder." + CRP_BFF_PSN_FLDR) });
+		result = await Item.create(buffData, {pack: CRP_ITEMS, folder: CRP_FLDR_BFF_PSN, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_BFF_PSN) });
 		if (!result) {
 			console.error(_VERSION, "Buff:", buffData.name, "failed to create.");
 			return;
 		}
 		if (_VERBOSE) {
-			console.log(_VERSION, 'create buff results:', rslt);
+			console.log(_VERSION, 'create buff results:', result);
 		}
 	}
 
