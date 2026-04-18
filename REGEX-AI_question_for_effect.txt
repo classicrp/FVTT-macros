@@ -1,0 +1,19 @@
+Using REGEX
+From: "<strong>Effect</strong> 1d3 Dex damage, 1 Con damage, and nauseated for 1 round"
+Extract: "1d3 Dex damage" and "1 Con damage"
+where "Dex" or "Con" can be any word
+where 1 can be any number OR a die expression like 1d3
+
+To extract the specific damage types and amounts from your string, use this pattern:
+
+/(\d+(?:d\d+)?\s+\w+\s+damage)/gi
+
+How it works
+
+\d+ matches the initial number (e.g., 1).
+
+(?:d\d+)? optionally matches a die expression (e.g., d3).
+
+\s+\w+ matches the space and the damage attribute (e.g., Dex).
+
+\s+damage matches the literal word "damage". 

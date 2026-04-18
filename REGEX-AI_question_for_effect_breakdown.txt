@@ -1,0 +1,17 @@
+Using REGEX
+From: "1d3 Dex damage"
+Extract:  "Dex" and number
+where "Dex" can be any word
+where "1d3" can be a die expression like 1d6 OR any number
+
+To extract these values, you can use named capture groups.
+
+The Regex Pattern
+/(?<number>\d+(?:d\d+)?)\s+(?<word>\w+)/i
+
+Pattern Breakdown
+(?<number>...) — Captures the die or digits into a group named "number".
+\d+ — Matches one or more digits (e.g., 5).
+(?:d\d+)? — Optionally matches a "d" followed by more digits (e.g., d6).
+\s+ — Matches the space between the number and the word.
+(?<word>\w+) — Captures the following word (e.g., Dex) into a group named "word". 

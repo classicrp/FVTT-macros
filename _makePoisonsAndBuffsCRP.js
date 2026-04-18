@@ -1,4 +1,4 @@
-const _VERSION = '0.4.2';
+const _VERSION = '0.4.6';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -48,7 +48,6 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		//	this handles a specific request that returns all copies in Compendiums
 		srcs = await game.packs?.filter(f => f.title.toLowerCase().includes('item')).map(g => g.index.getName(name)).filter(g => (typeof g !== 'undefined'));
 		if (!srcs) {
-			msg = 
 			ui.notifications.error(ERR_MSG_TEST);
 			console.error(_VERSION, ERR_MSG_TEST);
 			return;
@@ -147,7 +146,6 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	const TXT_NOTE_START = `<span style="font-size:1.2em">`;
 	const TXT_NOTE_APPLY = " @Apply[" + REPLACE_THIS_WITH_BUFF_UUID + "]<br>";
 	
-	const RGX_FREQ = /<strong>Frequency<\/strong>\s*([^<]+)/;
 	const RGX_CURE = /<strong>Cure<\/strong>\s*\d+\s*saves?/;
 	const RGX_LST_P = /<\/p>$/;
 	
@@ -201,7 +199,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		//	Create "Value".
 		price = foundry.utils.getProperty(itemData, ATTR_KNWN_PRC);
 		const TXT_VALUE = `<strong>Value</strong> ${price} gp.</p>`;
-		//	Isolate "Cure".
+		//	ISOLATE "Cure".
 		rgxMatch = descHTML.match(RGX_CURE);
 		if (rgxMatch) {
 			cure = rgxMatch[0];
@@ -224,13 +222,15 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			<b>Cure:</b> " + (cure from details OR 1 if none exists there)_
 			+ " save(s)</span>" -------------------------------------------- 
 	*/
-		//	Isolate "Frequency"
-		rgxMatch = descHTML.match(RGX_FREQ);
-		if (rgxMatch) {
-			frequency = rgxMatch[0];
-        }
-		//	Create <savingThrowEffect>.
-		const savingThrowEffect = TXT_NOTE_START + frequency + "<br>" + cure + "</span>";
+		//	ISOLATE "Frequency"
+debugger
+		frequency = getFrequency(descHTML);
+		if (!frequency) {
+			const WRN_MSG_FREQ = `Could not locate any "Frequency" information from item description.`;
+			console.warn(_VERSION, WRN_MSG_FREQ );
+		}
+		//	POPULATE <savingThrowEffect>.
+		const savingThrowEffect = TXT_NOTE_START + frequency.frequencyHTML + "<br>" + cure + "</span>";
 		//	SET <savingThrowEffect>.
 		result = await foundry.utils.setProperty(itemData, ATTR_ACT_SAV_DESC, savingThrowEffect);
 		if (!result) {
@@ -279,15 +279,28 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 				14400 for "d" )
 				OR number + "m" or "t" or "h" or "d" + "]</span>" ---------- 
 	*/
-		//	Isolate "Onset".
+		//	ISOLATE "Onset".
 		const onset = getTag(descHTMLParsed, "Onset").replace(`; ${frequency}`, '');
-		//	Isolate "Primary".
+		//	ISOLATE "Primary".
 		const primary = getTag(descHTMLParsed, "Primary");
-		//	Isolate "Secondary".
+		//	ISOLATE "Secondary".
 		const secondary = getTag(descHTMLParsed, "Secondary");
-		//	Isolate "Effect".
+		//	ISOLATE "Effect".
+		result = "";
 		const effect = getTag(descHTMLParsed, "Effect");
-		//	Create <effectNote>
+		//	Check if "Effect" has a "Condition"
+		let condition = "", cDur = 0, cUnits = "";
+		result = await hasCondition( effect, conditions );
+		if (result) {
+			//	Extract "Condition"
+			result = getCondition(effect);
+			if (result) {
+				condition = result[0];
+				cDur = result[1];
+				cUnits = result[2];
+			}
+		}
+		//	POPULATE <effectNote>
 		let effectNote = TXT_NOTE_START + onset + TXT_NOTE_APPLY + "</span>";
 	
 		if (_SHOW) debugger
@@ -342,6 +355,10 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		if (!result) {
 			console.warn(_VERSION, "buffData property [", ATTR_QUICKBAR, "] not set to:", true );
 		}
+	/* ----	SET "on-use" macro "buffCureCheck" to "Compendium.crp-contents.crp-macros.Macro.wEGLTOmr7iSa5E3l" */
+	
+	
+	/* ----	SET "on-toggle" macro "buffToggleCheck" to "Compendium.crp-contents.crp-macros.Macro.0kwyj53zVj6I6rKs" */
 		
 		
 		
@@ -459,4 +476,53 @@ function getConditionsFromJournal(itemUuid) {
 	const journal = fromUuid(itemUuid);
 	const journalData = game.journal.fromCompendium(journal);
 	const srcs = foundry.utils.parseHTML(journalData.contents);
+}
+
+function hasCondition(t, cond) {
+	//	See if the passed in "Effect" line holds a known Condition
+	return cond.find(f => t.includes(f))||"";
+}
+
+function durations() {
+	let rslt = new Collection();
+	rslt.set("round", ["r", "rnd", "round", "rounds", "rnds"]);
+	rslt.set("minute", ["m", "min", "mins", "minute", "minutes"]);
+	rslt.set("turn", ["t", "trn", "turn", "trns", "turns"]);
+	rslt.set("hour", ["h", "hr", "hrs", "hour", "hours"]);
+	rslt.set("day", ["d", "day", "days"]);
+	rslt.set("week", ["w", "wk", "wks", "week", "weeks"]);
+	return rslt;
+}
+
+function getConditionBreakdown(eff) {
+	const RGX_COND = /(\w+)\s+for\s+(\d+(?:d\d+)?)\s+(minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w)\b/i;
+	return eff.match(RGX_COND);
+}
+
+function getEachEffect(eff) {
+	const RGX_EA_EFF = /(\d+(?:d\d+)?\s+\w+\s+damage)/gi;
+	return eff.match(RGX_EA_EFF);
+}
+
+function getEffectBreakdown(txt) {
+	const RGX_EFF_BRKD = /(?<number>\d+(?:d\d+)?)\s+(?<word>\w+)/i;
+	return txt.match(RGX_EFF_BRKD);
+}
+
+function getFrequency(HTML) {
+	const RGX_FREQ = /<(.*?)>Frequency<\/\1>\s*(.*?(\d+d\d+|\d+)\s+(minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w)\b)/i
+	result = HTML.match(RGX_FREQ);
+	if (result) {
+		return {
+			frequencyHTML: result[0],
+			frequenecyDuration: result[3],
+			frequencyUnits: durations().find(entry => entry.value.includes(result[4].toLowerCase())).key||null
+		}
+	}
+	return null;
+}
+
+function getFrequencyBreakdown(HTML) {
+	const RGX_FREQ = /<strong>Frequency<\/strong>\s*([^<]+)/;
+	return HTML.match(RGX_FREQ);
 }

@@ -1,0 +1,13 @@
+Using REGEX
+From: "<strong>Effect</strong> 1d3 Dex damage, 1 Con damage, and nauseated for 1 round"
+Extract: "nauseated for 1 round"
+where "nauseated" can be any word provided
+where 1 can be any number OR a die expression like 1d6
+where "round" can be any "value" of an Array() in Map() 
+where Map() =
+Map[0] {key: "round", value: ['r', 'rnd', 'round', 'rounds', 'rnds']},
+Map[1] {key: "minute", value: ['m', 'min', 'mins', 'minute', 'minutes']},
+Map[2] {key: "turn", value: ['t', 'trn', 'turn', 'trns', 'turns']},
+Map[3] {key: "hour", value: ['h', 'hr', 'hrs', 'hour', 'hours']},
+Map[4] {key: "day", value: ['d', 'day', 'days']},
+Map[5] {key: "week", value: ['w', 'wk', 'wks', 'week', 'weeks']}

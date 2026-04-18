@@ -1,0 +1,51 @@
+/*
+Using REGEX
+From: "<h3>Aconite root</h3><p><strong>Type</strong> ingested; <strong>Save</strong> Fortitude DC 25</p><p><strong>Onset</strong> 1 minute; <strong>Frequency</strong> 1/round for 5 rounds</p><p><strong>Effect</strong> 1d3 Dex damage, 1 Con damage, and nauseated for 1 round</p><p><strong>Cure</strong> 2 saves; <strong>Value</strong> 1800 gp.</p>"
+Extract:  "<strong>Frequency</strong> 1/round for 5 rounds" AND 5 AND (the "key" for "round" OR "rounds")
+where 5 can be any number OR a die expression like 1d6
+where "round" and "rounds" can be any "value" of an Array() in Map() 
+where Map() =
+Map[0] {key: "round", value: ['r', 'rnd', 'round', 'rounds', 'rnds']},
+Map[1] {key: "minute", value: ['m', 'min', 'mins', 'minute', 'minutes']},
+Map[2] {key: "turn", value: ['t', 'trn', 'turn', 'trns', 'turns']},
+Map[3] {key: "hour", value: ['h', 'hr', 'hrs', 'hour', 'hours']},
+Map[4] {key: "day", value: ['d', 'day', 'days']},
+Map[5] {key: "week", value: ['w', 'wk', 'wks', 'week', 'weeks']}
+
+To extract the Frequency string using your map of units, use this pattern:
+<strong>Frequency<\/strong>\s*(\d+(?:\/\w+)?\s+for\s+\d*(?:d\d+)?\s+(?:minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w))
+
+Regex Breakdown
+<strong>Frequency<\/strong>\s*
+Matches the literal header and any trailing whitespace.
+
+(\d+(?:\/\w+)?\s+for\s+
+Starts the capture group.
+Matches the interval (e.g., 1/round) and the word for.
+
+\d*(?:d\d+)?\s+
+Matches the duration number (e.g., 5) or a die expression (e.g., 1d6).
+(?:r|rnd|round|...|weeks)
+A non-capturing group containing every value from your Map arrays.
+Matches any of your shorthand or full-text time units.
+*/
+
+// 2. Define Regex to capture: [Full Match, Value/Die, Unit]
+// Matches "Frequency", skips to "for", then captures digits or 1d6, then word-boundary unit
+const regex = /<strong>Frequency<\/strong>\s*([^;]+?for\s+((?:\d+d\d+|\d+))\s+([a-z]+)\b)/i;
+
+const match = html.match(regex);
+
+if (match) {
+  const fullFrequency = match[1]; // "1/round for 5 rounds"
+  const amount = match[2];        // "5"
+  const rawUnit = match[3];       // "rounds"
+
+  // 3. Find the key in the Map
+  let normalizedKey = null;
+  for (let [idx, data] of timeMap) {
+    if (data.value.includes(rawUnit.toLowerCase())) {
+      normalizedKey = data.key; // "round"
+      break;
+    }
+  }
