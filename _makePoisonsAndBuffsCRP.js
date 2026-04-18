@@ -1,4 +1,4 @@
-const _VERSION = '0.4.6';
+const _VERSION = '0.4.7';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -484,13 +484,14 @@ function hasCondition(t, cond) {
 }
 
 function durations() {
-	let rslt = new Collection();
-	rslt.set("round", ["r", "rnd", "round", "rounds", "rnds"]);
-	rslt.set("minute", ["m", "min", "mins", "minute", "minutes"]);
-	rslt.set("turn", ["t", "trn", "turn", "trns", "turns"]);
-	rslt.set("hour", ["h", "hr", "hrs", "hour", "hours"]);
-	rslt.set("day", ["d", "day", "days"]);
-	rslt.set("week", ["w", "wk", "wks", "week", "weeks"]);
+	let rslt = [
+      { key: "round", value: ["r", "rnd", "round", "rounds", "rnds"] },
+      { key: "minute", value: ["m", "min", "mins", "minute", "minutes"] },
+      { key: "turn", value: ["t", "trn", "turn", "trns", "turns"] },
+      { key: "hour", value: ["h", "hr", "hrs", "hour", "hours"] },
+      { key: "day", value: ["d", "day", "days"] },
+      { key: "week", value: ["w", "wk", "wks", "week", "weeks"] }
+    ];
 	return rslt;
 }
 
