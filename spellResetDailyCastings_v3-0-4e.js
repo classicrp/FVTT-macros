@@ -25,7 +25,7 @@
 			instead of Number.
 	==========================================================================
 */
-	const version = "v3.0.4e";
+	const version = "v3.0.5";
 	const head = `Macro.spellResetDailyCastings(${version}): `;
 	let msg = "";
 	let failState = false;
@@ -57,7 +57,8 @@
 	//	filter spells to only include the requested spellbook
 	let mspells = await deepClone(actor._itemTypes.spell.filter(s => ( s.system.spellbook === spBook )));
 
-	let spBookMaxFormula = await actor.system.attributes.spells.spellbooks[spBook].spellPoints.maxFormula;	//	i.e. '@resources.witchSpells.value'
+	let spBookMaxFormula = await actor.system.attributes.spells.spellbooks[spBook].spellPoints.maxFormula;		//	i.e. '@resources.witchSpells.value'
+	let spBookResFormula = await actor.system.attributes.spells.spellbooks[spBook].spellPoints.restoreFormula;	//	i.e. '@resources.witchSpells.max'
 
 /* ---- Check that we are using correct amount for spellbook total spell points -------	*/
 	if (spBookMaxFormula.includes(".value")) {
@@ -65,6 +66,10 @@
 		spBookMaxFormula = spBookMaxFormula.replace(".value", ".max");
 		mflag = true;
 	} else if (spBookMaxFormula.includes(".vigor") || spBookMaxFormula === "") {
+		spBookMaxFormula = `@resources.${spBookTag}.max`;
+		mflag = true;
+	} else if (spBookMaxFormula.includes("[Base]")) {
+		//	wrong version again
 		spBookMaxFormula = `@resources.${spBookTag}.max`;
 		mflag = true;
 	}
