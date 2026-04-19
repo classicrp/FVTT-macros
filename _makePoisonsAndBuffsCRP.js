@@ -1,4 +1,4 @@
-const _VERSION = '0.4.13';
+const _VERSION = '0.4.14';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -588,9 +588,9 @@ function getEffectBreakdown(txt) {
 	result = txt.match(RGX_EFF_BRKD);
 	if (result) {
 		return {
-			effect: result[0],
-			ability: result[1],
-			amount: result[2]
+			effect: txt,
+			ability: result[2],
+			amount: result[1]
 		}
 	}
 	return null;
