@@ -220,17 +220,21 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 
 /*	-------	CREATE "Value". ------------------------------------------------ */
 		price = foundry.utils.getProperty(itemData, ATTR_KNWN_PRC);
-		const TXT_VALUE = `<strong>Value</strong> ${price} gp.</p>`;
+		const TXT_VALUE = `<strong>Value</strong> ${price} gp.`;
 
-/*	-------	ISOLATE "Cure". ------------------------------------------------ */
+/*	-------	EXTRACT "Cure". ------------------------------------------------ */
 		result = extractFromHTML(descHTMLParsed, "Cure");
-		cure = await extractCure(result);
+		if (!result) {
+			cure = await extractCure(TXT_CURE);
+		} else {
+			cure = await extractCure(result);
+		}
 
 /*	-------	BUILD "Cure; Value" line. -------------------------------------- */
 		if (!descHTML.includes('Cure')) {			
-			descHTML = descHTML + TXT_CURE + "; " + TXT_VALUE;
+			descHTML = descHTML + "<p>" + cure.html + "; " + TXT_VALUE + "</p>";
 		} else {
-			descHTML = descHTML.replace(RGX_LST_P, ("; " + TXT_VALUE));
+			descHTML = descHTML.replace(RGX_LST_P, ("; " + TXT_VALUE)) + "</p>";
 		}
 
 /*	---	SET updated <Identified Properties> -------------------------------- */
@@ -250,9 +254,9 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 
 debugger
 
-/*	---	ISOLATE "Frequency". ----------------------------------------------- */
+/*	---	EXTRACT "Frequency". ----------------------------------------------- */
 		result = extractFromHTML(descHTMLParsed, "Frequency");
-		frequency = extractFrequency(result);
+		frequency = await extractFrequency(result);
 		if (!frequency) {
 			const WRN_MSG_FREQ = `Could not locate any "Frequency" information from item description.`;
 			console.warn(_VERSION, WRN_MSG_FREQ );
@@ -307,16 +311,16 @@ debugger
 		14400 for "d"} OR number + "m" or "t" or "h" or "d" + "]</span>"
 */
 
-/* 	---	ISOLATE "Onset". --------------------------------------------------- */
+/* 	---	EXTRACT "Onset". --------------------------------------------------- */
 		const onset = extractFromHTML(descHTMLParsed, "Onset").replace(`; ${frequency.html}`, '');
 
-/* 	---	ISOLATE "Primary". ------------------------------------------------- */
+/* 	---	EXTRACT "Primary". ------------------------------------------------- */
 		const primary = extractFromHTML(descHTMLParsed, "Primary");
 
-/* 	---	ISOLATE "Secondary". ----------------------------------------------- */
+/* 	---	EXTRACT "Secondary". ----------------------------------------------- */
 		const secondary = extractFromHTML(descHTMLParsed, "Secondary");
 
-/* 	---	ISOLATE "Effect". -------------------------------------------------- */
+/* 	---	EXTRACT "Effect". -------------------------------------------------- */
 		result = "";
 		const effect = extractFromHTML(descHTMLParsed, "Effect");
 
@@ -529,18 +533,25 @@ function hasCondition(t, cond) {
 
 function durations() {
 	return [
-      { key: "round", value: ["r", "rnd", "round", "rounds", "rnds"] },
-      { key: "minute", value: ["m", "min", "mins", "minute", "minutes"] },
-      { key: "turn", value: ["t", "trn", "turn", "trns", "turns"] },
-      { key: "hour", value: ["h", "hr", "hrs", "hour", "hours"] },
-      { key: "day", value: ["d", "day", "days"] },
-      { key: "week", value: ["w", "wk", "wks", "week", "weeks"] }
+      { key: "round", value: ["r", "rnd", "round", "rounds", "rnds"], mult: 1 },
+      { key: "minute", value: ["m", "min", "mins", "minute", "minutes"], mult: 10 },
+      { key: "turn", value: ["t", "trn", "turn", "trns", "turns"], mult: 100 },
+      { key: "hour", value: ["h", "hr", "hrs", "hour", "hours"], mult: 600 },
+      { key: "day", value: ["d", "day", "days"], mult: 14400  },
+      { key: "week", value: ["w", "wk", "wks", "week", "weeks"], mult: 100800 }
     ];
 }
 
 function getConditionBreakdown(eff) {
 	const RGX_COND = /(\w+)\s+for\s+(\d+(?:d\d+)?)\s+(minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w)\b/i;
-	return eff.match(RGX_COND);
+	result = eff.match(RGX_COND);
+	if (result) {
+		return {
+			html: result[0];
+			duration: result[3];
+			units: durations().find(entry => entry.value.includes(result[4].toLowerCase())).key||null;
+		}
+	}
 }
 
 function getEachEffect(eff) {
@@ -553,17 +564,21 @@ function getEffectBreakdown(txt) {
 	return txt.match(RGX_EFF_BRKD);
 }
 
-function extractCure(HTML) {
-	const RGX_CURE = /<strong>Cure<\/strong>\s*\d+\s*saves?/;
-	rgxMatch = descHTML.match(RGX_CURE);
-	if (rgxMatch) {
-		cure = rgxMatch[0];
-	}	
+function extractCure(htm) {
+	const RGX_CURE = /<(?:[^>]+)>Cure<\/(?:[^>]+)>\s(\d+)\ssave[s]?/i;
+	result = htm.match(RGX_CURE);
+	if (result) {
+		return {
+			html: result[0];
+			savesNeeded: result[1];
+		}
+	}
+	return null;
 }
 
-function extractFrequency(HTML) {
+function extractFrequency(htm) {
 	const RGX_FREQ = /<(.*?)>Frequency<\/\1>\s*(.*?(\d+d\d+|\d+)\s+(minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w)\b)/i
-	result = HTML.match(RGX_FREQ);
+	result = htm.match(RGX_FREQ);
 	if (result) {
 		return {
 			html: result[0],
