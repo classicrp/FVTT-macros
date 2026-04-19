@@ -1,4 +1,4 @@
-const _VERSION = '0.4.9';
+const _VERSION = '0.4.10';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -248,9 +248,11 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		+ (cure from details OR 1 if none exists there) + " save(s)</span>" 
 */
 
-/*	---	ISOLATE "Frequency". ----------------------------------------------- */
 debugger
-		frequency = extractFrequency(descHTML);
+
+/*	---	ISOLATE "Frequency". ----------------------------------------------- */
+		result = extractFromHTML(descHTMLParsed, "Frequency");
+		frequency = extractFrequency(result);
 		if (!frequency) {
 			const WRN_MSG_FREQ = `Could not locate any "Frequency" information from item description.`;
 			console.warn(_VERSION, WRN_MSG_FREQ );
