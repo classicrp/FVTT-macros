@@ -1,4 +1,4 @@
-const _VERSION = '0.4.24';
+const _VERSION = '0.4.25';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -406,7 +406,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 /*	---	CREATE two new <action> objects, on for "Save" one for "Cure". ----- */
 		const TXT_ACT_TYP_SAV = "save";
 		const TXT_ACT_TYP_OTH = "other";
-		let actSave = new pf1.components.ItemAction({ name: "Save", key: randomID(16), actionType: TXT_ACT_TAG_SAV, img: buffData.img });
+		let actSave = new pf1.components.ItemAction({ name: "Save", key: randomID(16), actionType: TXT_ACT_TYP_SAV, img: buffData.img });
 		let actCure = new pf1.components.ItemAction({ name: "Cured", key: randomID(16), actionType: TXT_ACT_TYP_OTH, img: buffData.img });
 	
 /*	-------	SET "Save" <tag> to "save". ------------------------------------ */
@@ -414,55 +414,52 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		const TXT_ACT_TAG_SAV = "save";
 		result = foundry.utils.setProperty(actSave, ATTR_ACT_TAG, TXT_ACT_TAG_SAV);
 		if (!result) {
-			console.warn(_VERSION, "Buff:", buffData.name, "may have failed to set <tag> to:", TXT_ACT_TAG_SAV);
+			console.warn(_VERSION, "Buff:", buffData.name, ", Action:", actSave.name, ", may have failed to set <tag> to:", TXT_ACT_TAG_SAV);
 		}
 	
-	if (_SHOW) debugger
-
 /*	-------	SET "Save" <activation.type> to "nonaction". ------------------- */
 		const TXT_ACT_TYP_NON = "nonaction";
 		const ATTR_ACT_ACTV_TYP = "activation.type";
 		result = foundry.utils.setProperty(actSave, ATTR_ACT_ACTV_TYP, TXT_ACT_TYP_NON);
 		if (!result) {
-			console.warn(_VERSION, "Buff:", buffData.name, "Action:", actSave.name,  "may have failed to set <activation.type> to:", TXT_ACT_TYP_NON);
+			console.warn(_VERSION, "Buff:", buffData.name, ", Action:", actSave.name,  ", may have failed to set <activation.type> to:", TXT_ACT_TYP_NON);
 		}
 	
 /*	-------	SET "Save" <save> to <item.actions.contents.0.save> ----- */
-		const ATTR_ITM_ACT_SAV = "actions.contents.0.save";
+		const ATTR_ITM_ACT_SAV = "system.actions.0.save";
 		const ATTR_ACT_SAV = "save";
-		const saveFromItem = foundry.utils.getProperty( item, ATTR_ITM_ACT_SAV );
-		result = foundry.utils.setProperty(actSave, ATTR_ACT_SAV, saveFromItem);
+		const saveFromItemData = foundry.utils.getProperty( itemData, ATTR_ITM_ACT_SAV );
+		result = foundry.utils.setProperty(actSave, ATTR_ACT_SAV, saveFromItemData);
 		if (!result) {
-			console.error(_VERSION, "Buff:", buffData.name, "Action:", actSave.name,  "failed to set <save> to:", saveFromItem);
-			return;
+			console.warn(_VERSION, "Buff:", buffData.name, ", Action:", actSave.name,  ", failed to set <save> to:", saveFromItemData);
 		}
 
 /*	-------	SET  "Cured" <tag> to "cure". ---------------------------------- */
 		const TXT_ACT_TAG_CURE = "cure";
 		result = foundry.utils.setProperty(actCure, ATTR_ACT_TAG, TXT_ACT_TAG_CURE);
 		if (!result) {
-			console.error(_VERSION, "Buff:", buffData.name, "failed to create action:", actSave.name);
-			return;
+			console.warn(_VERSION, "Buff:", buffData.name, ", Action:", actCure.name, ", failed to create action:", actSave.name);
 		}
 
 /*	-------	SET "Cured" <activation.type> to "nonaction". ------------------ */
 		result = foundry.utils.setProperty(actCure, ATTR_ACT_ACTV_TYP, TXT_ACT_TYP_NON);
 		if (!result) {
-			console.error(_VERSION, "Buff:", buffData.name, "Action:", actCure.name, "failed to set <activation.type>:", TXT_ACT_TYP_NON);
-			return;
+			console.warn(_VERSION, "Buff:", buffData.name, ", Action:", actCure.name, ", failed to set <activation.type>:", TXT_ACT_TYP_NON);
 		}
+
+	if (_SHOW) debugger
 
 /*	---	WRITE <actSave> to <buffData> -------------------------------------- */
 		result = await buffData.actions.push(actSave);
 		if (!result) {
-			console.error(_VERSION, "Buff:", buffData.name, "Action:", actSave.name, "failed to write.");
+			console.error(_VERSION, "Buff:", buffData.name, ", Action:", actSave.name, ", failed to write.");
 			return;
 		}
 
 /*	---	WRITE <actCure> to <buffData> -------------------------------------- */
 		result = await buffData.actions.push(actCure);
 		if (!result) {
-			console.error(_VERSION, "Buff:", buffData.name, "Action:", actCure.name, "failed to write.");
+			console.error(_VERSION, "Buff:", buffData.name, ", Action:", actCure.name, ", failed to write.");
 			return;
 		}
 
