@@ -1,4 +1,4 @@
-const _VERSION = '0.4.11';
+const _VERSION = '0.4.12';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -547,9 +547,9 @@ function getConditionBreakdown(eff) {
 	result = eff.match(RGX_COND);
 	if (result) {
 		return {
-			html: result[0];
-			duration: result[3];
-			units: durations().find(entry => entry.value.includes(result[4].toLowerCase())).key||null;
+			html: result[0],
+			duration: result[3],
+			units: durations().find(entry => entry.value.includes(result[4].toLowerCase())).key||null
 		}
 	}
 }
@@ -569,8 +569,8 @@ function extractCure(htm) {
 	result = htm.match(RGX_CURE);
 	if (result) {
 		return {
-			html: result[0];
-			savesNeeded: result[1];
+			html: result[0],
+			savesNeeded: Number(result[1])
 		}
 	}
 	return null;
