@@ -1,4 +1,4 @@
-const _VERSION = '0.4.18';
+const _VERSION = '0.4.20';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -342,7 +342,7 @@ debugger
 		}
 
 /* 	---	POPULATE <effectNote>. --------------------------------------------- */
-		let effectNote = TXT_NOTE_START + onset + TXT_NOTE_APPLY + "</span>";
+		let effectNote = TXT_NOTE_START + onset.html + TXT_NOTE_APPLY + "</span>";
 	
 		if (_SHOW) debugger
 
@@ -446,6 +446,9 @@ return;
 	//	COPY over <details> from Poison Item and write to <Identified Properties>.
 	//	SET "on-use" macro "buffCureCheck" to "Compendium.crp-contents.crp-macros.Macro.wEGLTOmr7iSa5E3l"
 	//	SET "on-toggle" macro "buffToggleCheck" to "Compendium.crp-contents.crp-macros.Macro.0kwyj53zVj6I6rKs"
+	//	CREATE two new <action> objects, on for "Save" one for "Cure"
+	//		SET "Save" <tag> to "save" and "Cure" <tag> to "cure"
+	//		SET 
 	//	CREATE a new <changes> object for each type of damage listed in Details
 	//		SET <target> to damage type (mostly an ability)
 	//		SET <formula> to number or in case of dice; "-floor(random() * [ size of dice ] + 1) +@dFlags.poison(poison name).(target)
@@ -544,7 +547,7 @@ function getConditionBreakdown(eff) {
 	const rslt = eff.match(RGX_COND);
 	if (rslt) {
 		cond = {
-			line: rslt[0],
+			effect: rslt[0],
 			name: rslt[1],
 			duration: rslt[2],
 			units: durations().find(entry => entry.value.includes(rslt[3].toLowerCase())).key||null,
@@ -585,7 +588,7 @@ function getEffectBreakdown(txt) {
 	if (rslt) {
 		return {
 			effect: txt,
-			ability: rslt[2],
+			ability: rslt[2].toLowerCase(),
 			amount: rslt[1]
 		}
 	}
