@@ -1,4 +1,4 @@
-const _VERSION = '0.4.26';
+const _VERSION = '0.4.27';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -425,9 +425,10 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			console.warn(_VERSION, "Buff:", buffData.name, ", Action:", actSave.name,  ", may have failed to set <activation.type> to:", TXT_ACT_TYP_NON);
 		}
 	
-/*	-------	SET "Save" <save> to <item.actions.contents.0.save> ----- */
+/*	-------	SET "Save" <save> to <itemData.system.actions.0.save> ----- */
 		const ATTR_ITM_ACT_SAV = "system.actions.0.save";
 		const ATTR_ACT_SAV = "save";
+debugger
 		const saveFromItemData = foundry.utils.getProperty( itemData, ATTR_ITM_ACT_SAV );
 		result = foundry.utils.setProperty(actSave, ATTR_ACT_SAV, saveFromItemData);
 		if (!result) {
