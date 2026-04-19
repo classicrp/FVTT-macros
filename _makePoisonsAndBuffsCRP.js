@@ -1,4 +1,4 @@
-const _VERSION = '0.4.16';
+const _VERSION = '0.4.17';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -522,13 +522,6 @@ function extractFromHTML(srcs, tag) {
 	return rslt;
 }
 
-function getConditionsFromJournal(itemUuid) {
-	if (_SHOW) debugger
-	const journal = fromUuid(itemUuid);
-	const journalData = game.journal.fromCompendium(journal);
-	const srcs = foundry.utils.parseHTML(journalData.contents);
-}
-
 function hasCondition(t, cond) {
 	//	See if the passed in "Effect" line holds a known Condition
 	return cond.find(f => t.includes(f))||"";
@@ -546,15 +539,27 @@ function durations() {
 }
 
 function getConditionBreakdown(eff) {
+	let cond = "";
 	const RGX_COND = /(\w+)\s+for\s+(\d+(?:d\d+)?)\s+(minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w)\b/i;
 	const rslt = eff.match(RGX_COND);
 	if (rslt) {
-		return {
-			html: rslt[0],
-			duration: rslt[3],
-			units: durations().find(entry => entry.value.includes(rslt[4].toLowerCase())).key||null
+		cond = {
+			line: rslt[0],
+			name: rslt[1],
+			duration: rslt[2],
+			units: durations().find(entry => entry.value.includes(rslt[3].toLowerCase())).key||null,
+			mult: 1
+		};
+		if (cond.duration.includes("d")) && (cond.units !== "round") {
+			//	We have a die equation that only resolves as "rounds" from
+			//	the Enricher.  Get the <mult> for the "units" key from the 
+			//	<conditions> dataset and update <cond.mult>.  Units need to
+			//	be set to "rounds".
+			cond.mult = durations().find(entry => entry.key === cond.units).mult||null;
+			cond.units = "round";
 		}
 	}
+	return cond;
 }
 
 function extractEffect(htm) {
