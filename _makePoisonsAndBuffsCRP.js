@@ -1,4 +1,4 @@
-const _VERSION = '0.4.10';
+const _VERSION = '0.4.11';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -154,7 +154,6 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	const TXT_NOTE_START = `<span style="font-size:1.2em">`;
 	const TXT_NOTE_APPLY = " @Apply[" + REPLACE_THIS_WITH_BUFF_UUID + "]<br>";
 	
-	const RGX_CURE = /<strong>Cure<\/strong>\s*\d+\s*saves?/;
 	const RGX_LST_P = /<\/p>$/;
 	
 	for (const s of srcs) {
@@ -208,6 +207,9 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 */
 		descHTML = foundry.utils.getProperty(itemData, ATTR_KNWN_DESC);
 
+/*	-------	CONVERT descHTML into an HTML Array. --------------------------- */
+		let descHTMLParsed = foundry.utils.parseHTML(descHTML);
+
 /*	---	ADD at top "<h3>" + <Item.name> + "</h3>" -------------------------- */
 		itemName = foundry.utils.getProperty(itemData, "name");
 		const TXT_HDR = `<h3>${itemName}</h3>`;
@@ -221,10 +223,8 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		const TXT_VALUE = `<strong>Value</strong> ${price} gp.</p>`;
 
 /*	-------	ISOLATE "Cure". ------------------------------------------------ */
-		rgxMatch = descHTML.match(RGX_CURE);
-		if (rgxMatch) {
-			cure = rgxMatch[0];
-		}
+		result = extractFromHTML(descHTMLParsed, "Cure");
+		cure = await extractCure(result);
 
 /*	-------	BUILD "Cure; Value" line. -------------------------------------- */
 		if (!descHTML.includes('Cure')) {			
@@ -239,8 +239,8 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			console.warn(_VERSION, "itemData property [", ATTR_KNWN_DESC, "] not set to:", descHTML );
 		}
 
-/*	-------	CONVERT descHTML into an HTML Array. --------------------------- */
-		const descHTMLParsed = foundry.utils.parseHTML(descHTML);
+/*	-------	UPDATE Parsed Array. ------------------------------------------- */
+		descHTMLParsed = foundry.utils.parseHTML(descHTML);
 
 /*
  	SET <action['Use'].SavingThrowEffect> = <span style="font-size: 1.2em">
@@ -308,7 +308,7 @@ debugger
 */
 
 /* 	---	ISOLATE "Onset". --------------------------------------------------- */
-		const onset = extractFromHTML(descHTMLParsed, "Onset").replace(`; ${frequency}`, '');
+		const onset = extractFromHTML(descHTMLParsed, "Onset").replace(`; ${frequency.html}`, '');
 
 /* 	---	ISOLATE "Primary". ------------------------------------------------- */
 		const primary = extractFromHTML(descHTMLParsed, "Primary");
@@ -551,6 +551,14 @@ function getEachEffect(eff) {
 function getEffectBreakdown(txt) {
 	const RGX_EFF_BRKD = /(?<number>\d+(?:d\d+)?)\s+(?<word>\w+)/i;
 	return txt.match(RGX_EFF_BRKD);
+}
+
+function extractCure(HTML) {
+	const RGX_CURE = /<strong>Cure<\/strong>\s*\d+\s*saves?/;
+	rgxMatch = descHTML.match(RGX_CURE);
+	if (rgxMatch) {
+		cure = rgxMatch[0];
+	}	
 }
 
 function extractFrequency(HTML) {
