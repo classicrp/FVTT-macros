@@ -1,4 +1,4 @@
-const _VERSION = '0.4.21';
+const _VERSION = '0.4.22';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -418,8 +418,7 @@ debugger
 	const TXT_ACT_TAG_SAV = "save";
 	result = foundry.utils.setProperty(actSave, ATTR_ACT_TAG, TXT_ACT_TAG_SAV);
 	if (!result) {
-		console.error(_VERSION, "Buff:", buffData.name, "failed to create action:", actSave.name);
-		return;
+		console.warn(_VERSION, "Buff:", buffData.name, "failed to create action:", actSave.name);
 	}
 	
 /*	-------	SET "Save" <activation.type> to "nonaction". ------------------- */
