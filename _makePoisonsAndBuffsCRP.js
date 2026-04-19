@@ -1,4 +1,4 @@
-const _VERSION = '0.4.14';
+const _VERSION = '0.4.15';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -157,9 +157,9 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	const RGX_LST_P = /<\/p>$/;
 	
 	for (const s of srcs) {
-		let descHTML = "", rgxMatch = [];
+		let descHTML = "", itemName = "", buffName = "";
 		let cure = "", frequency = "", price = "", effect = "", onset = "";
-		let secondary = "", primary = "", itemName = "", buffName = "";
+		let secondary = "", primary = "", condition = "";
 
 /*	GRAB the needed <uuid>. ------------------------------------------------ */
 		const itemUuid = s.uuid;
@@ -334,19 +334,10 @@ debugger
 		result = extractFromHTML(descHTMLParsed, "Effect");
 		if (result) {
 			effect = extractEffect(result);
-		}
-
-/* 	---	CHECK if "Effect" has a "Condition". --------------------------- */
-		let condition = "", cDur = 0, cUnits = "";
-		result = await hasCondition( effect, conditions );
-		if (result) {
-
-/* 	-------	EXTRACT "Condition". --------------------------------------- */
-			result = getCondition(effect);
-			if (result) {
-				condition = result[0];
-				cDur = result[1];
-				cUnits = result[2];
+/* 	-------	CHECK if "Effect" has a "Condition". --------------------------- */
+			if (hasCondition( result, conditions )) {
+/* 	-----------	EXTRACT "Condition". --------------------------------------- */
+				condition = getConditionBreakdown(result);
 			}
 		}
 
