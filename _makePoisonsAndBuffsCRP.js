@@ -1,4 +1,4 @@
-const _VERSION = '0.4.8';
+const _VERSION = '0.4.9';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -16,20 +16,26 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 
 	let srcs = '', fltrd = '', rslt = '', msg = '', obj = [];
 
-/* ----	Get an array of all "Conditions" listed in the rules journal ------- */
+/* 
+	GET an array of all "Conditions" listed in the rules journal
+*/
 	const ATTR_JRNL_CONT = "pages.0.text.content";
 	const RGX_COND_LIST = /<h2>(.*?)<\/h2>/g;
 	const UUID_JRNL_COND = "Compendium.pf-content.pf-rules.JournalEntry.FH4DP3oqkBwhLFNS";
 
-	//	Create an instance of the specified [ItemJournalPF].
+/* 	CREATE an instance of the specified [ItemJournalPF]. ------------------- */
 	const jrnl = await fromUuid(UUID_JRNL_COND);
-	//	Extract the data & structure from <jrnl> for processing.
+	
+/*	EXTRACT the data & structure from <jrnl> for processing. --------------- */
 	const jrnlData = await game.journal.fromCompendium(jrnl);
-	//	GET the HTML contents from <jrnlData>.
+	
+/*	GET the HTML contents from <jrnlData>. --------------------------------- */
 	const contentHTML = await foundry.utils.getProperty(jrnlData, ATTR_JRNL_CONT);
-	//	Use REGEX to extract only the <h2></h2> tags and text
+	
+/*	USE REGEX to extract only the <h2></h2> tags and text. ----------------- */
 	let conditions = await contentHTML.toLowerCase().match(RGX_COND_LIST);
-	//	Remove the wrapping tags 
+	
+/*	REMOVE the wrapping tags. ---------------------------------------------- */
 	for (let i = 0; i < conditions.length; i++) {
 		conditions[i] = removeHTML(conditions[i], false);
 	}
@@ -37,12 +43,14 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		console.log(_VERSION, 'conditions:', conditions);
 	}
 
-/* ----	GET Poison items from non-CRP Compendium packs. -------------------- */
+/*
+	GET Poison items from non-CRP Compendium packs.
+*/
 	const FLTR_TYPE = "consumable";
 	const FLTR_SUBTYPE = "poison";
 	
 	if (_TEST) {
-	/* ----	TEST CASE BEGIN ------------------------------------------------ */
+/* 	---	TEST CASE BEGIN ---------------------------------------------------- */
 		const name = "Aconite root";
 		const ERR_MSG_TEST = "Unable to retrieve specified poison from pack data.";
 		//	this handles a specific request that returns all copies in Compendiums
@@ -51,10 +59,9 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			ui.notifications.error(ERR_MSG_TEST);
 			console.error(_VERSION, ERR_MSG_TEST);
 			return;
-		}
-	/* ----	TEST CASE END -------------------------------------------------- */		
+		}	
 	} else {
-	/* ---- LIVE CASE BEGIN ------------------------------------------------ */
+/* 	--- LIVE CASE BEGIN ---------------------------------------------------- */
 		//	this handles the top set of items with each index for a Compendium,
 		//	that needs to be manually filtered.
 		const ERR_MSG_LIVE = "Unable to retrieve any poisons from pack data.";
@@ -89,7 +96,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			console.error(_VERSION, ERR_MSG_OCRS);
 			return;
 		}
-		//	get a list of each poison that shows up more than once.
+		//	GET a list of each poison that shows up more than once.
 		fltrd = obj.filter(f => f.occurs > 1);
 		if (_VERBOSE) {
 			console.log(_VERSION, 'fltrd:', fltrd, CRLF, 'rslt:', rslt);
@@ -110,13 +117,14 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		rslt = null;
 		fltrd = null;
 		obj = null;
-	/* ---- LIVE CASE END -------------------------------------------------- */
+/* 	--- LIVE CASE END ------------------------------------------------------ */
 	}
 	if (_VERBOSE) {
 		console.log(_VERSION, 'srcs:', srcs);
 	}
-/* ----	CREATE a copy of Poison item in "Compendium.crp-contents.crp-items"
-		in folder "ITEMS", subfolder "Poisons" for each not already there.
+/*
+	CREATE a copy of Poison item in "Compendium.crp-contents.crp-items"
+		in folder "ITEMS", subfolder "Poisons" for each not already there. 
 */
 	const CRP_ITEMS = "crp-contents.crp-items";
 	const CRP_MACROS = "crp-contents.crp-macros";
@@ -152,147 +160,170 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	for (const s of srcs) {
 		let descHTML = "", rgxMatch = [];
 		let cure = "", frequency = "", price = "", itemName = "", buffName = "";
-		//	Grab the needed <uuid>.
+
+/*	GRAB the needed <uuid>. ------------------------------------------------ */
 		const itemUuid = s.uuid;
 		if (_VERBOSE) {
 			console.log(_VERSION, "itemUuid:", itemUuid);
 		}
-		//	Create an instance of the current [ItemConsumablePF].
+
+/*	CREATE an instance of the current [ItemConsumablePF]. ------------------ */
 		const item = await fromUuid(itemUuid);
 		if (_VERBOSE) {
 			console.log(_VERSION, "item:", item);
 		}
-		//	Extract the data structure from <item> for further processing.
+
+/*	EXTRACT the data structure from <item> for further processing. --------- */
 		let itemData = await game.items.fromCompendium(item);
 		if (_VERBOSE) {
 			console.log(_VERSION, "itemData:", itemData);
 		}
-	/* ----	SET <Unidentified Name> to "Vial of liquid". ------------------- */
+
+/*	SET <Unidentified Name> to "Vial of liquid". --------------------------- */
 		result = await foundry.utils.setProperty(itemData, ATTR_UKN_NAME, TXT_UNK_NAME);
 		if (!result) {
 			console.warn(_VERSION, "itemData property [", ATTR_UKN_NAME, "] not set to:", TXT_UNK_NAME);
 		}
-	/* ----	SET <Superficial Details> to "Some liquid in a vial. ----------- */
+
+/*	SET <Superficial Details> to "Some liquid in a vial. ------------------- */
 		result = await foundry.utils.setProperty(itemData, ATTR_UKN_DESC, TXT_UNK_DESC);
 		if (!result) {
 			console.warn(_VERSION, "itemData property [", ATTR_UKN_DESC, "] not set to:", TXT_UNK_DESC );
 		}
-	/* ----	SET	<equipped> to FALSE. --------------------------------------- */
+
+/*	SET	<equipped> to FALSE. ----------------------------------------------- */
 		result = await foundry.utils.setProperty(itemData, ATTR_ITM_EQP, false);
 		if (!result) {
 			console.warn(_VERSION, "itemData property [", ATTR_ITM_EQP, "] not set to:", false );
 		}
-	/* ---- SET <carried> to FALSE. ---------------------------------------- */
+
+/*	SET <carried> to FALSE. ------------------------------------------------ */
 		result = await foundry.utils.setProperty(itemData, ATTR_ITM_CARRIED, false);
 		if (!result) {
 			console.warn(_VERSION, "itemData property [", ATTR_ITM_CARRIED, "] not set to:", false );
 		}
-	/* ----	GET <Identified Properties> ------------------------------------ */
+
+/*
+	GET <Identified Properties>
+*/
 		descHTML = foundry.utils.getProperty(itemData, ATTR_KNWN_DESC);
-	/*	=>	ADD at top "<h3>" + <Item.name> + "</h3>" ---------------------- */
+
+/*	---	ADD at top "<h3>" + <Item.name> + "</h3>" -------------------------- */
 		itemName = foundry.utils.getProperty(itemData, "name");
 		const TXT_HDR = `<h3>${itemName}</h3>`;
 		descHTML = TXT_HDR + descHTML;
-	/*	=>	INSERT after "Cure..." - "</p>" + "; <b>Value</b> " + <price> +_
-			" gp.</p>" -----------------------------------------------------
-	*/
-		//	Create "Value".
+
+/*	---	INSERT after "Cure..." - "</p>" + "; <b>Value</b> " + <price> +_
+			" gp.</p>". ---------------------------------------------------- */
+
+/*	-------	CREATE "Value". ------------------------------------------------ */
 		price = foundry.utils.getProperty(itemData, ATTR_KNWN_PRC);
 		const TXT_VALUE = `<strong>Value</strong> ${price} gp.</p>`;
-		//	ISOLATE "Cure".
+
+/*	-------	ISOLATE "Cure". ------------------------------------------------ */
 		rgxMatch = descHTML.match(RGX_CURE);
 		if (rgxMatch) {
 			cure = rgxMatch[0];
 		}
-		//	Build "Cure; Value" line.
+
+/*	-------	BUILD "Cure; Value" line. -------------------------------------- */
 		if (!descHTML.includes('Cure')) {			
 			descHTML = descHTML + TXT_CURE + "; " + TXT_VALUE;
 		} else {
 			descHTML = descHTML.replace(RGX_LST_P, ("; " + TXT_VALUE));
 		}
-	/*	=>	SET updated <Identified Properties> ---------------------------- */
+
+/*	---	SET updated <Identified Properties> -------------------------------- */
 		result = await foundry.utils.setProperty(itemData, ATTR_KNWN_DESC, descHTML);
 		if (!result) {
 			console.warn(_VERSION, "itemData property [", ATTR_KNWN_DESC, "] not set to:", descHTML );
 		}
-		//	Convert descHTML into an Array
+
+/*	-------	CONVERT descHTML into an HTML Array. --------------------------- */
 		const descHTMLParsed = foundry.utils.parseHTML(descHTML);
-	/* ---- SET <action['Use'].SavingThrowEffect> = <span style="font-size:_
-			1.2em"><b>Frequency:</b> " + (frequency from details) + "<br>_
-			<b>Cure:</b> " + (cure from details OR 1 if none exists there)_
-			+ " save(s)</span>" -------------------------------------------- 
-	*/
-		//	ISOLATE "Frequency"
+
+/*
+ 	SET <action['Use'].SavingThrowEffect> = <span style="font-size: 1.2em">
+		<b>Frequency:</b> " + (frequency from details) + "<br><b>Cure:</b> " 
+		+ (cure from details OR 1 if none exists there) + " save(s)</span>" 
+*/
+
+/*	---	ISOLATE "Frequency". ----------------------------------------------- */
 debugger
-		frequency = getFrequency(descHTML);
+		frequency = extractFrequency(descHTML);
 		if (!frequency) {
 			const WRN_MSG_FREQ = `Could not locate any "Frequency" information from item description.`;
 			console.warn(_VERSION, WRN_MSG_FREQ );
 		}
-		//	POPULATE <savingThrowEffect>.
-		const savingThrowEffect = TXT_NOTE_START + frequency.frequencyHTML + "<br>" + cure + "</span>";
-		//	SET <savingThrowEffect>.
+
+/*	---	POPULATE <savingThrowEffect>. -------------------------------------- */
+		const savingThrowEffect = TXT_NOTE_START + frequency.html + "<br>" + cure + "</span>";
+
+/*	---	SET <savingThrowEffect>. ------------------------------------------- */
 		result = await foundry.utils.setProperty(itemData, ATTR_ACT_SAV_DESC, savingThrowEffect);
 		if (!result) {
 			console.warn(_VERSION, "itemData property [", ATTR_ACT_SAV_DESC, "] not set to:", savingThrowEffect );
 		}
-		//	CLEAR any pre-existing <actionEffect>. 
+
+/*	CLEAR any pre-existing <actionEffect>. --------------------------------- */
 		result = await foundry.utils.setProperty(itemData, ATTR_ACT_NOTE_EFF, "");
 		if (!result) {
 			console.warn(_VERSION, "itemData property [", ATTR_ACT_NOTE_EFF, "] not set to:", " " );
 		}
-		//	SET <identified> flag to FALSE.
+
+/*	SET <identified> flag to FALSE. ---------------------------------------- */
 		result = await foundry.utils.setProperty(itemData, ATTR_ITM_IDNT, false);
 		if (!result) {
 			console.warn(_VERSION, "itemData property [", ATTR_ITM_IDNT, "] not set to:", false );
 		}
-		//	SET Compendium.Folder
+
+/*	SET destination <folder> within Compendium ----------------------------- */
 		result = await foundry.utils.setProperty(itemData, ATTR_FLDR, CRP_FLDR_ITM_PSN);
 		if (!result) {
 			console.warn(_VERSION, "itemData property [", ATTR_FLDR, "] not set to:", CRP_FLDR_ITM_PSN );
 		}
-		//	SET <duplicateSource> to originating item UUID.
+
+/*	SET <duplicateSource> to originating item UUID. ------------------------ */
 		result = await foundry.utils.setProperty(itemData, ATTR_ITM_STS_DSRC, itemUuid);
 		if (!result) {
 			console.warn(_VERSION, "itemData property [", ATTR_ITM_STS_DSRC, "] not set to:", savingThrowEffect );
 		}
-		//	SET <pack> to proper Compendium.
+
+/*	SET <pack> to proper Compendium. --------------------------------------- */
 		result = await foundry.utils.setProperty(itemData, ATTR_PACK, CRP_ITEMS);
 		if (!result) {
 			console.warn(_VERSION, "itemData property [", ATTR_PACK, "] not set to:", CRP_ITEMS );
 		}
-		//	SET <folder> to proper Folder in the Compendium.
-		result = await foundry.utils.setProperty(itemData, ATTR_FLDR, CRP_FLDR_ITM_PSN);
-		if (!result) {
-			console.warn(_VERSION, "buffData property [", ATTR_FLDR, "] not set to:", CRP_FLDR_ITM_PSN );
-		}
-	/* ---- SET <effectNote> = "<span style="font-size:1.2em"><b>Onset:</b>_
-			+ onset from details + @Apply[ (place itemUuid for the poison's_
-			buff here)]<br> + IF a secondary item exists add "<b>Secondary:_
-			</b> " + IF a Condition exists, add; "@Condition[ (condition_ 
-			lowercase name)" + ";duration=" + Set duration as a die roll/_
-			number only for "rnds" (if you want it to last random "m" _
-			minutes, "t" turns, "h" hours, "d" days, then multilpy by_
-				10 for "m",
-				100 for "t", 
-				600 for "h" 
-				14400 for "d" )
-				OR number + "m" or "t" or "h" or "d" + "]</span>" ---------- 
-	*/
-		//	ISOLATE "Onset".
-		const onset = getTag(descHTMLParsed, "Onset").replace(`; ${frequency}`, '');
-		//	ISOLATE "Primary".
-		const primary = getTag(descHTMLParsed, "Primary");
-		//	ISOLATE "Secondary".
-		const secondary = getTag(descHTMLParsed, "Secondary");
-		//	ISOLATE "Effect".
+
+/* 	SET <effectNote> = "<span style="font-size:1.2em"><b>Onset:</b>	+ onset 
+		from details + @Apply[ (place itemUuid for the poison's	buff here)]
+		<br> + IF a secondary item exists add "<b>Secondary:</b> " + IF a 
+		Condition exists, add; "@Condition[ (condition lowercase name)" + 
+		";duration=" + Set duration as a die roll/number only for "rnds" 
+		(if you want it to last random "m" minutes, "t" turns, "h" hours, 
+		"d" days, then multilpy by {10 for "m", 100 for "t", 600 for "h", 
+		14400 for "d"} OR number + "m" or "t" or "h" or "d" + "]</span>"
+*/
+
+/* 	---	ISOLATE "Onset". --------------------------------------------------- */
+		const onset = extractFromHTML(descHTMLParsed, "Onset").replace(`; ${frequency}`, '');
+
+/* 	---	ISOLATE "Primary". ------------------------------------------------- */
+		const primary = extractFromHTML(descHTMLParsed, "Primary");
+
+/* 	---	ISOLATE "Secondary". ----------------------------------------------- */
+		const secondary = extractFromHTML(descHTMLParsed, "Secondary");
+
+/* 	---	ISOLATE "Effect". -------------------------------------------------- */
 		result = "";
-		const effect = getTag(descHTMLParsed, "Effect");
-		//	Check if "Effect" has a "Condition"
+		const effect = extractFromHTML(descHTMLParsed, "Effect");
+
+/* 	---	CHECK if "Effect" has a "Condition". --------------------------- */
 		let condition = "", cDur = 0, cUnits = "";
 		result = await hasCondition( effect, conditions );
 		if (result) {
-			//	Extract "Condition"
+
+/* 	-------	EXTRACT "Condition". --------------------------------------- */
 			result = getCondition(effect);
 			if (result) {
 				condition = result[0];
@@ -300,15 +331,18 @@ debugger
 				cUnits = result[2];
 			}
 		}
-		//	POPULATE <effectNote>
+
+/* 	---	POPULATE <effectNote>. --------------------------------------------- */
 		let effectNote = TXT_NOTE_START + onset + TXT_NOTE_APPLY + "</span>";
 	
 		if (_SHOW) debugger
 
-	/* ---- CREATE a new BUFF item placed in "Compendium.crp-contents._
-			crp-items" in folder "BUFFS", subfolder "Poisons" --------------
-	*/
-		//	Create an instance of [ItemBuffPF].
+/*
+	CREATE a new BUFF item placed in "Compendium.crp-contents.crp-items" in 
+		folder "BUFFS", subfolder "Poisons".
+*/
+
+/* 	---	CREATE an instance of [ItemBuffPF]. -------------------------------- */
 		const buff = await new pf1.documents.item.ItemBuffPF({
 			name: `Poison (${itemName.toLowerCase()})`,
 			type: "buff",
@@ -320,55 +354,62 @@ debugger
 		if (_VERBOSE) {
 			console.log(_VERSION, 'buff', buff);
 		}
-	/* 	=>	SET buffUuid of associated Poison Item to newly created BUFF_ 
-			buffUuid. ------------------------------------------------------
-	*/
-		//	Create <buffUuid>.
+
+/*
+	---	SET buffUuid of associated Poison Item to newly created BUFF buffUuid. 
+*/
+
+/* 	-------	CREATE <buffUuid>. --------------------------------------------- */
 		const buffUuid = "Compendium." + CRP_ITEMS + ".Item." + buff._id;
-		//	Update Item <effectNote> with <buffUuid>.
+
+/* 	-------	UPDEATE Item <effectNote> with <buffUuid>. --------------------- */
 		effectNote = await effectNote.replace(REPLACE_THIS_WITH_BUFF_UUID, buffUuid);
-		//	SET <effectNote> in <itemData>.
+
+/* 	-------	SET <effectNote> in <itemData>. -------------------------------- */
 		result = await foundry.utils.setProperty(itemData, ATTR_EFF_NOTE, effectNote);
 		if (!result) {
 			console.warn(_VERSION, "itemData property [", ATTR_EFF_NOTE, "] not set to:", effectNote );
 		}
-	
-		//	Extract the data structure from <buff> for further processing.
+
+/* 	---	EXTRACT the data structure from <buff> for further processing. ----- */
 		let buffData = await game.items.fromCompendium(buff);
-		//	SET <description> to same description from <item>.
+
+/*	---	SET <description> to same description from <item>. ----------------- */
 		result = await foundry.utils.setProperty(buffData, ATTR_KNWN_DESC, descHTML);
 		if (!result) {
 			console.warn(_VERSION, "buffData property [", ATTR_KNWN_DESC, "] not set to:", result );
 		}
-		//	SET <pack> to proper Compendium.
+
+/*	---	SET <pack> to proper Compendium. ----------------------------------- */
 		result = await foundry.utils.setProperty(buffData, ATTR_PACK, CRP_ITEMS);
 		if (!result) {
 			console.warn(_VERSION, "buffData property [", ATTR_PACK, "] not set to:", CRP_ITEMS );
 		}
-		//	SET <folder> to proper Folder in the Compendium.
+
+/*	---	SET <folder> to proper Folder in the Compendium. ------------------- */
 		result = await foundry.utils.setProperty(buffData, ATTR_FLDR, CRP_FLDR_BFF_PSN);
 		if (!result) {
 			console.warn(_VERSION, "buffData property [", ATTR_FLDR, "] not set to:", CRP_FLDR_BFF_PSN );
 		}
-		//	SET <showInQuickbar> to TRUE.
+
+/*	---	SET <showInQuickbar> to TRUE. -------------------------------------- */
 		result = await foundry.utils.setProperty(buffData, ATTR_QUICKBAR, true);
 		if (!result) {
 			console.warn(_VERSION, "buffData property [", ATTR_QUICKBAR, "] not set to:", true );
 		}
-	/* ----	SET "on-use" macro "buffCureCheck" to "Compendium.crp-contents.crp-macros.Macro.wEGLTOmr7iSa5E3l" */
-	
-	
-	/* ----	SET "on-toggle" macro "buffToggleCheck" to "Compendium.crp-contents.crp-macros.Macro.0kwyj53zVj6I6rKs" */
-		
-		
-		
-		
-		
+
+/* 	
+	---	SET "on-use" macro "buffCureCheck" to "Compendium.crp-contents.crp-macros.Macro.wEGLTOmr7iSa5E3l"
+*/
+
+/* 
+	---	SET "on-toggle" macro "buffToggleCheck" to "Compendium.crp-contents.crp-macros.Macro.0kwyj53zVj6I6rKs"
+*/
 		
 		if (_VERBOSE) {
 			console.log(_VERSION, 'buffData', buffData);
 		}
-	/*	CREATE new Item in Compendium -------------------------------------- */
+/*	CREATE new Item in Compendium ------------------------------------------ */
 		result = await Item.create(itemData, {pack: CRP_ITEMS, folder: CRP_FLDR_ITM_PSN, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_ITM_PSN) });
 		if (!result) {
 			console.error(_VERSION, "Item:", itemData.name, "failed to create.");
@@ -377,7 +418,8 @@ debugger
 		if (_VERBOSE) {
 			console.log(_VERSION, 'create item result:', result);
 		}
-	/*	CREATE new Buff in Compendium -------------------------------------- */	
+
+/*	CREATE new Buff in Compendium ------------------------------------------ */	
 		result = await Item.create(buffData, {pack: CRP_ITEMS, folder: CRP_FLDR_BFF_PSN, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_BFF_PSN) });
 		if (!result) {
 			console.error(_VERSION, "Buff:", buffData.name, "failed to create.");
@@ -459,7 +501,7 @@ function removeHTML(htm, state) {
 	return rslt;
 }
 
-function getTag(srcs, tag) {
+function extractFromHTML(srcs, tag) {
 //	if (_SHOW) debugger
 	let rslt = "";
     for (const s of srcs) {
@@ -509,7 +551,7 @@ function getEffectBreakdown(txt) {
 	return txt.match(RGX_EFF_BRKD);
 }
 
-function getFrequency(HTML) {
+function extractFrequency(HTML) {
 	const RGX_FREQ = /<(.*?)>Frequency<\/\1>\s*(.*?(\d+d\d+|\d+)\s+(minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w)\b)/i
 	result = HTML.match(RGX_FREQ);
 	if (result) {
