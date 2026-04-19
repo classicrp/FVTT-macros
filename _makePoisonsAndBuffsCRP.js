@@ -1,4 +1,4 @@
-const _VERSION = '0.4.25';
+const _VERSION = '0.4.26';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -450,14 +450,14 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	if (_SHOW) debugger
 
 /*	---	WRITE <actSave> to <buffData> -------------------------------------- */
-		result = await buffData.actions.push(actSave);
+		result = await buffData.system.actions.push(actSave);
 		if (!result) {
 			console.error(_VERSION, "Buff:", buffData.name, ", Action:", actSave.name, ", failed to write.");
 			return;
 		}
 
 /*	---	WRITE <actCure> to <buffData> -------------------------------------- */
-		result = await buffData.actions.push(actCure);
+		result = await buffData.system.actions.push(actCure);
 		if (!result) {
 			console.error(_VERSION, "Buff:", buffData.name, ", Action:", actCure.name, ", failed to write.");
 			return;
