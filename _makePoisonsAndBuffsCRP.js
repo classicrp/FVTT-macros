@@ -1,4 +1,4 @@
-const _VERSION = '0.4.7';
+const _VERSION = '0.4.8';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -484,7 +484,7 @@ function hasCondition(t, cond) {
 }
 
 function durations() {
-	let rslt = [
+	return [
       { key: "round", value: ["r", "rnd", "round", "rounds", "rnds"] },
       { key: "minute", value: ["m", "min", "mins", "minute", "minutes"] },
       { key: "turn", value: ["t", "trn", "turn", "trns", "turns"] },
@@ -492,7 +492,6 @@ function durations() {
       { key: "day", value: ["d", "day", "days"] },
       { key: "week", value: ["w", "wk", "wks", "week", "weeks"] }
     ];
-	return rslt;
 }
 
 function getConditionBreakdown(eff) {
@@ -515,9 +514,9 @@ function getFrequency(HTML) {
 	result = HTML.match(RGX_FREQ);
 	if (result) {
 		return {
-			frequencyHTML: result[0],
-			frequenecyDuration: result[3],
-			frequencyUnits: durations().find(entry => entry.value.includes(result[4].toLowerCase())).key||null
+			html: result[0],
+			duration: result[3],
+			units: durations().find(entry => entry.value.includes(result[4].toLowerCase())).key||null
 		}
 	}
 	return null;
