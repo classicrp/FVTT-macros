@@ -1,4 +1,4 @@
-const _VERSION = '0.4.12';
+const _VERSION = '0.4.13';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -158,7 +158,8 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	
 	for (const s of srcs) {
 		let descHTML = "", rgxMatch = [];
-		let cure = "", frequency = "", price = "", itemName = "", buffName = "";
+		let cure = "", frequency = "", price = "", effect = "", onset = "";
+		let secondary = "", primary = "", itemName = "", buffName = "";
 
 /*	GRAB the needed <uuid>. ------------------------------------------------ */
 		const itemUuid = s.uuid;
@@ -312,17 +313,28 @@ debugger
 */
 
 /* 	---	EXTRACT "Onset". --------------------------------------------------- */
-		const onset = extractFromHTML(descHTMLParsed, "Onset").replace(`; ${frequency.html}`, '');
+		result = extractFromHTML(descHTMLParsed, "Onset").replace(`; ${frequency.html}`, '');
+		if (result) {
+			onset = extractOnset(result);
+		}
 
 /* 	---	EXTRACT "Primary". ------------------------------------------------- */
-		const primary = extractFromHTML(descHTMLParsed, "Primary");
+		result = extractFromHTML(descHTMLParsed, "Primary");
+		if (result) {
+			primary = extractPrimary(result);
+		}
 
 /* 	---	EXTRACT "Secondary". ----------------------------------------------- */
-		const secondary = extractFromHTML(descHTMLParsed, "Secondary");
+		result = extractFromHTML(descHTMLParsed, "Secondary");
+		if (result) {
+			secondary = extractSecondary(result);
+		}
 
 /* 	---	EXTRACT "Effect". -------------------------------------------------- */
-		result = "";
-		const effect = extractFromHTML(descHTMLParsed, "Effect");
+		result = extractFromHTML(descHTMLParsed, "Effect");
+		if (result) {
+			effect = extractEffect(result);
+		}
 
 /* 	---	CHECK if "Effect" has a "Condition". --------------------------- */
 		let condition = "", cDur = 0, cUnits = "";
@@ -554,6 +566,18 @@ function getConditionBreakdown(eff) {
 	}
 }
 
+function extractEffect(htm) {
+	let arr = [], eff = "";
+	result = getEachEffect(htm);
+	if (result) {
+		for (let r of result) {
+			eff = getEffectBreakdown(r);
+			arr.push(eff);
+		}
+	}
+	return arr;
+}
+
 function getEachEffect(eff) {
 	const RGX_EA_EFF = /(\d+(?:d\d+)?\s+\w+\s+damage)/gi;
 	return eff.match(RGX_EA_EFF);
@@ -561,7 +585,15 @@ function getEachEffect(eff) {
 
 function getEffectBreakdown(txt) {
 	const RGX_EFF_BRKD = /(?<number>\d+(?:d\d+)?)\s+(?<word>\w+)/i;
-	return txt.match(RGX_EFF_BRKD);
+	result = txt.match(RGX_EFF_BRKD);
+	if (result) {
+		return {
+			effect: result[0],
+			ability: result[1],
+			amount: result[2]
+		}
+	}
+	return null;
 }
 
 function extractCure(htm) {
@@ -576,8 +608,29 @@ function extractCure(htm) {
 	return null;
 }
 
+function extractPrimary(htm) {
+	return null;
+}
+
+function extractSecondary(htm) {
+	return null;
+}
+
 function extractFrequency(htm) {
 	const RGX_FREQ = /<(.*?)>Frequency<\/\1>\s*(.*?(\d+d\d+|\d+)\s+(minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w)\b)/i
+	result = htm.match(RGX_FREQ);
+	if (result) {
+		return {
+			html: result[0],
+			duration: result[3],
+			units: durations().find(entry => entry.value.includes(result[4].toLowerCase())).key||null
+		}
+	}
+	return null;
+}
+
+function extractOnset(htm) {
+	const RGX_FREQ = /<(.*?)>Onset<\/\1>\s*(.*?(\d+d\d+|\d+)\s+(minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w)\b)/i
 	result = htm.match(RGX_FREQ);
 	if (result) {
 		return {
