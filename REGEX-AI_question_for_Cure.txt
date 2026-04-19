@@ -1,0 +1,25 @@
+Using REGEX
+From: "<strong>Cure</strong> 2 saves"
+Extract: "<strong>Cure</strong> 2 saves" AND 2
+where "strong" can be any html tag
+where 2 can be any number
+where "saves" can be singular "save" 
+
+To match your specific pattern while allowing for different HTML tags, numbers, and singular/plural variations, use this regex:
+<(?:[^>]+)>Cure<\/(?:[^>]+)>\s(\d+)\ssave[s]?
+
+Breakdown of the Logic
+
+<(?:[^>]+)>: Matches any opening HTML tag (like <strong>, <b>, or <span>).
+
+Cure: Matches the literal text "Cure".
+
+<\/(?:[^>]+)>: Matches the corresponding closing HTML tag.
+
+\s: Matches the space between the tag and the number.
+
+(\d+): A capture group that matches any number (1, 2, 10, etc.).
+
+\s: Matches the space before the word "save".
+
+save[s]?: Matches "save" and makes the "s" optional so it captures "save" or "saves".
