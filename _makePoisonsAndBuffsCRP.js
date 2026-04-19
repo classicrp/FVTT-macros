@@ -1,4 +1,4 @@
-const _VERSION = '0.4.15';
+const _VERSION = '0.4.16';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -547,21 +547,21 @@ function durations() {
 
 function getConditionBreakdown(eff) {
 	const RGX_COND = /(\w+)\s+for\s+(\d+(?:d\d+)?)\s+(minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w)\b/i;
-	result = eff.match(RGX_COND);
-	if (result) {
+	const rslt = eff.match(RGX_COND);
+	if (rslt) {
 		return {
-			html: result[0],
-			duration: result[3],
-			units: durations().find(entry => entry.value.includes(result[4].toLowerCase())).key||null
+			html: rslt[0],
+			duration: rslt[3],
+			units: durations().find(entry => entry.value.includes(rslt[4].toLowerCase())).key||null
 		}
 	}
 }
 
 function extractEffect(htm) {
 	let arr = [], eff = "";
-	result = getEachEffect(htm);
-	if (result) {
-		for (let r of result) {
+	const rslt = getEachEffect(htm);
+	if (rslt) {
+		for (let r of rslt) {
 			eff = getEffectBreakdown(r);
 			arr.push(eff);
 		}
@@ -576,12 +576,12 @@ function getEachEffect(eff) {
 
 function getEffectBreakdown(txt) {
 	const RGX_EFF_BRKD = /(?<number>\d+(?:d\d+)?)\s+(?<word>\w+)/i;
-	result = txt.match(RGX_EFF_BRKD);
-	if (result) {
+	const rslt = txt.match(RGX_EFF_BRKD);
+	if (rslt) {
 		return {
 			effect: txt,
-			ability: result[2],
-			amount: result[1]
+			ability: rslt[2],
+			amount: rslt[1]
 		}
 	}
 	return null;
@@ -589,11 +589,11 @@ function getEffectBreakdown(txt) {
 
 function extractCure(htm) {
 	const RGX_CURE = /<(?:[^>]+)>Cure<\/(?:[^>]+)>\s(\d+)\ssave[s]?/i;
-	result = htm.match(RGX_CURE);
-	if (result) {
+	const rslt = htm.match(RGX_CURE);
+	if (rslt) {
 		return {
-			html: result[0],
-			savesNeeded: Number(result[1])
+			html: rslt[0],
+			savesNeeded: Number(rslt[1])
 		}
 	}
 	return null;
@@ -609,12 +609,12 @@ function extractSecondary(htm) {
 
 function extractFrequency(htm) {
 	const RGX_FREQ = /<(.*?)>Frequency<\/\1>\s*(.*?(\d+d\d+|\d+)\s+(minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w)\b)/i
-	result = htm.match(RGX_FREQ);
-	if (result) {
+	const rslt = htm.match(RGX_FREQ);
+	if (rslt) {
 		return {
-			html: result[0],
-			duration: result[3],
-			units: durations().find(entry => entry.value.includes(result[4].toLowerCase())).key||null
+			html: rslt[0],
+			duration: rslt[3],
+			units: durations().find(entry => entry.value.includes(rslt[4].toLowerCase())).key||null
 		}
 	}
 	return null;
@@ -622,12 +622,12 @@ function extractFrequency(htm) {
 
 function extractOnset(htm) {
 	const RGX_FREQ = /<(.*?)>Onset<\/\1>\s*(.*?(\d+d\d+|\d+)\s+(minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w)\b)/i
-	result = htm.match(RGX_FREQ);
-	if (result) {
+	const rslt = htm.match(RGX_FREQ);
+	if (rslt) {
 		return {
-			html: result[0],
-			duration: result[3],
-			units: durations().find(entry => entry.value.includes(result[4].toLowerCase())).key||null
+			html: rslt[0],
+			duration: rslt[3],
+			units: durations().find(entry => entry.value.includes(rslt[4].toLowerCase())).key||null
 		}
 	}
 	return null;
