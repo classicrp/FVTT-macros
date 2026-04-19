@@ -1,4 +1,4 @@
-const _VERSION = '0.4.17';
+const _VERSION = '0.4.18';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -550,7 +550,7 @@ function getConditionBreakdown(eff) {
 			units: durations().find(entry => entry.value.includes(rslt[3].toLowerCase())).key||null,
 			mult: 1
 		};
-		if (cond.duration.includes("d")) && (cond.units !== "round") {
+		if ((cond.duration.includes("d")) && (cond.units !== "round")) {
 			//	We have a die equation that only resolves as "rounds" from
 			//	the Enricher.  Get the <mult> for the "units" key from the 
 			//	<conditions> dataset and update <cond.mult>.  Units need to
