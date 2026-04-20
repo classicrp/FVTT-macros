@@ -1,4 +1,4 @@
-const _VERSION = '0.4.27';
+const _VERSION = '0.4.28';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -430,16 +430,18 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		const ATTR_ACT_SAV = "save";
 debugger
 		const saveFromItemData = foundry.utils.getProperty( itemData, ATTR_ITM_ACT_SAV );
-		result = foundry.utils.setProperty(actSave, ATTR_ACT_SAV, saveFromItemData);
-		if (!result) {
-			console.warn(_VERSION, "Buff:", buffData.name, ", Action:", actSave.name,  ", failed to set <save> to:", saveFromItemData);
+		try {
+			await foundry.utils.setProperty(actSave, ATTR_ACT_SAV, saveFromItemData);
+		} catch (error) {
+			console.warn(error, _VERSION, "Buff:", buffData.name, ", Action:", actSave.name,  ", failed to set <save> to:", saveFromItemData);
 		}
 
 /*	-------	SET  "Cured" <tag> to "cure". ---------------------------------- */
 		const TXT_ACT_TAG_CURE = "cure";
-		result = foundry.utils.setProperty(actCure, ATTR_ACT_TAG, TXT_ACT_TAG_CURE);
-		if (!result) {
-			console.warn(_VERSION, "Buff:", buffData.name, ", Action:", actCure.name, ", failed to create action:", actSave.name);
+		try {
+			await foundry.utils.setProperty(actCure, ATTR_ACT_TAG, TXT_ACT_TAG_CURE);
+		} catch (error) {
+			console.warn(error, _VERSION, "Buff:", buffData.name, ", Action:", actCure.name, ", failed to create action:", actSave.name);
 		}
 
 /*	-------	SET "Cured" <activation.type> to "nonaction". ------------------ */
