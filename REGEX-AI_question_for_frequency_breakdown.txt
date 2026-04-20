@@ -2,6 +2,7 @@
 Using REGEX
 From: "<h3>Aconite root</h3><p><strong>Type</strong> ingested; <strong>Save</strong> Fortitude DC 25</p><p><strong>Onset</strong> 1 minute; <strong>Frequency</strong> 1/round for 5 rounds</p><p><strong>Effect</strong> 1d3 Dex damage, 1 Con damage, and nauseated for 1 round</p><p><strong>Cure</strong> 2 saves; <strong>Value</strong> 1800 gp.</p>"
 Extract:  "<strong>Frequency</strong> 1/round for 5 rounds" AND 5 AND (the "key" for "round" OR "rounds")
+where "strong" can be any HTML tag
 where 5 can be any number OR a die expression like 1d6
 where "round" and "rounds" can be any "value" of an Array() in Map() 
 where Map() =
@@ -12,22 +13,22 @@ Map[3] {key: "hour", value: ['h', 'hr', 'hrs', 'hour', 'hours']},
 Map[4] {key: "day", value: ['d', 'day', 'days']},
 Map[5] {key: "week", value: ['w', 'wk', 'wks', 'week', 'weeks']}
 
-To extract the Frequency string using your map of units, use this pattern:
-<strong>Frequency<\/strong>\s*(\d+(?:\/\w+)?\s+for\s+\d*(?:d\d+)?\s+(?:minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w))
+	To extract the Frequency string using your map of units, use this pattern:
+	<strong>Frequency<\/strong>\s*(\d+(?:\/\w+)?\s+for\s+\d*(?:d\d+)?\s+(?:minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w))
 
-Regex Breakdown
-<strong>Frequency<\/strong>\s*
-Matches the literal header and any trailing whitespace.
+	Regex Breakdown
+	<strong>Frequency<\/strong>\s*
+	Matches the literal header and any trailing whitespace.
 
-(\d+(?:\/\w+)?\s+for\s+
-Starts the capture group.
-Matches the interval (e.g., 1/round) and the word for.
+	(\d+(?:\/\w+)?\s+for\s+
+	Starts the capture group.
+	Matches the interval (e.g., 1/round) and the word for.
 
-\d*(?:d\d+)?\s+
-Matches the duration number (e.g., 5) or a die expression (e.g., 1d6).
-(?:r|rnd|round|...|weeks)
-A non-capturing group containing every value from your Map arrays.
-Matches any of your shorthand or full-text time units.
+	\d*(?:d\d+)?\s+
+	Matches the duration number (e.g., 5) or a die expression (e.g., 1d6).
+	(?:r|rnd|round|...|weeks)
+	A non-capturing group containing every value from your Map arrays.
+	Matches any of your shorthand or full-text time units.
 */
 
 // 2. Define Regex to capture: [Full Match, Value/Die, Unit]
