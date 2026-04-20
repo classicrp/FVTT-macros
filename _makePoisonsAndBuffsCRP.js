@@ -1,4 +1,4 @@
-const _VERSION = '0.4.28';
+const _VERSION = '0.4.29';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -412,9 +412,10 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 /*	-------	SET "Save" <tag> to "save". ------------------------------------ */
 		const ATTR_ACT_TAG = "tag";
 		const TXT_ACT_TAG_SAV = "save";
-		result = foundry.utils.setProperty(actSave, ATTR_ACT_TAG, TXT_ACT_TAG_SAV);
-		if (!result) {
-			console.warn(_VERSION, "Buff:", buffData.name, ", Action:", actSave.name, ", may have failed to set <tag> to:", TXT_ACT_TAG_SAV);
+		try {
+			await foundry.utils.setProperty(actSave, ATTR_ACT_TAG, TXT_ACT_TAG_SAV);
+		} catch (error) {
+			console.warn(error, _VERSION, "Buff:", buffData.name, ", Action:", actSave.name, ", may have failed to set <tag> to:", TXT_ACT_TAG_SAV);
 		}
 	
 /*	-------	SET "Save" <activation.type> to "nonaction". ------------------- */
@@ -453,17 +454,37 @@ debugger
 	if (_SHOW) debugger
 
 /*	---	WRITE <actSave> to <buffData> -------------------------------------- */
-		result = await buffData.system.actions.push(actSave);
-		if (!result) {
-			console.error(_VERSION, "Buff:", buffData.name, ", Action:", actSave.name, ", failed to write.");
+		// 	doesn't seem to carry <save> info over so will apply <actSave> to
+		//	<buff> itself.
+		try {
+			result = await buff.actions.set(actSave._id, actSave);
+//			result = await buffData.system.actions.push(actSave);
+		} catch (error) {
+			console.error(error, _VERSION, "Buff:", buffData.name, ", Action:", actSave.name, ", failed to write.");
 			return;
 		}
 
 /*	---	WRITE <actCure> to <buffData> -------------------------------------- */
-		result = await buffData.system.actions.push(actCure);
-		if (!result) {
-			console.error(_VERSION, "Buff:", buffData.name, ", Action:", actCure.name, ", failed to write.");
+		// 	doesn't seem to carry <save> info over so will apply <actCure> to
+		//	<buff> itself.
+		try {
+			result = await buff.actions.set(actCure._id, actCure);
+			result = await buffData.system.actions.push(actCure);
+		} catch (error) {
+			console.error(error, _VERSION, "Buff:", buffData.name, ", Action:", actCure.name, ", failed to write.");
 			return;
+		}
+
+/*	---	RECREATE <buffData> from <buff> ------------------------------------ */
+		try {
+			buffData = await game.items.fromCompendium(buff);
+		} catch (error) {
+			console.error(error, _VERSION, "Buff:", buff, ", failed to extract <buffData>.");			
+		}
+		
+/*	---	LOG <buffData> if _VERBOSE ----------------------------------------- */
+		if (_VERBOSE) {
+			console.log(_VERSION, '<buffData>:', buffData);
 		}
 
 /* 	
@@ -474,23 +495,22 @@ debugger
 	---	SET "on-toggle" macro "buffToggleCheck" to "Compendium.crp-contents.crp-macros.Macro.0kwyj53zVj6I6rKs"
 */
 		
-		if (_VERBOSE) {
-			console.log(_VERSION, 'buffData', buffData);
-		}
-/*	CREATE new Item in Compendium ------------------------------------------ */
-		result = await Item.create(itemData, {pack: CRP_ITEMS, folder: CRP_FLDR_ITM_PSN, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_ITM_PSN) });
-		if (!result) {
-			console.error(_VERSION, "Item:", itemData.name, "failed to create.");
+/*	WRITE new Item in Compendium ------------------------------------------- */
+		try {
+			result = await Item.create(itemData, { pack: CRP_ITEMS, folder: CRP_FLDR_ITM_PSN });	//, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_ITM_PSN) });
+		} catch (error) {
+			console.error(error, _VERSION, "Item:", itemData.name, "failed to create.");
 			return;
 		}
 		if (_VERBOSE) {
 			console.log(_VERSION, 'create item result:', result);
 		}
 
-/*	CREATE new Buff in Compendium ------------------------------------------ */	
-		result = await Item.create(buffData, {pack: CRP_ITEMS, folder: CRP_FLDR_BFF_PSN, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_BFF_PSN) });
-		if (!result) {
-			console.error(_VERSION, "Buff:", buffData.name, "failed to create.");
+/*	WRITE new Buff in Compendium ------------------------------------------- */	
+		try {
+			result = await Item.create(buffData, { pack: CRP_ITEMS, folder: CRP_FLDR_BFF_PSN });	//, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_BFF_PSN) });
+		} catch (error) {
+			console.error(error, _VERSION, "Buff:", buffData.name, "failed to create.");
 			return;
 		}
 		if (_VERBOSE) {
