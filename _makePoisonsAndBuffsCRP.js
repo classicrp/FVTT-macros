@@ -1,4 +1,4 @@
-const _VERSION = '0.4.30';
+const _VERSION = '0.4.32';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -348,7 +348,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		folder "BUFFS", subfolder "Poisons".
 */
 
-/* 	---	CREATE an instance of [ItemBuffPF]. -------------------------------- */
+/* 	---	CREATE an instance of [ItemPF]. ------------------------------------ */
 		let buff = await new pf1.documents.item.ItemPF({
 			name: `Poison (${itemName.toLowerCase()})`,
 			type: "buff",
@@ -387,10 +387,6 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			console.warn(_VERSION, "buff property [", ATTR_KNWN_DESC, "] not set to:", result );
 		}
 
-
-	if (_SHOW) debugger
-	
-
 /*	---	SET <pack> to proper Compendium. ----------------------------------- */
 //		result = await foundry.utils.setProperty(buff, ATTR_PACK, CRP_ITEMS);
 //		if (!result) {
@@ -416,14 +412,12 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			name: "Save", 
 			key: randomID(16), 
 			actionType: TXT_ACT_TYP_SAV,
-			_id: randomID(8),
 			img: buff.img 
 		});
 		let actCure = new pf1.components.ItemAction({ 
 			name: "Cured", 
 			key: randomID(16), 
 			actionType: TXT_ACT_TYP_OTH,
-			_id: randomID(8),
 			img: buff.img 
 		});
 	
@@ -443,13 +437,18 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		if (!result) {
 			console.warn(_VERSION, "Buff:", buff.name, ", Action:", actSave.name,  ", may have failed to set <activation.type> to:", TXT_ACT_TYP_NON);
 		}
-	
+
 /*	-------	SET "Save" <save> to <itemData.system.actions.0.save> ----- */
 		const ATTR_ITM_ACT_SAV = "system.actions.0.save";
-		const ATTR_ACT_SAV = "save";
+		const ATTR_ACT_SAV_DC = "save.dc";
+		const ATTR_ACT_SAV_DESC = "save.description";
+		const ATTR_ACT_SAV_TYP = "save.type";
+		console.log(savingThrowEffect);
 		const saveFromItemData = foundry.utils.getProperty( itemData, ATTR_ITM_ACT_SAV );
 		try {
-			await foundry.utils.setProperty(actSave, ATTR_ACT_SAV, saveFromItemData);
+			await foundry.utils.setProperty(actSave, ATTR_ACT_SAV_DC, saveFromItemData.dc);
+			await foundry.utils.setProperty(actSave, ATTR_ACT_SAV_DESC, saveFromItemData.description);
+			await foundry.utils.setProperty(actSave, ATTR_ACT_SAV_TYP, saveFromItemData.type);
 		} catch (error) {
 			console.warn(error, _VERSION, "Buff:", buff.name, ", Action:", actSave.name,  ", failed to set <save> to:", saveFromItemData);
 		}
@@ -467,8 +466,6 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		if (!result) {
 			console.warn(_VERSION, "Buff:", buff.name, ", Action:", actCure.name, ", failed to set <activation.type>:", TXT_ACT_TYP_NON);
 		}
-
-	if (_SHOW) debugger
 
 /*	---	WRITE <actSave> to <buffData> -------------------------------------- */
 		// 	doesn't seem to carry <save> info over so will apply <actSave> to
@@ -493,11 +490,14 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		}
 
 /*	---	CREATE <buffData> from <buff> ------------------------------------ */
+		let buffData = "";
 		try {
-			let buffData = await game.items.fromCompendium(buff);
+			buffData = await game.items.fromCompendium(buff);
 		} catch (error) {
 			console.error(error, _VERSION, "Buff:", buff, ", failed to extract <buffData>.");			
 		}
+		await buffData.system.actions.push(actSave);
+		await buffData.system.actions.push(actCure);
 		
 /*	---	LOG <buffData> if _VERBOSE ----------------------------------------- */
 		if (_VERBOSE) {
@@ -511,6 +511,8 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 /* 
 	---	SET "on-toggle" macro "buffToggleCheck" to "Compendium.crp-contents.crp-macros.Macro.0kwyj53zVj6I6rKs"
 */
+
+	if (_SHOW) debugger
 		
 /*	WRITE new Item in Compendium ------------------------------------------- */
 		try {
@@ -648,6 +650,14 @@ function durations() {
       { key: "day", value: ["d", "day", "days"], mult: 14400  },
       { key: "week", value: ["w", "wk", "wks", "week", "weeks"], mult: 100800 }
     ];
+}
+
+function savingThrows() {
+	return [
+		{ key: "fort", value: ["fortitude", "fort", "for", "fo", "f"] },
+		{ key: "ref", value: ["reflex", "ref", "re", "r"] },
+		{ key: "will", value: ["will", "wi", "w"] }
+	];
 }
 
 function getConditionBreakdown(eff) {
