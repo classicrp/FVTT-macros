@@ -1,4 +1,4 @@
-const _VERSION = '0.4.29';
+const _VERSION = '0.4.30';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -141,6 +141,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	const ATTR_ITM_IDNT = "system.identified";
 	const ATTR_ITM_CARRIED = "system.carried";
 	const ATTR_ITM_EQP = "system.equipped";
+	const ATTR_ITM_SYS_TAG = "system.tag";
 	const ATTR_ITM_STS_DSRC = "_stats.duplicateSource";
 	const ATTR_ITM_STS_CSRC = "_stats.compendiumSource";
 	const ATTR_ITM_ACT_NOTE_EFF = "system.actions.0.notes.effect.0";
@@ -348,11 +349,9 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 */
 
 /* 	---	CREATE an instance of [ItemBuffPF]. -------------------------------- */
-		const buff = await new pf1.documents.item.ItemBuffPF({
+		let buff = await new pf1.documents.item.ItemPF({
 			name: `Poison (${itemName.toLowerCase()})`,
 			type: "buff",
-			pack: CRP_ITEMS,
-			folder: CRP_FLDR_BFF_PSN,
 			img: itemData.img,
 			_id: randomID(16),
 		});
@@ -367,6 +366,9 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 /* 	-------	CREATE <buffUuid>. --------------------------------------------- */
 		const buffUuid = "Compendium." + CRP_ITEMS + ".Item." + buff._id;
 
+/*	-------	SET <system.tag> to 'poison' ----------------------------------- */
+		result = await foundry.utils.setProperty(buff, ATTR_ITM_SYS_TAG, 'poison');
+
 /* 	-------	UPDEATE Item <effectNote> with <buffUuid>. --------------------- */
 		effectNote = await effectNote.replace(REPLACE_THIS_WITH_BUFF_UUID, buffUuid);
 
@@ -377,37 +379,53 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		}
 
 /* 	---	EXTRACT the data structure from <buff> for further processing. ----- */
-		let buffData = await game.items.fromCompendium(buff);
+//		let buffData = await game.items.fromCompendium(buff);
 
 /*	---	SET <description> to same description from <item>. ----------------- */
-		result = await foundry.utils.setProperty(buffData, ATTR_KNWN_DESC, descHTML);
+		result = await foundry.utils.setProperty(buff, ATTR_KNWN_DESC, descHTML);
 		if (!result) {
-			console.warn(_VERSION, "buffData property [", ATTR_KNWN_DESC, "] not set to:", result );
+			console.warn(_VERSION, "buff property [", ATTR_KNWN_DESC, "] not set to:", result );
 		}
+
+
+	if (_SHOW) debugger
+	
 
 /*	---	SET <pack> to proper Compendium. ----------------------------------- */
-		result = await foundry.utils.setProperty(buffData, ATTR_PACK, CRP_ITEMS);
-		if (!result) {
-			console.warn(_VERSION, "buffData property [", ATTR_PACK, "] not set to:", CRP_ITEMS );
-		}
+//		result = await foundry.utils.setProperty(buff, ATTR_PACK, CRP_ITEMS);
+//		if (!result) {
+//			console.warn(_VERSION, "buff property [", ATTR_PACK, "] not set to:", CRP_ITEMS );
+//		}
 
 /*	---	SET <folder> to proper Folder in the Compendium. ------------------- */
-		result = await foundry.utils.setProperty(buffData, ATTR_FLDR, CRP_FLDR_BFF_PSN);
-		if (!result) {
-			console.warn(_VERSION, "buffData property [", ATTR_FLDR, "] not set to:", CRP_FLDR_BFF_PSN );
-		}
+//		result = await foundry.utils.setProperty(buff, ATTR_FLDR, CRP_FLDR_BFF_PSN);
+//		if (!result) {
+//			console.warn(_VERSION, "buff property [", ATTR_FLDR, "] not set to:", CRP_FLDR_BFF_PSN );
+//		}
 
 /*	---	SET <showInQuickbar> to TRUE. -------------------------------------- */
-		result = await foundry.utils.setProperty(buffData, ATTR_QUICKBAR, true);
+		result = await foundry.utils.setProperty(buff, ATTR_QUICKBAR, true);
 		if (!result) {
-			console.warn(_VERSION, "buffData property [", ATTR_QUICKBAR, "] not set to:", true );
+			console.warn(_VERSION, "buff property [", ATTR_QUICKBAR, "] not set to:", true );
 		}
 
 /*	---	CREATE two new <action> objects, on for "Save" one for "Cure". ----- */
 		const TXT_ACT_TYP_SAV = "save";
 		const TXT_ACT_TYP_OTH = "other";
-		let actSave = new pf1.components.ItemAction({ name: "Save", key: randomID(16), actionType: TXT_ACT_TYP_SAV, img: buffData.img });
-		let actCure = new pf1.components.ItemAction({ name: "Cured", key: randomID(16), actionType: TXT_ACT_TYP_OTH, img: buffData.img });
+		let actSave = new pf1.components.ItemAction({ 
+			name: "Save", 
+			key: randomID(16), 
+			actionType: TXT_ACT_TYP_SAV,
+			_id: randomID(8),
+			img: buff.img 
+		});
+		let actCure = new pf1.components.ItemAction({ 
+			name: "Cured", 
+			key: randomID(16), 
+			actionType: TXT_ACT_TYP_OTH,
+			_id: randomID(8),
+			img: buff.img 
+		});
 	
 /*	-------	SET "Save" <tag> to "save". ------------------------------------ */
 		const ATTR_ACT_TAG = "tag";
@@ -415,7 +433,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		try {
 			await foundry.utils.setProperty(actSave, ATTR_ACT_TAG, TXT_ACT_TAG_SAV);
 		} catch (error) {
-			console.warn(error, _VERSION, "Buff:", buffData.name, ", Action:", actSave.name, ", may have failed to set <tag> to:", TXT_ACT_TAG_SAV);
+			console.warn(error, _VERSION, "Buff:", buff.name, ", Action:", actSave.name, ", may have failed to set <tag> to:", TXT_ACT_TAG_SAV);
 		}
 	
 /*	-------	SET "Save" <activation.type> to "nonaction". ------------------- */
@@ -423,18 +441,17 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		const ATTR_ACT_ACTV_TYP = "activation.type";
 		result = foundry.utils.setProperty(actSave, ATTR_ACT_ACTV_TYP, TXT_ACT_TYP_NON);
 		if (!result) {
-			console.warn(_VERSION, "Buff:", buffData.name, ", Action:", actSave.name,  ", may have failed to set <activation.type> to:", TXT_ACT_TYP_NON);
+			console.warn(_VERSION, "Buff:", buff.name, ", Action:", actSave.name,  ", may have failed to set <activation.type> to:", TXT_ACT_TYP_NON);
 		}
 	
 /*	-------	SET "Save" <save> to <itemData.system.actions.0.save> ----- */
 		const ATTR_ITM_ACT_SAV = "system.actions.0.save";
 		const ATTR_ACT_SAV = "save";
-debugger
 		const saveFromItemData = foundry.utils.getProperty( itemData, ATTR_ITM_ACT_SAV );
 		try {
 			await foundry.utils.setProperty(actSave, ATTR_ACT_SAV, saveFromItemData);
 		} catch (error) {
-			console.warn(error, _VERSION, "Buff:", buffData.name, ", Action:", actSave.name,  ", failed to set <save> to:", saveFromItemData);
+			console.warn(error, _VERSION, "Buff:", buff.name, ", Action:", actSave.name,  ", failed to set <save> to:", saveFromItemData);
 		}
 
 /*	-------	SET  "Cured" <tag> to "cure". ---------------------------------- */
@@ -442,13 +459,13 @@ debugger
 		try {
 			await foundry.utils.setProperty(actCure, ATTR_ACT_TAG, TXT_ACT_TAG_CURE);
 		} catch (error) {
-			console.warn(error, _VERSION, "Buff:", buffData.name, ", Action:", actCure.name, ", failed to create action:", actSave.name);
+			console.warn(error, _VERSION, "Buff:", buff.name, ", Action:", actCure.name, ", failed to create action:", actSave.name);
 		}
 
 /*	-------	SET "Cured" <activation.type> to "nonaction". ------------------ */
 		result = foundry.utils.setProperty(actCure, ATTR_ACT_ACTV_TYP, TXT_ACT_TYP_NON);
 		if (!result) {
-			console.warn(_VERSION, "Buff:", buffData.name, ", Action:", actCure.name, ", failed to set <activation.type>:", TXT_ACT_TYP_NON);
+			console.warn(_VERSION, "Buff:", buff.name, ", Action:", actCure.name, ", failed to set <activation.type>:", TXT_ACT_TYP_NON);
 		}
 
 	if (_SHOW) debugger
@@ -460,7 +477,7 @@ debugger
 			result = await buff.actions.set(actSave._id, actSave);
 //			result = await buffData.system.actions.push(actSave);
 		} catch (error) {
-			console.error(error, _VERSION, "Buff:", buffData.name, ", Action:", actSave.name, ", failed to write.");
+			console.error(error, _VERSION, "Buff:", buff.name, ", Action:", actSave.name, ", failed to write.");
 			return;
 		}
 
@@ -469,15 +486,15 @@ debugger
 		//	<buff> itself.
 		try {
 			result = await buff.actions.set(actCure._id, actCure);
-			result = await buffData.system.actions.push(actCure);
+//			result = await buffData.system.actions.push(actCure);
 		} catch (error) {
-			console.error(error, _VERSION, "Buff:", buffData.name, ", Action:", actCure.name, ", failed to write.");
+			console.error(error, _VERSION, "Buff:", buff.name, ", Action:", actCure.name, ", failed to write.");
 			return;
 		}
 
-/*	---	RECREATE <buffData> from <buff> ------------------------------------ */
+/*	---	CREATE <buffData> from <buff> ------------------------------------ */
 		try {
-			buffData = await game.items.fromCompendium(buff);
+			let buffData = await game.items.fromCompendium(buff);
 		} catch (error) {
 			console.error(error, _VERSION, "Buff:", buff, ", failed to extract <buffData>.");			
 		}
