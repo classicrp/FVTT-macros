@@ -1,4 +1,4 @@
-const _VERSION = '0.4.36';
+const _VERSION = '0.4.37';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -359,6 +359,8 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 //			console.log(_VERSION, 'buff', buff);
 //		}
 
+if (show) debugger
+
 /*	WRITE new Buff in Compendium ------------------------------------------- */	
 		let buff = "";
 		try {
@@ -553,6 +555,13 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			console.log(_VERSION, 'create item result:', result);
 		}
 
+/*	UPDATE <buff> ---------------------------------------------------------- */
+	try {
+		await buff.update();
+	} catch (error) {
+		console.warn('Could not "update" buff.');
+	}
+	
 /*	WRITE new Buff in Compendium ------------------------------------------- */	
 //		try {
 //			buff = await pf1.documents.item.ItemBuffPF.create(buffData, { pack: CRP_ITEMS, folder: CRP_FLDR_BFF_PSN, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_BFF_PSN) });
