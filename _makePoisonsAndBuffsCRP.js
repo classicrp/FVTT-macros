@@ -1,4 +1,4 @@
-const _VERSION = '0.4.40';
+const _VERSION = '0.4.43';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -440,18 +440,20 @@ if (_SHOW) debugger
 /*	---	CREATE two new <action> objects, one for "Save" one for "Cure". ----- */
 		const TXT_ACT_TYP_SAV = "save";
 		const TXT_ACT_TYP_OTH = "other";
-		let actSave = new pf1.components.ItemAction({ 
+		let actSave = pf1.components.ItemAction.create({ 
 			name: "Save", 
 			key: randomID(16), 
 			actionType: TXT_ACT_TYP_SAV,
-			img: buff.img 
-		});
-		let actCure = new pf1.components.ItemAction({ 
+			img: buff.img,
+			parent: buff
+		}, { parent: buff });
+		let actCure = pf1.components.ItemAction.create({ 
 			name: "Cured", 
 			key: randomID(16), 
 			actionType: TXT_ACT_TYP_OTH,
-			img: buff.img 
-		});
+			img: buff.img,
+			parent: buff
+		}, { parent: buff });
 	
 /*	-------	SET "Save" <tag> to "save". ------------------------------------ */
 		const ATTR_ACT_TAG = "tag";
@@ -504,7 +506,7 @@ if (_SHOW) debugger
 		//	<buff> itself.
 		try {
 			result = await buff.actions.set(actSave._id, actSave);
-			result = foundry.utils.setProperty(buff, "actions.0.value", actSave);
+			result = foundry.utils.setProperty(buff, "actions.contents.0", actSave);  //[0].value
 //			result = await buffData.system.actions.push(actSave);
 		} catch (error) {
 			console.error(error, _VERSION, "Buff:", buff.name, ", Action:", actSave.name, ", failed to write.");
@@ -516,7 +518,7 @@ if (_SHOW) debugger
 		//	<buff> itself.
 		try {
 			result = await buff.actions.set(actCure._id, actCure);
-			result = foundry.utils.setProperty(buff, "actions.1.value", actCure);
+			result = foundry.utils.setProperty(buff, "actions.contents.1", actCure);
 //			result = await buffData.system.actions.push(actCure);
 		} catch (error) {
 			console.error(error, _VERSION, "Buff:", buff.name, ", Action:", actCure.name, ", failed to write.");
