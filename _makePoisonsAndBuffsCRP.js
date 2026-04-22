@@ -1,4 +1,4 @@
-const _VERSION = '0.4.35';
+const _VERSION = '0.4.36';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -564,7 +564,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 //		if (_VERBOSE) {
 //			console.log(_VERSION, 'create buff results:', result);
 //		}
-//	}
+	}
 
 return;
 
@@ -574,20 +574,8 @@ return;
 	//	SET "on-use" macro "buffCureCheck" to "Compendium.crp-contents.crp-macros.Macro.wEGLTOmr7iSa5E3l"
 	//	SET "on-toggle" macro "buffToggleCheck" to "Compendium.crp-contents.crp-macros.Macro.0kwyj53zVj6I6rKs"
 	//	CREATE two new <action> objects, on for "Save" one for "Cure"
-	const actSave = new pf1.components.ItemAction({ name: "Save", key: randomID(16), actionType: "save", img: buffData.img });
-	const actCure = new pf1.components.ItemAction({ name: "Cured", key: randomID(16), actionType: "other", img: buffData.img });
 	//		SET "Save" <tag> to "save".
-	result = foundry.utils.setProperty(actSave, "tag", "save");
-	if (!result) {
-		console.error(_VERSION, "Buff:", buffData.name, "failed to create action:", actSave.name);
-		return;
-	}
 	//		SET  "Cured" <tag> to "cure".
-	result = foundry.utils.setProperty(actCure, "tag", "cure");
-	if (!result) {
-		console.error(_VERSION, "Buff:", buffData.name, "failed to create action:", actSave.name);
-		return;
-	}
 	//		SET 
 	//	CREATE a new <changes> object for each type of damage listed in Details
 	//		SET <target> to damage type (mostly an ability)
@@ -601,9 +589,7 @@ return;
 	//		<savesNeeded> (Number) { 1 if not present, ohterwise pulled from "Details"}.
 	//		<savesMade> (Number) { 0 }.
 	//		<unitsPassed> (Number) { 0 }.
-	//		<target> (Number) { 0 }, one for each entry in <changes> above.
-	
-return
+	//		<target> (Number) { 0 }, one for each entry in <changes> above
 
 function countOccurrences(arr) {
 	return arr.reduce((acc, element) => {
