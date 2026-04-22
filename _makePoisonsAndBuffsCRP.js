@@ -1,4 +1,4 @@
-const _VERSION = '0.4.32';
+const _VERSION = '0.4.33';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -388,16 +388,18 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		}
 
 /*	---	SET <pack> to proper Compendium. ----------------------------------- */
-//		result = await foundry.utils.setProperty(buff, ATTR_PACK, CRP_ITEMS);
-//		if (!result) {
-//			console.warn(_VERSION, "buff property [", ATTR_PACK, "] not set to:", CRP_ITEMS );
-//		}
+		try {
+			result = await foundry.utils.setProperty(buff, ATTR_PACK, CRP_ITEMS);
+		} catch (error) {
+			console.warn(_VERSION, "buff property [", ATTR_PACK, "] not set to:", CRP_ITEMS );
+		}
 
 /*	---	SET <folder> to proper Folder in the Compendium. ------------------- */
-//		result = await foundry.utils.setProperty(buff, ATTR_FLDR, CRP_FLDR_BFF_PSN);
-//		if (!result) {
-//			console.warn(_VERSION, "buff property [", ATTR_FLDR, "] not set to:", CRP_FLDR_BFF_PSN );
-//		}
+		try {
+			result = await foundry.utils.setProperty(buff, ATTR_FLDR, CRP_FLDR_BFF_PSN);
+		} catch (error) {
+			console.warn(_VERSION, "buff property [", ATTR_FLDR, "] not set to:", CRP_FLDR_BFF_PSN );
+		}
 
 /*	---	SET <showInQuickbar> to TRUE. -------------------------------------- */
 		result = await foundry.utils.setProperty(buff, ATTR_QUICKBAR, true);
@@ -405,7 +407,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			console.warn(_VERSION, "buff property [", ATTR_QUICKBAR, "] not set to:", true );
 		}
 
-/*	---	CREATE two new <action> objects, on for "Save" one for "Cure". ----- */
+/*	---	CREATE two new <action> objects, one for "Save" one for "Cure". ----- */
 		const TXT_ACT_TYP_SAV = "save";
 		const TXT_ACT_TYP_OTH = "other";
 		let actSave = new pf1.components.ItemAction({ 
@@ -516,7 +518,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		
 /*	WRITE new Item in Compendium ------------------------------------------- */
 		try {
-			result = await Item.create(itemData, { pack: CRP_ITEMS, folder: CRP_FLDR_ITM_PSN });	//, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_ITM_PSN) });
+			result = await Item.create(itemData, { pack: CRP_ITEMS, folder: CRP_FLDR_ITM_PSN, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_ITM_PSN) });
 		} catch (error) {
 			console.error(error, _VERSION, "Item:", itemData.name, "failed to create.");
 			return;
@@ -527,7 +529,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 
 /*	WRITE new Buff in Compendium ------------------------------------------- */	
 		try {
-			result = await Item.create(buffData, { pack: CRP_ITEMS, folder: CRP_FLDR_BFF_PSN });	//, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_BFF_PSN) });
+			result = await Item.create(buffData, { pack: CRP_ITEMS, folder: CRP_FLDR_BFF_PSN, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_BFF_PSN) });
 		} catch (error) {
 			console.error(error, _VERSION, "Buff:", buffData.name, "failed to create.");
 			return;
