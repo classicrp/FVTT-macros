@@ -1,4 +1,4 @@
-const _VERSION = '0.4.34';
+const _VERSION = '0.4.35';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -349,27 +349,33 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 */
 
 /* 	---	CREATE an instance of [ItemBuffPF]. ------------------------------------ */
-		let buff = await new pf1.documents.item.ItemBuffPF({
-			name: `Poison (${itemName.toLowerCase()})`,
-			type: "buff",
-			img: itemData.img,
-			_id: randomID(16),
-		});
-		if (_VERBOSE) {
-			console.log(_VERSION, 'buff', buff);
-		}
+//		let buff = await new pf1.documents.item.ItemBuffPF({
+//			name: `Poison (${itemName.toLowerCase()})`,
+//			type: "buff",
+//			img: itemData.img,
+//			_id: randomID(16),
+//		});
+//		if (_VERBOSE) {
+//			console.log(_VERSION, 'buff', buff);
+//		}
 
 /*	WRITE new Buff in Compendium ------------------------------------------- */	
-//		try {
+		let buff = "";
+		try {
 //			buff = await Item.create(buffData, { pack: CRP_ITEMS, folder: CRP_FLDR_BFF_PSN, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_BFF_PSN) });
-//			buff = await pf1.documents.item.ItemBuffPF.create(buffData, { pack: CRP_ITEMS, folder: CRP_FLDR_BFF_PSN, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_BFF_PSN) });
-//		} catch (error) {
-//			console.error(error, _VERSION, "Buff:", buffData.name, "failed to create.");
-//			return;
-//		}
-//		if (_VERBOSE) {
-//			console.log(_VERSION, 'create buff results:', result);
-//		}
+			buff = await pf1.documents.item.ItemBuffPF.create({
+				name: `Poison (${itemName.toLowerCase()})`,
+				type: "buff",
+				img: itemData.img,
+				_id: randomID(16),
+			}, { pack: CRP_ITEMS, folder: CRP_FLDR_BFF_PSN, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_BFF_PSN) });
+		} catch (error) {
+			console.error(error, _VERSION, "Buff:", buff.name, "failed to create.");
+			return;
+		}
+		if (_VERBOSE) {
+			console.log(_VERSION, 'create buff results:', buff);
+		}
 
 /*
 	---	SET buffUuid of associated Poison Item to newly created BUFF buffUuid. 
@@ -380,7 +386,11 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 
 /*	-------	SET <_stats.compendiumSource> to <buffUuid> -------------------- */
 		const ATTR_STS_CPDSRC = "_stats.compendiumSource";
-		result = await foundry.utils.setProperty(buff, ATTR_STS_CPDSRC, buffUuid);
+		try {
+			await foundry.utils.setProperty(buff, ATTR_STS_CPDSRC, buffUuid);
+		} catch (error) {
+			console.warn(error, _VERSION, "buff property [", ATTR_STS_CPDSRC, "] not set to:", buffUuid );
+		}
 
 /*	-------	SET <system.tag> to 'poison' ----------------------------------- */
 		result = await foundry.utils.setProperty(buff, ATTR_ITM_SYS_TAG, 'poison');
@@ -544,17 +554,17 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		}
 
 /*	WRITE new Buff in Compendium ------------------------------------------- */	
-		try {
-			buff = await pf1.documents.item.ItemBuffPF.create(buffData, { pack: CRP_ITEMS, folder: CRP_FLDR_BFF_PSN, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_BFF_PSN) });
+//		try {
+//			buff = await pf1.documents.item.ItemBuffPF.create(buffData, { pack: CRP_ITEMS, folder: CRP_FLDR_BFF_PSN, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_BFF_PSN) });
 //			result = await Item.create(buffData, { pack: CRP_ITEMS, folder: CRP_FLDR_BFF_PSN, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_BFF_PSN) });
-		} catch (error) {
-			console.error(error, _VERSION, "Buff:", buffData.name, "failed to create.");
-			return;
-		}
-		if (_VERBOSE) {
-			console.log(_VERSION, 'create buff results:', result);
-		}
-	}
+//		} catch (error) {
+//			console.error(error, _VERSION, "Buff:", buffData.name, "failed to create.");
+//			return;
+//		}
+//		if (_VERBOSE) {
+//			console.log(_VERSION, 'create buff results:', result);
+//		}
+//	}
 
 return;
 
