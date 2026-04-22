@@ -1,4 +1,4 @@
-const _VERSION = '0.4.33';
+const _VERSION = '0.4.34';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -263,7 +263,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		}
 
 /*	---	POPULATE <savingThrowEffect>. -------------------------------------- */
-		const savingThrowEffect = TXT_NOTE_START + frequency.html + "<br>" + cure + "</span>";
+		const savingThrowEffect = TXT_NOTE_START + frequency.html + "<br>" + cure.html + "</span>";
 
 /*	---	SET <savingThrowEffect>. ------------------------------------------- */
 		result = await foundry.utils.setProperty(itemData, ATTR_ITM_ACT_SAV_DESC, savingThrowEffect);
@@ -348,8 +348,8 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		folder "BUFFS", subfolder "Poisons".
 */
 
-/* 	---	CREATE an instance of [ItemPF]. ------------------------------------ */
-		let buff = await new pf1.documents.item.ItemPF({
+/* 	---	CREATE an instance of [ItemBuffPF]. ------------------------------------ */
+		let buff = await new pf1.documents.item.ItemBuffPF({
 			name: `Poison (${itemName.toLowerCase()})`,
 			type: "buff",
 			img: itemData.img,
@@ -359,12 +359,28 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			console.log(_VERSION, 'buff', buff);
 		}
 
+/*	WRITE new Buff in Compendium ------------------------------------------- */	
+//		try {
+//			buff = await Item.create(buffData, { pack: CRP_ITEMS, folder: CRP_FLDR_BFF_PSN, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_BFF_PSN) });
+//			buff = await pf1.documents.item.ItemBuffPF.create(buffData, { pack: CRP_ITEMS, folder: CRP_FLDR_BFF_PSN, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_BFF_PSN) });
+//		} catch (error) {
+//			console.error(error, _VERSION, "Buff:", buffData.name, "failed to create.");
+//			return;
+//		}
+//		if (_VERBOSE) {
+//			console.log(_VERSION, 'create buff results:', result);
+//		}
+
 /*
 	---	SET buffUuid of associated Poison Item to newly created BUFF buffUuid. 
 */
 
 /* 	-------	CREATE <buffUuid>. --------------------------------------------- */
 		const buffUuid = "Compendium." + CRP_ITEMS + ".Item." + buff._id;
+
+/*	-------	SET <_stats.compendiumSource> to <buffUuid> -------------------- */
+		const ATTR_STS_CPDSRC = "_stats.compendiumSource";
+		result = await foundry.utils.setProperty(buff, ATTR_STS_CPDSRC, buffUuid);
 
 /*	-------	SET <system.tag> to 'poison' ----------------------------------- */
 		result = await foundry.utils.setProperty(buff, ATTR_ITM_SYS_TAG, 'poison');
@@ -529,7 +545,8 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 
 /*	WRITE new Buff in Compendium ------------------------------------------- */	
 		try {
-			result = await Item.create(buffData, { pack: CRP_ITEMS, folder: CRP_FLDR_BFF_PSN, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_BFF_PSN) });
+			buff = await pf1.documents.item.ItemBuffPF.create(buffData, { pack: CRP_ITEMS, folder: CRP_FLDR_BFF_PSN, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_BFF_PSN) });
+//			result = await Item.create(buffData, { pack: CRP_ITEMS, folder: CRP_FLDR_BFF_PSN, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_BFF_PSN) });
 		} catch (error) {
 			console.error(error, _VERSION, "Buff:", buffData.name, "failed to create.");
 			return;
