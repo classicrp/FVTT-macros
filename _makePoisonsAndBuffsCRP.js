@@ -1,4 +1,4 @@
-const _VERSION = '0.4.37';
+const _VERSION = '0.4.39';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -359,7 +359,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 //			console.log(_VERSION, 'buff', buff);
 //		}
 
-if (show) debugger
+if (_SHOW) debugger
 
 /*	WRITE new Buff in Compendium ------------------------------------------- */	
 		let buff = "";
@@ -370,6 +370,8 @@ if (show) debugger
 				type: "buff",
 				img: itemData.img,
 				_id: randomID(16),
+				pack: CRP_ITEMS,
+				folder: CRP_FLDR_BFF_PSN
 			}, { pack: CRP_ITEMS, folder: CRP_FLDR_BFF_PSN, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_BFF_PSN) });
 		} catch (error) {
 			console.error(error, _VERSION, "Buff:", buff.name, "failed to create.");
@@ -501,7 +503,7 @@ if (show) debugger
 		// 	doesn't seem to carry <save> info over so will apply <actSave> to
 		//	<buff> itself.
 		try {
-			result = await buff.actions.set(actSave._id, actSave);
+			result = await buff.system.actions.set(actSave._id, actSave);
 //			result = await buffData.system.actions.push(actSave);
 		} catch (error) {
 			console.error(error, _VERSION, "Buff:", buff.name, ", Action:", actSave.name, ", failed to write.");
@@ -512,7 +514,7 @@ if (show) debugger
 		// 	doesn't seem to carry <save> info over so will apply <actCure> to
 		//	<buff> itself.
 		try {
-			result = await buff.actions.set(actCure._id, actCure);
+			result = await buff.system.actions.set(actCure._id, actCure);
 //			result = await buffData.system.actions.push(actCure);
 		} catch (error) {
 			console.error(error, _VERSION, "Buff:", buff.name, ", Action:", actCure.name, ", failed to write.");
