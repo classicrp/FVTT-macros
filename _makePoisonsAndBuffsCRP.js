@@ -1,4 +1,4 @@
-const _VERSION = '0.4.43';
+const _VERSION = '0.4.46';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -437,93 +437,52 @@ if (_SHOW) debugger
 			console.warn(_VERSION, "buff property [", ATTR_QUICKBAR, "] not set to:", true );
 		}
 
-/*	---	CREATE two new <action> objects, one for "Save" one for "Cure". ----- */
-		const TXT_ACT_TYP_SAV = "save";
-		const TXT_ACT_TYP_OTH = "other";
-		let actSave = pf1.components.ItemAction.create({ 
-			name: "Save", 
-			key: randomID(16), 
-			actionType: TXT_ACT_TYP_SAV,
-			img: buff.img,
-			parent: buff
-		}, { parent: buff });
-		let actCure = pf1.components.ItemAction.create({ 
-			name: "Cured", 
-			key: randomID(16), 
-			actionType: TXT_ACT_TYP_OTH,
-			img: buff.img,
-			parent: buff
-		}, { parent: buff });
-	
-/*	-------	SET "Save" <tag> to "save". ------------------------------------ */
-		const ATTR_ACT_TAG = "tag";
-		const TXT_ACT_TAG_SAV = "save";
-		try {
-			await foundry.utils.setProperty(actSave, ATTR_ACT_TAG, TXT_ACT_TAG_SAV);
-		} catch (error) {
-			console.warn(error, _VERSION, "Buff:", buff.name, ", Action:", actSave.name, ", may have failed to set <tag> to:", TXT_ACT_TAG_SAV);
-		}
-	
-/*	-------	SET "Save" <activation.type> to "nonaction". ------------------- */
-		const TXT_ACT_TYP_NON = "nonaction";
-		const ATTR_ACT_ACTV_TYP = "activation.type";
-		result = foundry.utils.setProperty(actSave, ATTR_ACT_ACTV_TYP, TXT_ACT_TYP_NON);
-		if (!result) {
-			console.warn(_VERSION, "Buff:", buff.name, ", Action:", actSave.name,  ", may have failed to set <activation.type> to:", TXT_ACT_TYP_NON);
-		}
-
 /*	-------	SET "Save" <save> to <itemData.system.actions.0.save> ----- */
 		const ATTR_ITM_ACT_SAV = "system.actions.0.save";
 		const ATTR_ACT_SAV_DC = "save.dc";
 		const ATTR_ACT_SAV_DESC = "save.description";
 		const ATTR_ACT_SAV_TYP = "save.type";
-		console.log(savingThrowEffect);
 		const saveFromItemData = foundry.utils.getProperty( itemData, ATTR_ITM_ACT_SAV );
-		try {
-			await foundry.utils.setProperty(actSave, ATTR_ACT_SAV_DC, saveFromItemData.dc);
-			await foundry.utils.setProperty(actSave, ATTR_ACT_SAV_DESC, saveFromItemData.description);
-			await foundry.utils.setProperty(actSave, ATTR_ACT_SAV_TYP, saveFromItemData.type);
-		} catch (error) {
-			console.warn(error, _VERSION, "Buff:", buff.name, ", Action:", actSave.name,  ", failed to set <save> to:", saveFromItemData);
-		}
 
-/*	-------	SET  "Cured" <tag> to "cure". ---------------------------------- */
-		const TXT_ACT_TAG_CURE = "cure";
-		try {
-			await foundry.utils.setProperty(actCure, ATTR_ACT_TAG, TXT_ACT_TAG_CURE);
-		} catch (error) {
-			console.warn(error, _VERSION, "Buff:", buff.name, ", Action:", actCure.name, ", failed to create action:", actSave.name);
-		}
+/*	---	CREATE a new <actions> object, one for "Save" one for "Cured" ---- */
+		const TXT_ACT_TYP_SAV = "save";
+		const TXT_ACT_TYP_OTH = "other";
+		let actions = [
+			{ 
+				name: "Save", 
+				activation: {
+					type: 'nonaction'
+				},
+				actionType: TXT_ACT_TYP_SAV,
+				img: buff.img,
+				tag: 'save',
+				save: {
+					dc: saveFromItemData.dc, 
+					description: saveFromItemData.description, 
+					type: saveFromItemData.type
+				}
+			},
+			{
+				name: "Cured",
+				activation: {
+					type: 'nonaction'
+				},
+				actionType: TXT_ACT_TYP_OTH,
+				img: buff.img,
+				tag: 'cure',
+			}
+		];
 
-/*	-------	SET "Cured" <activation.type> to "nonaction". ------------------ */
-		result = foundry.utils.setProperty(actCure, ATTR_ACT_ACTV_TYP, TXT_ACT_TYP_NON);
-		if (!result) {
-			console.warn(_VERSION, "Buff:", buff.name, ", Action:", actCure.name, ", failed to set <activation.type>:", TXT_ACT_TYP_NON);
-		}
-
-/*	---	WRITE <actSave> to <buffData> -------------------------------------- */
+/*	---	WRITE <actions> to <buff> ------------------------------------------ */
 		// 	doesn't seem to carry <save> info over so will apply <actSave> to
 		//	<buff> itself.
 		try {
-			result = await buff.actions.set(actSave._id, actSave);
-			result = foundry.utils.setProperty(buff, "actions.contents.0", actSave);  //[0].value
-//			result = await buffData.system.actions.push(actSave);
+			await pf1.components.ItemAction.create(actions, { parent: buff })
 		} catch (error) {
 			console.error(error, _VERSION, "Buff:", buff.name, ", Action:", actSave.name, ", failed to write.");
 			return;
 		}
 
-/*	---	WRITE <actCure> to <buffData> -------------------------------------- */
-		// 	doesn't seem to carry <save> info over so will apply <actCure> to
-		//	<buff> itself.
-		try {
-			result = await buff.actions.set(actCure._id, actCure);
-			result = foundry.utils.setProperty(buff, "actions.contents.1", actCure);
-//			result = await buffData.system.actions.push(actCure);
-		} catch (error) {
-			console.error(error, _VERSION, "Buff:", buff.name, ", Action:", actCure.name, ", failed to write.");
-			return;
-		}
 
 /*	---	CREATE <buffData> from <buff> ------------------------------------ */
 		let buffData = "";
@@ -532,8 +491,6 @@ if (_SHOW) debugger
 		} catch (error) {
 			console.error(error, _VERSION, "Buff:", buff, ", failed to extract <buffData>.");			
 		}
-		await buffData.system.actions.push(actSave);
-		await buffData.system.actions.push(actCure);
 		
 /*	---	LOG <buffData> if _VERBOSE ----------------------------------------- */
 		if (_VERBOSE) {
