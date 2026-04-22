@@ -1,4 +1,4 @@
-const _VERSION = '0.4.39';
+const _VERSION = '0.4.40';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -503,7 +503,8 @@ if (_SHOW) debugger
 		// 	doesn't seem to carry <save> info over so will apply <actSave> to
 		//	<buff> itself.
 		try {
-			result = await buff.system.actions.set(actSave._id, actSave);
+			result = await buff.actions.set(actSave._id, actSave);
+			result = foundry.utils.setProperty(buff, "actions.0.value", actSave);
 //			result = await buffData.system.actions.push(actSave);
 		} catch (error) {
 			console.error(error, _VERSION, "Buff:", buff.name, ", Action:", actSave.name, ", failed to write.");
@@ -514,7 +515,8 @@ if (_SHOW) debugger
 		// 	doesn't seem to carry <save> info over so will apply <actCure> to
 		//	<buff> itself.
 		try {
-			result = await buff.system.actions.set(actCure._id, actCure);
+			result = await buff.actions.set(actCure._id, actCure);
+			result = foundry.utils.setProperty(buff, "actions.1.value", actCure);
 //			result = await buffData.system.actions.push(actCure);
 		} catch (error) {
 			console.error(error, _VERSION, "Buff:", buff.name, ", Action:", actCure.name, ", failed to write.");
