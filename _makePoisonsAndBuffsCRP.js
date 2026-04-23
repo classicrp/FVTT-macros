@@ -1,4 +1,4 @@
-const _VERSION = '0.5.10';
+const _VERSION = '0.5.9';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -710,7 +710,7 @@ function createBuffData(htm, data, c, e, f) {
 					savesNeeded: c.savesNeeded,
 					savesMade: 0,
 					unitsPassed: 0,
-					target: ""
+					target: "",
 				}
 			},
 			duration: {
