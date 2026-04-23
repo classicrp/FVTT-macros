@@ -691,7 +691,7 @@ function createBuffData(htm, data, c, e, f) {
 	//		<unitsPassed> (Number) { 0 }.
 	//		<target> (Number) { 0 }, one for each entry in <changes> above
 	let buffData = {
-		name: `Poison (${data.name.toLowerCase()})`,
+		name: `Poison (${data.name.toLowerCase().replace('poison', '')})`,
 		type: "buff",
 		img: data.img,
 		_id: id,
