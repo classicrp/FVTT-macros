@@ -1,4 +1,4 @@
-const _VERSION = '0.5.2';
+const _VERSION = '0.5.3';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -400,7 +400,14 @@ if (_SHOW) debugger
 			return;
 		}
 
-/*	---	CREATE <scriptCalls> in <buff> -------------------------------------- */
+/*	---	CREATE <changes> in <buff> ----------------------------------------- */
+		try {
+			await pf1.components.ItemChange.create(createChangesData(buff, effect), { parent: buff })
+		} catch (error) {
+			console.error(error, _VERSION, "Buff:", buff.name, ", Action: [ createActionsData() ], failed to write.");
+			return;
+		}
+/*	---	CREATE <scriptCalls> in <buff> ------------------------------------- */
 		try {
 			await pf1.components.ItemScriptCall.create(createScriptCallData(), { parent: buff })
 		} catch (error) {
@@ -657,6 +664,33 @@ function getFrequencyBreakdown(htm) {
 	return htm.match(RGX_FREQ);
 }
 
+function createChangesData(d, e) {
+	const changes = [];
+debugger
+	for (let effect of e) {
+		
+        let name = getNameFromData(d.name);
+		let dFlag = "@dFlag." + name + "." + effect.ability;
+		let amount = "";
+		if (effect.amount.includes("d")) {
+			
+		} else {
+			amount = "-" + effect.amount;
+		}
+        formula = amount + " -" + dFlag;
+		let change = {
+			_id: randomID(8),
+			formula: formula,
+			operator: "add",
+			target: effect.ability,
+			type: "untyped"
+		};
+		changes.push(change);
+	}
+	return changes;
+}
+
+
 function createScriptCallData() {
 	/* object definitions for 'buffCureCheck' and buffToggleCheck' macros -- */
 	return [
@@ -684,7 +718,6 @@ function createScriptCallData() {
 function createBuffData(htm, data, c, e, f) {
 	const id = randomID(16);
 	const buffUuid = "Compendium." + CRP_ITEMS + ".Item." + id;
-debugger
 	//	CREATE dictionary items for;
 	//		<frequencyUnits> (String) {"" for inifinity, "round" for rnds, "turn" for turns, "hour" for hrs, "day" for days}, pulled from "Details".
 	//		<frequencyDuration> (Number), pulled from "Details".
@@ -721,8 +754,9 @@ debugger
 	};
 	for (let effect of e) {
 		//	add in [effect.abilities]: 0,
-		//buffData.system.flags.dictionary
+		buffData.system.flags.dictionary[effect.ability] = 0;
 	}
+	return buffData;
 }
 
 function createActionsData(b, s) {
@@ -751,4 +785,18 @@ function createActionsData(b, s) {
 			tag: "cure",
 		}
 	];
+}
+
+function getNameFromData(n) {
+ 	const words = n.match(/[a-zA-Z]+/g);
+	const result = words
+		.map((word, index) => {
+			if (index === 0) {
+				return word.toLowerCase(); // lowercase first word: "poison"
+			}
+			// Capitalize the first letter of every other word
+			return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+		})
+		.join(''); // Join them back together
+    return result;
 }
