@@ -1,4 +1,4 @@
-const _VERSION = '0.5.5';
+const _VERSION = '0.5.6';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -670,7 +670,7 @@ debugger
 	for (let effect of e) {
 		
         let name = getNameFromData(d.name);
-		let dFlag = "@dFlag." + name + "." + effect.ability;
+		let dFlags = "@dFlags." + name + "." + effect.ability;
 		let amount = "";
 		if (effect.amount.includes("d")) {
 			const n = effect.amount.charAt(0);
@@ -679,7 +679,7 @@ debugger
 		} else {
 			amount = effect.amount;
 		}
-        formula = "-" + amount + " +" + dFlag;
+        formula = "-" + amount + " +" + dFlags;
 		let change = {
 			_id: randomID(8),
 			formula: formula,
@@ -740,7 +740,6 @@ function createBuffData(htm, data, c, e, f) {
 			description: {
 					value: htm
 				},
-			tag: "poison",
 			flags: {
 				dictionary: {
 					frequencyUnits: f.units,
