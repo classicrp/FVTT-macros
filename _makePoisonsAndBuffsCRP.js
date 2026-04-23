@@ -1,4 +1,4 @@
-const _VERSION = '0.5.3';
+const _VERSION = '0.5.4';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -673,11 +673,13 @@ debugger
 		let dFlag = "@dFlag." + name + "." + effect.ability;
 		let amount = "";
 		if (effect.amount.includes("d")) {
-			
+			const n = effect.amount.charAt(0);
+			const m = effect.amount.charAt(2);
+			amount = "(n*floor(random()*m +1)";
 		} else {
-			amount = "-" + effect.amount;
+			amount = effect.amount;
 		}
-        formula = amount + " -" + dFlag;
+        formula = "-" + amount + " +" + dFlag;
 		let change = {
 			_id: randomID(8),
 			formula: formula,
