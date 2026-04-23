@@ -1,4 +1,4 @@
-const _VERSION = '0.5.6';
+const _VERSION = '0.5.7';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -51,7 +51,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	
 	if (_TEST) {
 /* 	---	TEST CASE BEGIN ---------------------------------------------------- */
-		const name = "Aconite root";
+		const name = "Black spider marsh poison";
 		const ERR_MSG_TEST = "Unable to retrieve specified poison from pack data.";
 		//	this handles a specific request that returns all copies in Compendiums
 		srcs = await game.packs?.filter(f => f.title.toLowerCase().includes('item')).map(g => g.index.getName(name)).filter(g => (typeof g !== 'undefined'));
@@ -612,7 +612,8 @@ function getEffectBreakdown(htm) {
 }
 
 function extractCure(htm) {
-	const RGX_CURE = /<(?:[^>]+)>Cure<\/(?:[^>]+)>\s(\d+)\ssave[s]?/i;
+debugger
+	const RGX_CURE = /(<(\w+)>.*?<\/\2>)\s+(\d+)\s+(consecutive\s+)?(saves?)/i;
 	const rslt = htm.match(RGX_CURE);
 	const consec = htm.toLowerCase().includes("consecutive");
 	if (rslt) {
@@ -675,7 +676,7 @@ debugger
 		if (effect.amount.includes("d")) {
 			const n = effect.amount.charAt(0);
 			const m = effect.amount.charAt(2);
-			amount = `(${n}*floor(random()*${m}+1))`;
+			amount = `(${n} * floor(random() * ${m} + 1))`;
 		} else {
 			amount = effect.amount;
 		}
@@ -691,7 +692,6 @@ debugger
 	}
 	return changes;
 }
-
 
 function createScriptCallData() {
 	/* object definitions for 'buffCureCheck' and buffToggleCheck' macros -- */
