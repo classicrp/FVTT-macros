@@ -1,4 +1,4 @@
-const _VERSION = '0.5.9';
+const _VERSION = '0.5.11';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -137,6 +137,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	const ATTR_KNWN_PRC = "system.price";
 	const ATTR_FLDR = "folder";
 	const ATTR_PACK = "pack";
+	const ATTR_IMG = "img";
 	const ATTR_ITM_IDNT = "system.identified";
 	const ATTR_ITM_CARRIED = "system.carried";
 	const ATTR_ITM_EQP = "system.equipped";
@@ -173,6 +174,13 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			console.log(_VERSION, "itemData:", itemData);
 		}
 
+/*	SET <img> to another icon if it is the default ------------------------- */
+		const img = checkImage(itemData.img);
+		result = await foundry.utils.setProperty(itemData, ATTR_IMG, img);
+		if (!result) {
+			console.warn(_VERSION, "itemData property [", ATTR_IMG, "] not set to:", img);
+		}
+		
 /*	SET <Unidentified Name> to "Vial of liquid". --------------------------- */
 		result = await foundry.utils.setProperty(itemData, ATTR_UKN_NAME, TXT_UNK_NAME);
 		if (!result) {
@@ -767,4 +775,16 @@ function getNameFromData(n) {
 		})
 		.join(''); // Join them back together
     return result;
+}
+
+function checkImage(img) {
+	const IMG_DEFAULT = "systems/pf1/icons/items/potions/unique-9.jpg";
+	let rslt = "";
+	if (img === IMG_DEFAULT) {
+		const rnd = Math.floor(random() * 100) + 1;
+		rslt = CRP_IMG_BASE + rnd.toString() + ".png";
+	} else {
+		rslt = img;
+	}
+	return rslt;
 }
