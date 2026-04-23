@@ -1,25 +1,26 @@
 Using REGEX
-From: "<strong>Cure</strong> 2 saves"
-Extract: "<strong>Cure</strong> 2 saves" AND 2
+From: "<strong>Cure</strong> 2 consecutive saves"
+Extract: "<strong>Cure</strong> 2 saves" AND 2 AND "consecutive" if it exists
 where "strong" can be any html tag
 where 2 can be any number
 where "saves" can be singular "save" 
+where "consecutive" is optional
 
-To match your specific pattern while allowing for different HTML tags, numbers, and singular/plural variations, use this regex:
-<(?:[^>]+)>Cure<\/(?:[^>]+)>\s(\d+)\ssave[s]?
+To extract the specific parts you need while keeping the HTML tag and "consecutive" flexible, use this pattern:
+(<(\w+)>.*?<\/\2>)\s+(\d+)\s+(consecutive\s+)?(saves?)
 
-Breakdown of the Logic
+Regex Breakdown
+(<(\w+)>.*?<\/\2>): Matches any HTML tag and its content (e.g., <strong>Cure</strong>).
 
-<(?:[^>]+)>: Matches any opening HTML tag (like <strong>, <b>, or <span>).
+\s+(\d+)\s+: Captures the number (e.g., 2) surrounded by spaces.
 
-Cure: Matches the literal text "Cure".
+(consecutive\s+)?: Optionally matches the word "consecutive" and a space.
 
-<\/(?:[^>]+)>: Matches the corresponding closing HTML tag.
+(saves?): Matches "save" or "saves."
 
-\s: Matches the space between the tag and the number.
-
-(\d+): A capture group that matches any number (1, 2, 10, etc.).
-
-\s: Matches the space before the word "save".
-
-save[s]?: Matches "save" and makes the "s" optional so it captures "save" or "saves".
+Captured Groups
+If you apply this to <strong>Cure</strong> 2 consecutive saves, your groups will be:
+Group 1: <strong>Cure</strong>
+Group 3: 2
+Group 4: consecutive (if present)
+Group 5: saves
