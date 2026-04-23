@@ -1,4 +1,4 @@
-const _VERSION = '0.5.4';
+const _VERSION = '0.5.5';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -675,7 +675,7 @@ debugger
 		if (effect.amount.includes("d")) {
 			const n = effect.amount.charAt(0);
 			const m = effect.amount.charAt(2);
-			amount = "(n*floor(random()*m +1)";
+			amount = `(${n}*floor(random()*${m}+1))`;
 		} else {
 			amount = effect.amount;
 		}
