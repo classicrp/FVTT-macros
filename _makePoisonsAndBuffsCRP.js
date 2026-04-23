@@ -1,4 +1,4 @@
-const _VERSION = '0.5.0';
+const _VERSION = '0.5.1';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -348,24 +348,13 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		folder "BUFFS", subfolder "Poisons".
 */
 
-/* 	---	CREATE an instance of [ItemBuffPF]. ------------------------------------ */
-//		let buff = await new pf1.documents.item.ItemBuffPF({
-//			name: `Poison (${itemName.toLowerCase()})`,
-//			type: "buff",
-//			img: itemData.img,
-//			_id: randomID(16),
-//		});
-//		if (_VERBOSE) {
-//			console.log(_VERSION, 'buff', buff);
-//		}
-
 if (_SHOW) debugger
 
 /*	---	WRITE new Buff in Compendium --------------------------------------- */	
 		let buff = "";
 		try {
 			buff = await pf1.documents.item.ItemBuffPF.create(
-					createBuffData(descHTML),
+					createBuffData(descHTML, itemData, cure, effect, frequency),
 				{ 
 					pack: CRP_ITEMS, 
 					folder: CRP_FLDR_BFF_PSN, 
@@ -405,9 +394,9 @@ if (_SHOW) debugger
 
 /*	---	CREATE <actions> in <buff> ------------------------------------------ */
 		try {
-			await pf1.components.ItemAction.create(createActionData(saveFromItemData), { parent: buff })
+			await pf1.components.ItemAction.create(createActionsData(buff, saveFromItemData), { parent: buff })
 		} catch (error) {
-			console.error(error, _VERSION, "Buff:", buff.name, ", Action: [ createActionData() ], failed to write.");
+			console.error(error, _VERSION, "Buff:", buff.name, ", Action: [ createActionsData() ], failed to write.");
 			return;
 		}
 
@@ -418,28 +407,7 @@ if (_SHOW) debugger
 			console.error(error, _VERSION, "Buff:", buff.name, ", Action: [ createScriptCallData() ], failed to write.");
 			return;
 		}
-
-/*	---	CREATE <buffData> from <buff> -------------------------------------- */
-//		let buffData = "";
-//		try {
-//			buffData = await game.items.fromCompendium(buff);
-//		} catch (error) {
-//			console.error(error, _VERSION, "Buff:", buff, ", failed to extract <buffData>.");			
-//		}
 		
-/*	---	LOG <buffData> if _VERBOSE ----------------------------------------- */
-		if (_VERBOSE) {
-			console.log(_VERSION, '<buffData>:', buffData);
-		}
-
-/* 	
-	---	SET "on-use" macro "buffCureCheck" to "Compendium.crp-contents.crp-macros.Macro.wEGLTOmr7iSa5E3l"
-*/
-
-/* 
-	---	SET "on-toggle" macro "buffToggleCheck" to "Compendium.crp-contents.crp-macros.Macro.0kwyj53zVj6I6rKs"
-*/
-
 	if (_SHOW) debugger
 		
 /*	WRITE new Item in Compendium ------------------------------------------- */
@@ -639,10 +607,12 @@ function getEffectBreakdown(htm) {
 function extractCure(htm) {
 	const RGX_CURE = /<(?:[^>]+)>Cure<\/(?:[^>]+)>\s(\d+)\ssave[s]?/i;
 	const rslt = htm.match(RGX_CURE);
+	const consec = htm.toLowerCase().includes("consecutive");
 	if (rslt) {
 		return {
 			html: rslt[0],
-			savesNeeded: Number(rslt[1])
+			savesNeeded: Number(rslt[1]),
+			consecutive: ((!consec) ? -1 : 0)
 		}
 	}
 	return null;
@@ -711,13 +681,22 @@ function createScriptCallData() {
 	];
 }
 
-function createBuffData(htm) {
+function createBuffData(htm, data, c, e, f) {
 	const id = randomID(16);
 	const buffUuid = "Compendium." + CRP_ITEMS + ".Item." + id;
+debugger
+	//	CREATE dictionary items for;
+	//		<frequencyUnits> (String) {"" for inifinity, "round" for rnds, "turn" for turns, "hour" for hrs, "day" for days}, pulled from "Details".
+	//		<frequencyDuration> (Number), pulled from "Details".
+	//		<consecutiveSaves> (Number) { -1 if not present, 0 otherwise }, pulled from "Details".
+	//		<savesNeeded> (Number) { 1 if not present, ohterwise pulled from "Details"}.
+	//		<savesMade> (Number) { 0 }.
+	//		<unitsPassed> (Number) { 0 }.
+	//		<target> (Number) { 0 }, one for each entry in <changes> above
 	return {
-		name: `Poison (${itemName.toLowerCase()})`,
+		name: `Poison (${data.name.toLowerCase()})`,
 		type: "buff",
-		img: itemData.img,
+		img: data.img,
 		_id: id,
 		pack: CRP_ITEMS,
 		folder: CRP_FLDR_BFF_PSN,
@@ -727,11 +706,22 @@ function createBuffData(htm) {
 					value: htm
 				},
 			tag: "poison",
+			flags: {
+				dictionary: {
+					frequencyUnits: f.units,
+					frequencyDuration: f.duration,
+					consecutiveSaves: c.consecutive,
+					savesNeeded: c.savesNeeded,
+					savesMade: 0,
+					unitsPassed: 0,
+					target: ""
+				}
 			}
+		}
 	};
 }
 
-function createActionData(s) {
+function createActionsData(b, s) {
 	return [
 		{ 
 			name: "Save", 
@@ -739,7 +729,7 @@ function createActionData(s) {
 				type: "nonaction"
 			},
 			actionType: "save",
-			img: buff.img,
+			img: b.img,
 			tag: "save",
 			save: {
 				dc: s.dc, 
@@ -753,7 +743,7 @@ function createActionData(s) {
 				type: "nonaction"
 			},
 			actionType: "other",
-			img: buff.img,
+			img: b.img,
 			tag: "cure",
 		}
 	];
