@@ -1,4 +1,4 @@
-const _VERSION = '0.4.46';
+const _VERSION = '0.5.0';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -361,18 +361,17 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 
 if (_SHOW) debugger
 
-/*	WRITE new Buff in Compendium ------------------------------------------- */	
+/*	---	WRITE new Buff in Compendium --------------------------------------- */	
 		let buff = "";
 		try {
-//			buff = await Item.create(buffData, { pack: CRP_ITEMS, folder: CRP_FLDR_BFF_PSN, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_BFF_PSN) });
-			buff = await pf1.documents.item.ItemBuffPF.create({
-				name: `Poison (${itemName.toLowerCase()})`,
-				type: "buff",
-				img: itemData.img,
-				_id: randomID(16),
-				pack: CRP_ITEMS,
-				folder: CRP_FLDR_BFF_PSN
-			}, { pack: CRP_ITEMS, folder: CRP_FLDR_BFF_PSN, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_BFF_PSN) });
+			buff = await pf1.documents.item.ItemBuffPF.create(
+					createBuffData(descHTML),
+				{ 
+					pack: CRP_ITEMS, 
+					folder: CRP_FLDR_BFF_PSN, 
+					source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_BFF_PSN) 
+				}
+			);
 		} catch (error) {
 			console.error(error, _VERSION, "Buff:", buff.name, "failed to create.");
 			return;
@@ -388,17 +387,6 @@ if (_SHOW) debugger
 /* 	-------	CREATE <buffUuid>. --------------------------------------------- */
 		const buffUuid = "Compendium." + CRP_ITEMS + ".Item." + buff._id;
 
-/*	-------	SET <_stats.compendiumSource> to <buffUuid> -------------------- */
-		const ATTR_STS_CPDSRC = "_stats.compendiumSource";
-		try {
-			await foundry.utils.setProperty(buff, ATTR_STS_CPDSRC, buffUuid);
-		} catch (error) {
-			console.warn(error, _VERSION, "buff property [", ATTR_STS_CPDSRC, "] not set to:", buffUuid );
-		}
-
-/*	-------	SET <system.tag> to 'poison' ----------------------------------- */
-		result = await foundry.utils.setProperty(buff, ATTR_ITM_SYS_TAG, 'poison');
-
 /* 	-------	UPDEATE Item <effectNote> with <buffUuid>. --------------------- */
 		effectNote = await effectNote.replace(REPLACE_THIS_WITH_BUFF_UUID, buffUuid);
 
@@ -408,35 +396,6 @@ if (_SHOW) debugger
 			console.warn(_VERSION, "itemData property [", ATTR_EFF_NOTE, "] not set to:", effectNote );
 		}
 
-/* 	---	EXTRACT the data structure from <buff> for further processing. ----- */
-//		let buffData = await game.items.fromCompendium(buff);
-
-/*	---	SET <description> to same description from <item>. ----------------- */
-		result = await foundry.utils.setProperty(buff, ATTR_KNWN_DESC, descHTML);
-		if (!result) {
-			console.warn(_VERSION, "buff property [", ATTR_KNWN_DESC, "] not set to:", result );
-		}
-
-/*	---	SET <pack> to proper Compendium. ----------------------------------- */
-		try {
-			result = await foundry.utils.setProperty(buff, ATTR_PACK, CRP_ITEMS);
-		} catch (error) {
-			console.warn(_VERSION, "buff property [", ATTR_PACK, "] not set to:", CRP_ITEMS );
-		}
-
-/*	---	SET <folder> to proper Folder in the Compendium. ------------------- */
-		try {
-			result = await foundry.utils.setProperty(buff, ATTR_FLDR, CRP_FLDR_BFF_PSN);
-		} catch (error) {
-			console.warn(_VERSION, "buff property [", ATTR_FLDR, "] not set to:", CRP_FLDR_BFF_PSN );
-		}
-
-/*	---	SET <showInQuickbar> to TRUE. -------------------------------------- */
-		result = await foundry.utils.setProperty(buff, ATTR_QUICKBAR, true);
-		if (!result) {
-			console.warn(_VERSION, "buff property [", ATTR_QUICKBAR, "] not set to:", true );
-		}
-
 /*	-------	SET "Save" <save> to <itemData.system.actions.0.save> ----- */
 		const ATTR_ITM_ACT_SAV = "system.actions.0.save";
 		const ATTR_ACT_SAV_DC = "save.dc";
@@ -444,53 +403,29 @@ if (_SHOW) debugger
 		const ATTR_ACT_SAV_TYP = "save.type";
 		const saveFromItemData = foundry.utils.getProperty( itemData, ATTR_ITM_ACT_SAV );
 
-/*	---	CREATE a new <actions> object, one for "Save" one for "Cured" ---- */
-		const TXT_ACT_TYP_SAV = "save";
-		const TXT_ACT_TYP_OTH = "other";
-		let actions = [
-			{ 
-				name: "Save", 
-				activation: {
-					type: 'nonaction'
-				},
-				actionType: TXT_ACT_TYP_SAV,
-				img: buff.img,
-				tag: 'save',
-				save: {
-					dc: saveFromItemData.dc, 
-					description: saveFromItemData.description, 
-					type: saveFromItemData.type
-				}
-			},
-			{
-				name: "Cured",
-				activation: {
-					type: 'nonaction'
-				},
-				actionType: TXT_ACT_TYP_OTH,
-				img: buff.img,
-				tag: 'cure',
-			}
-		];
-
-/*	---	WRITE <actions> to <buff> ------------------------------------------ */
-		// 	doesn't seem to carry <save> info over so will apply <actSave> to
-		//	<buff> itself.
+/*	---	CREATE <actions> in <buff> ------------------------------------------ */
 		try {
-			await pf1.components.ItemAction.create(actions, { parent: buff })
+			await pf1.components.ItemAction.create(createActionData(saveFromItemData), { parent: buff })
 		} catch (error) {
-			console.error(error, _VERSION, "Buff:", buff.name, ", Action:", actSave.name, ", failed to write.");
+			console.error(error, _VERSION, "Buff:", buff.name, ", Action: [ createActionData() ], failed to write.");
 			return;
 		}
 
-
-/*	---	CREATE <buffData> from <buff> ------------------------------------ */
-		let buffData = "";
+/*	---	CREATE <scriptCalls> in <buff> -------------------------------------- */
 		try {
-			buffData = await game.items.fromCompendium(buff);
+			await pf1.components.ItemScriptCall.create(createScriptCallData(), { parent: buff })
 		} catch (error) {
-			console.error(error, _VERSION, "Buff:", buff, ", failed to extract <buffData>.");			
+			console.error(error, _VERSION, "Buff:", buff.name, ", Action: [ createScriptCallData() ], failed to write.");
+			return;
 		}
+
+/*	---	CREATE <buffData> from <buff> -------------------------------------- */
+//		let buffData = "";
+//		try {
+//			buffData = await game.items.fromCompendium(buff);
+//		} catch (error) {
+//			console.error(error, _VERSION, "Buff:", buff, ", failed to extract <buffData>.");			
+//		}
 		
 /*	---	LOG <buffData> if _VERBOSE ----------------------------------------- */
 		if (_VERBOSE) {
@@ -519,11 +454,11 @@ if (_SHOW) debugger
 		}
 
 /*	UPDATE <buff> ---------------------------------------------------------- */
-	try {
-		await buff.update();
-	} catch (error) {
-		console.warn('Could not "update" buff.');
-	}
+//	try {
+//		await buff.update();
+//	} catch (error) {
+//		console.warn('Could not "update" buff.');
+//	}
 	
 /*	WRITE new Buff in Compendium ------------------------------------------- */	
 //		try {
@@ -647,10 +582,10 @@ function savingThrows() {
 	];
 }
 
-function getConditionBreakdown(eff) {
+function getConditionBreakdown(htm) {
 	let cond = "";
 	const RGX_COND = /(\w+)\s+for\s+(\d+(?:d\d+)?)\s+(minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w)\b/i;
-	const rslt = eff.match(RGX_COND);
+	const rslt = htm.match(RGX_COND);
 	if (rslt) {
 		cond = {
 			effect: rslt[0],
@@ -683,17 +618,17 @@ function extractEffect(htm) {
 	return arr;
 }
 
-function getEachEffect(eff) {
+function getEachEffect(htm) {
 	const RGX_EA_EFF = /(\d+(?:d\d+)?\s+\w+\s+damage)/gi;
-	return eff.match(RGX_EA_EFF);
+	return htm.match(RGX_EA_EFF);
 }
 
-function getEffectBreakdown(txt) {
+function getEffectBreakdown(htm) {
 	const RGX_EFF_BRKD = /(?<number>\d+(?:d\d+)?)\s+(?<word>\w+)/i;
-	const rslt = txt.match(RGX_EFF_BRKD);
+	const rslt = htm.match(RGX_EFF_BRKD);
 	if (rslt) {
 		return {
-			effect: txt,
+			effect: htm,
 			ability: rslt[2].toLowerCase(),
 			amount: rslt[1]
 		}
@@ -747,32 +682,79 @@ function extractOnset(htm) {
 	return null;
 }
 
-function getFrequencyBreakdown(HTML) {
+function getFrequencyBreakdown(htm) {
 	const RGX_FREQ = /<strong>Frequency<\/strong>\s*([^<]+)/;
-	return HTML.match(RGX_FREQ);
+	return htm.match(RGX_FREQ);
 }
 
-function objects() {
-	/* ---- object definition for 'useAction' macro ---------------------------------------	*/
-	let myObj1 = {
-		category: "use",
-		hidden: false,
-		img: "modules/game-icons-net-font/svg/movement-sensor.svg",
-		name: "useAction",
-		type: "macro",
-		value: "Macro.VgwfQ1Hk2rC4NOXB",
-		_id: ""
-	}
-// Compendium.world.crp-macros.Macro.VgwfQ1Hk2rC4NOXB	
-/* ----	object definition for 'updateCastings' macro ----------------------------------	*/
-	let myObj2 = { 
-		category: "postUse", 		// watch capital on 'U'
-		hidden: false, 
-		img: "icons/magic/life/crosses-trio-red.webp", 
-		name: "updateCastings", 
-		type: "macro", 
-		value: "Macro.A1aJCl2GXOksQe8J", 
-		_id: "" 
-	}
+function createScriptCallData() {
+	/* object definitions for 'buffCureCheck' and buffToggleCheck' macros -- */
+	return [
+		{
+			category: "use",
+			hidden: false,
+			img: "",
+			name: "buffCureCheck",
+			type: "macro",
+			value: UUID_CURE_CHK,
+			_id: randomID(8)
+		},
+		{
+			category: "toggle",
+			hidden: false,
+			img: "",
+			name: "buffToggleCheck",
+			type: "macro",
+			value: UUID_TOGGLE_CHK,
+			_id: randomID(8)
+		}
+	];
+}
 
+function createBuffData(htm) {
+	const id = randomID(16);
+	const buffUuid = "Compendium." + CRP_ITEMS + ".Item." + id;
+	return {
+		name: `Poison (${itemName.toLowerCase()})`,
+		type: "buff",
+		img: itemData.img,
+		_id: id,
+		pack: CRP_ITEMS,
+		folder: CRP_FLDR_BFF_PSN,
+		system: { 
+            showInQuickbar: true,
+			description: {
+					value: htm
+				},
+			tag: "poison",
+			}
+	};
+}
+
+function createActionData(s) {
+	return [
+		{ 
+			name: "Save", 
+			activation: {
+				type: "nonaction"
+			},
+			actionType: "save",
+			img: buff.img,
+			tag: "save",
+			save: {
+				dc: s.dc, 
+				description: s.description, 
+				type: s.type
+			}
+		},
+		{
+			name: "Cured",
+			activation: {
+				type: "nonaction"
+			},
+			actionType: "other",
+			img: buff.img,
+			tag: "cure",
+		}
+	];
 }
