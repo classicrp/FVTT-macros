@@ -1,4 +1,4 @@
-const _VERSION = '0.5.1';
+const _VERSION = '0.5.2';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -693,7 +693,7 @@ debugger
 	//		<savesMade> (Number) { 0 }.
 	//		<unitsPassed> (Number) { 0 }.
 	//		<target> (Number) { 0 }, one for each entry in <changes> above
-	return {
+	let buffData = {
 		name: `Poison (${data.name.toLowerCase()})`,
 		type: "buff",
 		img: data.img,
@@ -719,6 +719,10 @@ debugger
 			}
 		}
 	};
+	for (let effect of e) {
+		//	add in [effect.abilities]: 0,
+		//buffData.system.flags.dictionary
+	}
 }
 
 function createActionsData(b, s) {
