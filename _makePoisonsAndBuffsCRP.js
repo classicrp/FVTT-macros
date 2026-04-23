@@ -1,4 +1,4 @@
-const _VERSION = '0.5.8';
+const _VERSION = '0.5.10';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -11,8 +11,6 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 */
 	if (_SHOW) debugger
 	const CRLF = String.fromCharCode(13).concat(String.fromCharCode(10));
-	const UUID_CURE_CHK = "Compendium.crp-contents.crp-macros.Macro.wEGLTOmr7iSa5E3l";
-	const UUID_TOGGLE_CHK = "Compendium.crp-contents.crp-macros.Macro.0kwyj53zVj6I6rKs";
 
 	let srcs = '', fltrd = '', rslt = '', msg = '', obj = [];
 
@@ -130,6 +128,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	const CRP_MACROS = "crp-contents.crp-macros";
 	const CRP_FLDR_BFF_PSN = "DGNHw19qOPUjYRMy";		//	Compendium.crp-contents.crp-items.Folder. + this
 	const CRP_FLDR_ITM_PSN = "Bn4K7b0X6r1WHKmN";		//	Compendium.crp-contents.crp-items.Folder. + this
+	const CRP_IMG_BASE = "modules/crp-contents/assets/icons/";
 	const REPLACE_THIS_WITH_BUFF_UUID = "REPLACE_THIS_WITH_BUFF_UUID";
 
 	const ATTR_UKN_NAME = "system.unidentified.name";
@@ -141,22 +140,16 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	const ATTR_ITM_IDNT = "system.identified";
 	const ATTR_ITM_CARRIED = "system.carried";
 	const ATTR_ITM_EQP = "system.equipped";
-	const ATTR_ITM_SYS_TAG = "system.tag";
 	const ATTR_ITM_STS_DSRC = "_stats.duplicateSource";
-	const ATTR_ITM_STS_CSRC = "_stats.compendiumSource";
 	const ATTR_ITM_ACT_NOTE_EFF = "system.actions.0.notes.effect.0";
 	const ATTR_ITM_ACT_SAV_DESC = "system.actions.0.save.description";
 	const ATTR_EFF_NOTE = "system.effectNotes.0";
-	const ATTR_QUICKBAR = "system.showInQuickbar";
 	
 	const TXT_UNK_NAME = "Vial of liquid";
 	const TXT_UNK_DESC = "<p>Some liquid in a vial.</p>";
-	const TXT_CURE = "<strong>Cure</strong> 1 save";
 	const TXT_NOTE_START = `<span style="font-size:1.2em">`;
 	const TXT_NOTE_APPLY = " @Apply[" + REPLACE_THIS_WITH_BUFF_UUID + "]<br>";
-	
-	const RGX_LST_P = /<\/p>$/;
-	
+		
 	for (const s of srcs) {
 		let descHTML = "", itemName = "", buffName = "";
 		let cure = "", frequency = "", price = "", effect = "", onset = "";
@@ -225,6 +218,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		const TXT_VALUE = `<strong>Value</strong> ${price} gp.`;
 
 /*	-------	EXTRACT "Cure". ------------------------------------------------ */
+		const TXT_CURE = "<strong>Cure</strong> 1 save";
 		result = extractFromHTML(descHTMLParsed, "Cure");
 		if (!result) {
 			cure = await extractCure(TXT_CURE);
@@ -233,10 +227,11 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		}
 
 /*	-------	BUILD "Cure; Value" line. -------------------------------------- */
+		const RGX_LAST_PARA_TAG = /<\/p>$/;
 		if (!descHTML.includes('Cure')) {			
 			descHTML = descHTML + "<p>" + cure.html + "; " + TXT_VALUE + "</p>";
 		} else {
-			descHTML = descHTML.replace(RGX_LST_P, ("; " + TXT_VALUE)) + "</p>";
+			descHTML = descHTML.replace(RGX_LAST_PARA_TAG, ("; " + TXT_VALUE)) + "</p>";
 		}
 
 /*	---	SET updated <Identified Properties> -------------------------------- */
@@ -341,7 +336,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		}
 
 /* 	---	POPULATE <effectNote>. --------------------------------------------- */
-		let effectNote = TXT_NOTE_START + onset.html + TXT_NOTE_APPLY + "</span>";
+		let effectNote = TXT_NOTE_START + ((onset) ? onset.html : "") + TXT_NOTE_APPLY + "</span>";
 	
 /*
 	CREATE a new BUFF item placed in "Compendium.crp-contents.crp-items" in 
@@ -415,7 +410,7 @@ if (_SHOW) debugger
 			return;
 		}
 		
-	if (_SHOW) debugger
+if (_SHOW) debugger
 		
 /*	WRITE new Item in Compendium ------------------------------------------- */
 		try {
@@ -428,54 +423,13 @@ if (_SHOW) debugger
 			console.log(_VERSION, 'create item result:', result);
 		}
 
-/*	UPDATE <buff> ---------------------------------------------------------- */
-//	try {
-//		await buff.update();
-//	} catch (error) {
-//		console.warn('Could not "update" buff.');
-//	}
-	
-/*	WRITE new Buff in Compendium ------------------------------------------- */	
-//		try {
-//			buff = await pf1.documents.item.ItemBuffPF.create(buffData, { pack: CRP_ITEMS, folder: CRP_FLDR_BFF_PSN, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_BFF_PSN) });
-//			result = await Item.create(buffData, { pack: CRP_ITEMS, folder: CRP_FLDR_BFF_PSN, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_BFF_PSN) });
-//		} catch (error) {
-//			console.error(error, _VERSION, "Buff:", buffData.name, "failed to create.");
-//			return;
-//		}
-//		if (_VERBOSE) {
-//			console.log(_VERSION, 'create buff results:', result);
-//		}
 	}
 
 return;
 
-//	CREATE a new BUFF item placed in "Compendium.crp-contents.crp-items" in folder "BUFFS", subfolder "Poisons"
-	//	SET itemUuid of associated Poison Item to newly created BUFF itemUuid.
-	//	COPY over <details> from Poison Item and write to <Identified Properties>.
-	//	SET "on-use" macro "buffCureCheck" to "Compendium.crp-contents.crp-macros.Macro.wEGLTOmr7iSa5E3l"
-	//	SET "on-toggle" macro "buffToggleCheck" to "Compendium.crp-contents.crp-macros.Macro.0kwyj53zVj6I6rKs"
-	//	CREATE two new <action> objects, on for "Save" one for "Cure"
-	//		SET "Save" <tag> to "save".
-	//		SET  "Cured" <tag> to "cure".
-	//		SET 
-	//	CREATE a new <changes> object for each type of damage listed in Details
-	//		SET <target> to damage type (mostly an ability)
-	//		SET <formula> to number or in case of dice; "-floor(random() * [ size of dice ] + 1) +@dFlags.poison(poison name).(target)
-	//		ENSURE <operator> is "add"
-	//		LOOP as needed
-	//	CREATE dictionary items for;
-	//		<frequencyUnits> (String) {"" for inifinity, "round" for rnds, "turn" for turns, "hour" for hrs, "day" for days}, pulled from "Details".
-	//		<frequencyDuration> (Number), pulled from "Details".
-	//		<consecutiveSaves> (Number) { -1 if not present, 0 otherwise }, pulled from "Details".
-	//		<savesNeeded> (Number) { 1 if not present, ohterwise pulled from "Details"}.
-	//		<savesMade> (Number) { 0 }.
-	//		<unitsPassed> (Number) { 0 }.
-	//		<target> (Number) { 0 }, one for each entry in <changes> above
-
 function countOccurrences(arr) {
 	return arr.reduce((acc, element) => {
-		obj.push(new NameOccursCRP(element.name, (acc[element.name] || 0) + 1 ));
+		obj.push(nameOccurs(element.name, (acc[element.name] || 0) + 1 ));
 		acc[element.name] = (acc[element.name] || 0) + 1;
 		return acc;
 		},
@@ -483,9 +437,11 @@ function countOccurrences(arr) {
 	); // Initialize accumulator as empty object
 }
 
-function NameOccursCRP(t, n) {
-	this.name = t;
-	this.occurs = n;
+function nameOccurs(t, n) {
+	return {
+		name: t,
+		occurs: n
+	}
 }
 
 function removeHTML(htm, state) {
@@ -594,7 +550,7 @@ function extractEffect(htm) {
 }
 
 function getEachEffect(htm) {
-	const RGX_EA_EFF = /(\d+(?:d\d+)?\s+\w+\s+damage)/gi;
+	const RGX_EA_EFF = /(\d+(?:d\d+)?)\s+(Str|Dex|Con|Int|Wis|Cha)(?:\s+damage)?/gi;
 	return htm.match(RGX_EA_EFF);
 }
 
@@ -666,8 +622,12 @@ function getFrequencyBreakdown(htm) {
 }
 
 function createChangesData(d, e) {
+	//	CREATE a new <changes> object for each type of damage listed in Details
+	//		SET <target> to damage type (mostly an ability)
+	//		SET <formula> to number or in case of dice; "-floor(random() * [ size of dice ] + 1) +@dFlags.poison(poison name).(target)
+	//		ENSURE <operator> is "add"
+	//		LOOP as needed
 	const changes = [];
-debugger
 	for (let effect of e) {
 		
         let name = getNameFromData(d.name);
@@ -694,6 +654,8 @@ debugger
 }
 
 function createScriptCallData() {
+	const UUID_CURE_CHK = "Compendium.crp-contents.crp-macros.Macro.wEGLTOmr7iSa5E3l";
+	const UUID_TOGGLE_CHK = "Compendium.crp-contents.crp-macros.Macro.0kwyj53zVj6I6rKs";
 	/* object definitions for 'buffCureCheck' and buffToggleCheck' macros -- */
 	return [
 		{
@@ -750,6 +712,11 @@ function createBuffData(htm, data, c, e, f) {
 					unitsPassed: 0,
 					target: ""
 				}
+			},
+			duration: {
+				end: "initiative",
+				units: f.units,
+				value: f.duration
 			}
 		}
 	};
