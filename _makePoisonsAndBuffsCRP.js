@@ -1,4 +1,4 @@
-const _VERSION = '0.5.16';
+const _VERSION = '0.5.17';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -48,7 +48,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	
 	if (_TEST) {
 /* 	---	TEST CASE BEGIN ---------------------------------------------------- */
-		const name = "Blue Whinnis";
+		const name = "Dhabba spittle";
 		const ERR_MSG_TEST = "Unable to retrieve specified poison from pack data.";
 		//	this handles a specific request that returns all copies in Compendiums
 		srcs = await game.packs?.filter(f => f.title.toLowerCase().includes('item')).map(g => g.index.getName(name)).filter(g => (typeof g !== 'undefined'));
