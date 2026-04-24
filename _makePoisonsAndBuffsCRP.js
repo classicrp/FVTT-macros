@@ -1,4 +1,4 @@
-const _VERSION = '0.5.14';
+const _VERSION = '0.5.15';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -363,7 +363,7 @@ console.log("condition:", condition);
 		}
 
 /* 	---	POPULATE <effectNote>. --------------------------------------------- */
-		let effectNote = TXT_NOTE_START + ((onset) ? onset.html : "") + TXT_NOTE_APPLY + "</span>";
+		let effectNote = populateEffectNote(onset, initial, effect, secondary, condition);
 	
 /*
 	CREATE a new BUFF item placed in "Compendium.crp-contents.crp-items" in 
@@ -429,6 +429,7 @@ if (_SHOW) debugger
 			console.error(error, _VERSION, "Buff:", buff.name, ", Action: [ createActionsData() ], failed to write.");
 			return;
 		}
+		
 /*	---	CREATE <scriptCalls> in <buff> ------------------------------------- */
 		try {
 			await pf1.components.ItemScriptCall.create(createScriptCallData(), { parent: buff })
@@ -830,4 +831,36 @@ function checkImage(img) {
 		rslt = img;
 	}
 	return rslt;
+}
+
+function populateEffectNote(o, i, e, s, c) {
+	const TXT_EFF_NOTE_INIT = "<strong>Initial:</strong> ";
+	const TXT_EFF_NOTE_EFCT = "<strong>Effect:</strong> ";
+	const TXT_EFF_NOTE_SECD = "<strong>Secondary:</strong> ";
+	let effectNote = TXT_NOTE_START;
+	if (o) {
+		effectNote += o.html;
+	} 
+	if (i) {
+		effectNote += TXT_EFF_NOTE_INIT;
+	} 
+	if (e && !i) {
+		effectNote += TXT_EFF_NOTE_EFCT;
+	}
+	effectNote += TXT_NOTE_APPLY;
+	if (s) {
+		effectNote += TXT_EFF_NOTE_SECD;
+	}
+	if (c) {
+		const TXT_COND_START = `@Condition[${c.name};duration=`;
+		let txtCond = TXT_COND_START;
+		if (c.mult !== 1 && c.units === "round" && !c.duration.isInteger()) {
+			txtCond += c.duration + "*" + c.mult + "]";
+		} else {
+			txtCond += c.duration + " " + c.units + "]";
+		}
+		effectNote += " " + txtCond;
+	}
+	effectNote += "</span>";
+	return effectNote;
 }
