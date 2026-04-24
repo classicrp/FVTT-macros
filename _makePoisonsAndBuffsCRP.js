@@ -1,4 +1,4 @@
-const _VERSION = '0.5.11';
+const _VERSION = '0.5.12';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -32,8 +32,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	
 /*	USE REGEX to extract only the <h2></h2> tags and text. ----------------- */
 	let conditions = await contentHTML.toLowerCase().match(RGX_COND_LIST);
-	
-/*	REMOVE the wrapping tags. ---------------------------------------------- */
+/*	---	REMOVE the wrapping tags. ---------------------------------------------- */
 	for (let i = 0; i < conditions.length; i++) {
 		conditions[i] = removeHTML(conditions[i], false);
 	}
@@ -142,6 +141,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	const ATTR_ITM_CARRIED = "system.carried";
 	const ATTR_ITM_EQP = "system.equipped";
 	const ATTR_ITM_STS_DSRC = "_stats.duplicateSource";
+	const ATTR_ITM_ACT_IMG = "system.actions.0.img";
 	const ATTR_ITM_ACT_NOTE_EFF = "system.actions.0.notes.effect.0";
 	const ATTR_ITM_ACT_SAV_DESC = "system.actions.0.save.description";
 	const ATTR_EFF_NOTE = "system.effectNotes.0";
@@ -278,6 +278,15 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		result = await foundry.utils.setProperty(itemData, ATTR_ITM_ACT_NOTE_EFF, "");
 		if (!result) {
 			console.warn(_VERSION, "itemData property [", ATTR_ITM_ACT_NOTE_EFF, "] not set to:", " " );
+		}
+
+/*	SET <system.actions.0.img> to <img> if they don't match ---------------- */
+		if (itemData.system.actions[0].img !== img) {
+			result = await foundry.utils.setProperty(itemData, ATTR_ITM_ACT_IMG, img);
+			if (!result) {
+				console.warn(_VERSION, "itemData property [", ATTR_ITM_ACT_IMG, "] not set to:", img );
+			}
+			
 		}
 
 /*	SET <identified> flag to FALSE. ---------------------------------------- */
@@ -779,9 +788,12 @@ function getNameFromData(n) {
 
 function checkImage(img) {
 	const IMG_DEFAULT = "systems/pf1/icons/items/potions/unique-9.jpg";
-	let rslt = "";
+	let rslt = ""; rnd = 0;
 	if (img === IMG_DEFAULT) {
-		const rnd = Math.floor(random() * 100) + 1;
+		do {
+			rnd = Math.floor(Math.random() * 100) + 1;
+		}
+		while (rnd === 38);	// that's a healing one
 		rslt = CRP_IMG_BASE + rnd.toString() + ".png";
 	} else {
 		rslt = img;
