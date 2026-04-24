@@ -1,0 +1,37 @@
+INITIAL
+=======
+Using REGEX
+From: "<strong>Initial Effect</strong> 1 Con; <strong>Secondary Effect</strong> unconscious 1d3 hours"
+Return "<strong>Initial Effect</strong> 1 Con" AND 1 AND "Con"
+where "Effect" is optional
+where 1 could be any number or a dice expression like 1d3
+where "Con" can be any of {"Str", "Dex", "Con", "Int", "Wis", "Cha"}
+
+To extract the specific components from your text string, you can use the following regular expression. 
+
+The Regex Pattern
+<strong>Initial Effect<\/strong>\s*(\d+(?:d\d+)?)\s*(Str|Dex|Con|Int|Wis|Cha)
+
+Breakdown of the Match
+<strong>Initial Effect<\/strong> : Matches the literal starting tag and text.
+\s* : Matches any optional whitespace.
+(\d+(?:d\d+)?) : Capture Group 1 (The Value).
+Matches a number (\d+).
+Optionally matches a "d" followed by another number ((?:d\d+)?) for dice expressions like 1d3.
+\s* : Matches any optional whitespace.
+(Str|Dex|Con|Int|Wis|Cha) : Capture Group 2 (The Ability Score).
+Matches exactly one of the six specific shorthand names. 
+
+How to use it
+
+If you apply this to your example: <strong>Initial Effect</strong> 1 Con, the engine will return:
+Group 1: 1
+Group 2: Con
+
+If the text were <strong>Initial Effect</strong> 2d6 Str, it would return:
+Group 1: 2d6
+Group 2: Str
+
+💡 Note: If "Effect" is truly optional in the literal text (meaning the string might just say <strong>Initial</strong>), change the first part to <strong>Initial(?: Effect)?<\/strong>.
+
+REGEX = /<strong>Initial(?: Effect)?<\/strong>\s*(\d+(?:d\d+)?)\s*(Str|Dex|Con|Int|Wis|Cha)/i;
