@@ -1,4 +1,4 @@
-const _VERSION = '0.5.13';
+const _VERSION = '0.5.14';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -333,16 +333,19 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		result = extractFromHTML(descHTMLParsed, "Initial");
 		if (result) {
 			initial = extractInitial(result);
+console.log("initial:", initial);
 		}
 
 /* 	---	EXTRACT "Secondary". ----------------------------------------------- */
 		result = extractFromHTML(descHTMLParsed, "Secondary");
 		if (result) {
 			secondary = extractSecondary(result);
+console.log("secondary:", secondary);
 /* 	-------	CHECK if "Secondary" has a "Condition". --------------------------- */
 			if (hasCondition( result, conditions )) {
 /* 	-----------	EXTRACT "Condition". --------------------------------------- */
 				condition = getConditionBreakdown(result);
+console.log("condition:", condition);
 			}
 		}
 
@@ -350,10 +353,12 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		result = extractFromHTML(descHTMLParsed, "Effect");
 		if (result) {
 			effect = extractEffect(result);
+console.log("effect:", effect);
 /* 	-------	CHECK if "Effect" has a "Condition". --------------------------- */
 			if (hasCondition( result, conditions )) {
 /* 	-----------	EXTRACT "Condition". --------------------------------------- */
 				condition = getConditionBreakdown(result);
+console.log("condition:", condition);
 			}
 		}
 
@@ -536,8 +541,10 @@ function savingThrows() {
 }
 
 function getConditionBreakdown(htm) {
+debugger
 	let cond = "";
-	const RGX_COND = /(\w+)\s+for\s+(\d+(?:d\d+)?)\s+(minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w)\b/i;
+//	const RGX_COND = /(\w+)\s+for\s+(\d+(?:d\d+)?)\s+(minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w)\b/i;
+	const RGX_COND = /(\w+)\s+(?:for\s+)?(\d+d\d+|\d+)\s+(minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w)/i;
 	const rslt = htm.match(RGX_COND);
 	if (rslt) {
 		cond = {
@@ -560,11 +567,32 @@ function getConditionBreakdown(htm) {
 }
 
 function extractInitial(htm) {
-	return extractEffect(htm);
+debugger
+	const RGX_INITIAL = /<strong>Initial(?: Effect)?<\/strong>\s*(\d+(?:d\d+)?)\s*(Str|Dex|Con|Int|Wis|Cha)/i;
+	let rslt = htm.match(RGX_INITIAL);
+	if (rslt) {
+		let eff = getEffectBreakdown(rslt[0]);
+		rslt = eff;
+	}
+	return rslt;
 }
 
 function extractSecondary(htm) {
-	return extractEffect(htm);
+debugger
+	const RGX_SECONDARY = /(<strong>Secondary(?: Effect)?<\/strong>\s*(([\w\s]*?)\s*(\d+d\d+|\d+)\s*(minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w|Str|Dex|Con|Int|Wis|Cha)(?:\s*damage)?))/i;
+	let rslt = htm.match(RGX_SECONDARY);
+	if (rslt) {
+		let eff = getEffectBreakdown(rslt[0]);
+		let cnd = getConditionBreakdown(rslt[0]);
+		if (eff && !cnd) {
+			rslt = eff;
+		} else if (!eff && cnd) {
+			rslt = cnd;
+		} else {
+			rslt = null;
+		}
+	}
+	return rslt;
 }
 
 function extractEffect(htm) {
@@ -585,7 +613,8 @@ function getEachEffect(htm) {
 }
 
 function getEffectBreakdown(htm) {
-	const RGX_EFF_BRKD = /(?<number>\d+(?:d\d+)?)\s+(?<word>\w+)/i;
+//	const RGX_EFF_BRKD = /(?<number>\d+(?:d\d+)?)\s+(?<word>\w+)/i;
+	const RGX_EFF_BRKD = /(?<number>\d+(?:d\d+)?)\s+(Str|Dex|Con|Int|Wis|Cha)(?:\s+damage)?/i;
 	const rslt = htm.match(RGX_EFF_BRKD);
 	if (rslt) {
 		return {
@@ -598,7 +627,6 @@ function getEffectBreakdown(htm) {
 }
 
 function extractCure(htm) {
-debugger
 	const RGX_CURE = /(<(\w+)>.*?<\/\2>)\s+(\d+)\s+(consecutive\s+)?(saves?)/i;
 	const rslt = htm.match(RGX_CURE);
 	const consec = htm.toLowerCase().includes("consecutive");
@@ -711,7 +739,6 @@ function createBuffData(htm, data, c, e, f) {
 	//		<savesNeeded> (Number) { 1 if not present, ohterwise pulled from "Details"}.
 	//		<savesMade> (Number) { 0 }.
 	//		<unitsPassed> (Number) { 0 }.
-	//		<target> (Number) { 0 }, one for each entry in <changes> above
 	let buffData = {
 		name: `Poison (${data.name.toLowerCase().replace('poison', '')})`,
 		type: "buff",
@@ -731,8 +758,7 @@ function createBuffData(htm, data, c, e, f) {
 					consecutiveSaves: c.consecutive,
 					savesNeeded: c.savesNeeded,
 					savesMade: 0,
-					unitsPassed: 0,
-					target: "",
+					unitsPassed: 0
 				}
 			},
 			duration: {
