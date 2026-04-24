@@ -1,4 +1,4 @@
-const _VERSION = '0.5.12';
+const _VERSION = '0.5.13';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -48,7 +48,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	
 	if (_TEST) {
 /* 	---	TEST CASE BEGIN ---------------------------------------------------- */
-		const name = "Black spider marsh poison";
+		const name = "Blue Whinnis";
 		const ERR_MSG_TEST = "Unable to retrieve specified poison from pack data.";
 		//	this handles a specific request that returns all copies in Compendiums
 		srcs = await game.packs?.filter(f => f.title.toLowerCase().includes('item')).map(g => g.index.getName(name)).filter(g => (typeof g !== 'undefined'));
@@ -154,7 +154,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	for (const s of srcs) {
 		let descHTML = "", itemName = "", buffName = "";
 		let cure = "", frequency = "", price = "", effect = "", onset = "";
-		let secondary = "", primary = "", condition = "";
+		let secondary = "", initial = "", condition = "";
 
 /*	GRAB the needed <uuid>. ------------------------------------------------ */
 		const itemUuid = s.uuid;
@@ -329,16 +329,21 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			onset = extractOnset(result);
 		}
 
-/* 	---	EXTRACT "Primary". ------------------------------------------------- */
-		result = extractFromHTML(descHTMLParsed, "Primary");
+/* 	---	EXTRACT "Initial". ------------------------------------------------- */
+		result = extractFromHTML(descHTMLParsed, "Initial");
 		if (result) {
-			primary = extractPrimary(result);
+			initial = extractInitial(result);
 		}
 
 /* 	---	EXTRACT "Secondary". ----------------------------------------------- */
 		result = extractFromHTML(descHTMLParsed, "Secondary");
 		if (result) {
 			secondary = extractSecondary(result);
+/* 	-------	CHECK if "Secondary" has a "Condition". --------------------------- */
+			if (hasCondition( result, conditions )) {
+/* 	-----------	EXTRACT "Condition". --------------------------------------- */
+				condition = getConditionBreakdown(result);
+			}
 		}
 
 /* 	---	EXTRACT "Effect". -------------------------------------------------- */
@@ -554,6 +559,14 @@ function getConditionBreakdown(htm) {
 	return cond;
 }
 
+function extractInitial(htm) {
+	return extractEffect(htm);
+}
+
+function extractSecondary(htm) {
+	return extractEffect(htm);
+}
+
 function extractEffect(htm) {
 	let arr = [], eff = "";
 	const rslt = getEachEffect(htm);
@@ -596,14 +609,6 @@ debugger
 			consecutive: ((!consec) ? -1 : 0)
 		}
 	}
-	return null;
-}
-
-function extractPrimary(htm) {
-	return null;
-}
-
-function extractSecondary(htm) {
 	return null;
 }
 
@@ -767,7 +772,7 @@ function createActionsData(b, s) {
 			},
 			actionType: "other",
 			img: b.img,
-			tag: "cure",
+			tag: "cure"
 		}
 	];
 }
