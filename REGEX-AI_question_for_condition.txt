@@ -2,12 +2,25 @@ Using REGEX
 From: "<strong>Effect</strong> 1d3 Dex damage, 1 Con damage, and nauseated for 1 round"
 Extract: "nauseated for 1 round"
 where "nauseated" can be any word provided
+where "for" may or may not be present
 where 1 can be any number OR a die expression like 1d6
-where "round" can be any "value" of an Array() in Map() 
-where Map() =
-Map[0] {key: "round", value: ['r', 'rnd', 'round', 'rounds', 'rnds']},
-Map[1] {key: "minute", value: ['m', 'min', 'mins', 'minute', 'minutes']},
-Map[2] {key: "turn", value: ['t', 'trn', 'turn', 'trns', 'turns']},
-Map[3] {key: "hour", value: ['h', 'hr', 'hrs', 'hour', 'hours']},
-Map[4] {key: "day", value: ['d', 'day', 'days']},
-Map[5] {key: "week", value: ['w', 'wk', 'wks', 'week', 'weeks']}
+where "round" can be any of {minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w}
+
+To extract the specific condition and duration from your text, use this regular expression: 
+
+(\w+)\s+(?:for\s+)?(\d+d\d+|\d+)\s+(minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w)
+
+How it works
+
+(\w+): Captures the condition (e.g., "nauseated").
+\s+(?:for\s+)?: Matches the space and makes "for" optional.
+(\d+d\d+|\d+): Captures the value. It looks for a die expression (1d6) first, or a simple number (1) if no die is found.
+\s+: Matches the space before the time unit.
+(minutes|rounds|...): Captures the specific time unit from your provided list.
+
+Capture Groups
+Group 1: The condition name.
+Group 2: The amount/dice.
+Group 3: The time unit.
+
+REGEX = /(\w+)\s+(?:for\s+)?(\d+d\d+|\d+)\s+(minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w)/i
