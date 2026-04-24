@@ -1,0 +1,64 @@
+SECONDARY
+=========
+Using REGEX
+From: '<strong>Initial Effect</strong> 1 Con; <strong>Secondary Effect</strong> unconscious 1d3 hours'
+Extact: '<strong>Secondary Effect</strong> unconscious 1d3 hours' AND "unconscious" AND "1d3" AND "hours"
+where "Effect" may or may not be present
+where "unconcious" can be many words OR nothing
+where 1d3 can be any dice expression OR a number
+where "hours" can be any of {minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w} OR {Str|Dex|Con|Int|Wis|Cha}
+where "damage" may or may not appear after "hours"
+
+
+First Iteration
+===============
+To extract the Secondary Effect segment and its specific components (the condition, value, and unit), you can use the following regex pattern:
+
+<strong>Secondary(?: Effect)?<\/strong>\s*((.*?)\s+(\d+d\d+|\d+)\s+(minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w))
+
+⚡ The Breakdown
+
+<strong>Secondary(?: Effect)?<\/strong>: Matches the header; the (?: Effect)? makes the word "Effect" optional.
+
+\s*: Handles any spacing after the tag.
+
+((.*?)\s+(\d+d\d+|\d+)\s+(...)) : This is the outer capture group for the full string.
+
+(.*?): Capture Group 2 – The condition/description (e.g., "unconscious").
+
+(\d+d\d+|\d+): Capture Group 3 – The dice roll (1d3) or a flat number (10).
+
+(minutes|...|w): Capture Group 4 – The time unit based on your specific list.
+
+🔍 Results for your example
+Using the string: '<strong>Secondary Effect</strong> unconscious 1d3 hours'
+Group 1: unconscious 1d3 hours
+Group 2: unconscious
+Group 3: 1d3
+Group 4: hours
+
+💡 Tip: Ensure your regex engine is set to case-insensitive if the input text varies (e.g., "Hours" vs "hours").
+
+REGEX = /<strong>Secondary(?: Effect)?<\/strong>\s*((.*?)\s+(\d+d\d+|\d+)\s+(minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w))/i
+
+Second Iteration (extra where clauses)
+================
+To extract the secondary effect and its components, use this regular expression:
+
+/(<strong>Secondary(?: Effect)?<\/strong>\s*(([\w\s]*?)\s*(\d+d\d+|\d+)\s*(minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w|Str|Dex|Con|Int|Wis|Cha)(?:\s*damage)?))/i
+
+🧬 Capture Group Breakdown
+Group 1: The full string (<strong>Secondary Effect</strong> unconscious 1d3 hours)
+Group 2: The effect description, value, and unit (unconscious 1d3 hours)
+Group 3: The descriptive words/condition (unconscious)
+Group 4: The dice or number (1d3)
+Group 5: The unit or ability score (hours)
+
+🔍 Key Logic Used
+<strong>Secondary(?: Effect)?<\/strong>: Matches the header; "Effect" is optional.
+([\w\s]*?): Non-greedily captures any words (the condition) before the numbers start.
+(\d+d\d+|\d+): Matches standard dice notation (e.g., 1d20) or a flat integer.
+(minutes|...|Cha): Matches your specific list of time units and ability scores.
+(?:\s*damage)?: Checks for the word "damage" at the end but doesn't capture it.
+
+REGEX = /(<strong>Secondary(?: Effect)?<\/strong>\s*(([\w\s]*?)\s*(\d+d\d+|\d+)\s*(minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w|Str|Dex|Con|Int|Wis|Cha)(?:\s*damage)?))/i
