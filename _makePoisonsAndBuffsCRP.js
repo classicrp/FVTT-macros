@@ -1,4 +1,4 @@
-const _VERSION = '0.5.15';
+const _VERSION = '0.5.16';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -355,7 +355,7 @@ console.log("condition:", condition);
 			effect = extractEffect(result);
 console.log("effect:", effect);
 /* 	-------	CHECK if "Effect" has a "Condition". --------------------------- */
-			if (hasCondition( result, conditions )) {
+			if (!condition && hasCondition( result, conditions )) {
 /* 	-----------	EXTRACT "Condition". --------------------------------------- */
 				condition = getConditionBreakdown(result);
 console.log("condition:", condition);
@@ -424,7 +424,7 @@ if (_SHOW) debugger
 
 /*	---	CREATE <changes> in <buff> ----------------------------------------- */
 		try {
-			await pf1.components.ItemChange.create(createChangesData(buff, effect), { parent: buff })
+			await pf1.components.ItemChange.create(createChangesData(buff, effect, initial), { parent: buff })
 		} catch (error) {
 			console.error(error, _VERSION, "Buff:", buff.name, ", Action: [ createActionsData() ], failed to write.");
 			return;
@@ -672,7 +672,7 @@ function getFrequencyBreakdown(htm) {
 	return htm.match(RGX_FREQ);
 }
 
-function createChangesData(d, e) {
+function createChangesData(d, e, i) {
 	//	CREATE a new <changes> object for each type of damage listed in Details
 	//		SET <target> to damage type (mostly an ability)
 	//		SET <formula> to number or in case of dice; "-floor(random() * [ size of dice ] + 1) +@dFlags.poison(poison name).(target)
@@ -691,7 +691,11 @@ function createChangesData(d, e) {
 		} else {
 			amount = effect.amount;
 		}
-        formula = "-" + amount + " +" + dFlags;
+        formula = "-" + amount;
+		if (!i) {
+			//	cumulative damage kept
+			formula +=  " +" + dFlags;
+		}
 		let change = {
 			_id: randomID(8),
 			formula: formula,
@@ -854,7 +858,7 @@ function populateEffectNote(o, i, e, s, c) {
 	if (c) {
 		const TXT_COND_START = `@Condition[${c.name};duration=`;
 		let txtCond = TXT_COND_START;
-		if (c.mult !== 1 && c.units === "round" && !c.duration.isInteger()) {
+		if (c.mult !== 1 && c.units === "round" && !Number.isInteger(c.duration)) {
 			txtCond += c.duration + "*" + c.mult + "]";
 		} else {
 			txtCond += c.duration + " " + c.units + "]";
