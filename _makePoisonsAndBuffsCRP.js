@@ -1,4 +1,4 @@
-const _VERSION = '0.5.17';
+const _VERSION = '0.5.18';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -12,7 +12,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	if (_SHOW) debugger
 	const CRLF = String.fromCharCode(13).concat(String.fromCharCode(10));
 
-	let srcs = '', fltrd = '', rslt = '', msg = '', obj = [];
+	let srcs = '', fltrd = '', rslt = '', temp = '', msg = '', obj = [];
 
 /* 
 	GET an array of all "Conditions" listed in the rules journal
@@ -87,8 +87,8 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			return 0;
 		});
 		//	counts the number of times a poison (by "name") occurs in all packs.
-		result = await countOccurrences(rslt, obj);
-		if (!result) {
+		temp = await countOccurrences(rslt, obj);
+		if (!temp) {
 			ui.notifications.error(ERR_MSG_OCRS);
 			console.error(_VERSION, ERR_MSG_OCRS);
 			return;
@@ -176,32 +176,32 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 
 /*	SET <img> to another icon if it is the default ------------------------- */
 		const img = checkImage(itemData.img);
-		result = await foundry.utils.setProperty(itemData, ATTR_IMG, img);
-		if (!result) {
+		rslt = await foundry.utils.setProperty(itemData, ATTR_IMG, img);
+		if (!rslt) {
 			console.warn(_VERSION, "itemData property [", ATTR_IMG, "] not set to:", img);
 		}
 		
 /*	SET <Unidentified Name> to "Vial of liquid". --------------------------- */
-		result = await foundry.utils.setProperty(itemData, ATTR_UKN_NAME, TXT_UNK_NAME);
-		if (!result) {
+		rslt = await foundry.utils.setProperty(itemData, ATTR_UKN_NAME, TXT_UNK_NAME);
+		if (!rslt) {
 			console.warn(_VERSION, "itemData property [", ATTR_UKN_NAME, "] not set to:", TXT_UNK_NAME);
 		}
 
 /*	SET <Superficial Details> to "Some liquid in a vial. ------------------- */
-		result = await foundry.utils.setProperty(itemData, ATTR_UKN_DESC, TXT_UNK_DESC);
-		if (!result) {
+		rslt = await foundry.utils.setProperty(itemData, ATTR_UKN_DESC, TXT_UNK_DESC);
+		if (!rslt) {
 			console.warn(_VERSION, "itemData property [", ATTR_UKN_DESC, "] not set to:", TXT_UNK_DESC );
 		}
 
 /*	SET	<equipped> to FALSE. ----------------------------------------------- */
-		result = await foundry.utils.setProperty(itemData, ATTR_ITM_EQP, false);
-		if (!result) {
+		rslt = await foundry.utils.setProperty(itemData, ATTR_ITM_EQP, false);
+		if (!rslt) {
 			console.warn(_VERSION, "itemData property [", ATTR_ITM_EQP, "] not set to:", false );
 		}
 
 /*	SET <carried> to FALSE. ------------------------------------------------ */
-		result = await foundry.utils.setProperty(itemData, ATTR_ITM_CARRIED, false);
-		if (!result) {
+		rslt = await foundry.utils.setProperty(itemData, ATTR_ITM_CARRIED, false);
+		if (!rslt) {
 			console.warn(_VERSION, "itemData property [", ATTR_ITM_CARRIED, "] not set to:", false );
 		}
 
@@ -227,11 +227,11 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 
 /*	-------	EXTRACT "Cure". ------------------------------------------------ */
 		const TXT_CURE = "<strong>Cure</strong> 1 save";
-		result = extractFromHTML(descHTMLParsed, "Cure");
-		if (!result) {
+		rslt = extractFromHTML(descHTMLParsed, "Cure");
+		if (!rslt) {
 			cure = await extractCure(TXT_CURE);
 		} else {
-			cure = await extractCure(result);
+			cure = await extractCure(rslt);
 		}
 
 /*	-------	BUILD "Cure; Value" line. -------------------------------------- */
@@ -243,8 +243,8 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		}
 
 /*	---	SET updated <Identified Properties> -------------------------------- */
-		result = await foundry.utils.setProperty(itemData, ATTR_KNWN_DESC, descHTML);
-		if (!result) {
+		rslt = await foundry.utils.setProperty(itemData, ATTR_KNWN_DESC, descHTML);
+		if (!rslt) {
 			console.warn(_VERSION, "itemData property [", ATTR_KNWN_DESC, "] not set to:", descHTML );
 		}
 
@@ -258,8 +258,8 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 */
 
 /*	---	EXTRACT "Frequency". ----------------------------------------------- */
-		result = extractFromHTML(descHTMLParsed, "Frequency");
-		frequency = await extractFrequency(result);
+		fltrd = extractFromHTML(descHTMLParsed, "Frequency");
+		frequency = await extractFrequency(fltrd);
 		if (!frequency) {
 			const WRN_MSG_FREQ = `Could not locate any "Frequency" information from item description.`;
 			console.warn(_VERSION, WRN_MSG_FREQ );
@@ -269,47 +269,47 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		const savingThrowEffect = TXT_NOTE_START + frequency.html + "<br>" + cure.html + "</span>";
 
 /*	---	SET <savingThrowEffect>. ------------------------------------------- */
-		result = await foundry.utils.setProperty(itemData, ATTR_ITM_ACT_SAV_DESC, savingThrowEffect);
-		if (!result) {
+		rslt = await foundry.utils.setProperty(itemData, ATTR_ITM_ACT_SAV_DESC, savingThrowEffect);
+		if (!rslt) {
 			console.warn(_VERSION, "itemData property [", ATTR_ITM_ACT_SAV_DESC, "] not set to:", savingThrowEffect );
 		}
 
 /*	CLEAR any pre-existing <actionEffect>. --------------------------------- */
-		result = await foundry.utils.setProperty(itemData, ATTR_ITM_ACT_NOTE_EFF, "");
-		if (!result) {
+		rslt = await foundry.utils.setProperty(itemData, ATTR_ITM_ACT_NOTE_EFF, "");
+		if (!rslt) {
 			console.warn(_VERSION, "itemData property [", ATTR_ITM_ACT_NOTE_EFF, "] not set to:", " " );
 		}
 
 /*	SET <system.actions.0.img> to <img> if they don't match ---------------- */
 		if (itemData.system.actions[0].img !== img) {
-			result = await foundry.utils.setProperty(itemData, ATTR_ITM_ACT_IMG, img);
-			if (!result) {
+			rslt = await foundry.utils.setProperty(itemData, ATTR_ITM_ACT_IMG, img);
+			if (!rslt) {
 				console.warn(_VERSION, "itemData property [", ATTR_ITM_ACT_IMG, "] not set to:", img );
 			}
 			
 		}
 
 /*	SET <identified> flag to FALSE. ---------------------------------------- */
-		result = await foundry.utils.setProperty(itemData, ATTR_ITM_IDNT, false);
-		if (!result) {
+		rslt = await foundry.utils.setProperty(itemData, ATTR_ITM_IDNT, false);
+		if (!rslt) {
 			console.warn(_VERSION, "itemData property [", ATTR_ITM_IDNT, "] not set to:", false );
 		}
 
 /*	SET destination <folder> within Compendium ----------------------------- */
-		result = await foundry.utils.setProperty(itemData, ATTR_FLDR, CRP_FLDR_ITM_PSN);
-		if (!result) {
+		rslt = await foundry.utils.setProperty(itemData, ATTR_FLDR, CRP_FLDR_ITM_PSN);
+		if (!rslt) {
 			console.warn(_VERSION, "itemData property [", ATTR_FLDR, "] not set to:", CRP_FLDR_ITM_PSN );
 		}
 
 /*	SET <duplicateSource> to originating item UUID. ------------------------ */
-		result = await foundry.utils.setProperty(itemData, ATTR_ITM_STS_DSRC, itemUuid);
-		if (!result) {
+		rslt = await foundry.utils.setProperty(itemData, ATTR_ITM_STS_DSRC, itemUuid);
+		if (!rslt) {
 			console.warn(_VERSION, "itemData property [", ATTR_ITM_STS_DSRC, "] not set to:", savingThrowEffect );
 		}
 
 /*	SET <pack> to proper Compendium. --------------------------------------- */
-		result = await foundry.utils.setProperty(itemData, ATTR_PACK, CRP_ITEMS);
-		if (!result) {
+		rslt = await foundry.utils.setProperty(itemData, ATTR_PACK, CRP_ITEMS);
+		if (!rslt) {
 			console.warn(_VERSION, "itemData property [", ATTR_PACK, "] not set to:", CRP_ITEMS );
 		}
 
@@ -324,40 +324,28 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 */
 
 /* 	---	EXTRACT "Onset". --------------------------------------------------- */
-		result = extractFromHTML(descHTMLParsed, "Onset").replace(`; ${frequency.html}`, '');
-		if (result) {
-			onset = extractOnset(result);
+		fltrd = extractFromHTML(descHTMLParsed, "Onset").replace(`; ${frequency.html}`, '');
+		if (fltrd) {
+			onset = extractOnset(fltrd);
 		}
 
 /* 	---	EXTRACT "Initial". ------------------------------------------------- */
-		result = extractFromHTML(descHTMLParsed, "Initial");
-		if (result) {
-			initial = extractInitial(result);
-console.log("initial:", initial);
-		}
+		fltrd = extractFromHTML(descHTMLParsed, "Initial");
+		initial = (fltrd) ? true : false;
 
 /* 	---	EXTRACT "Secondary". ----------------------------------------------- */
-		result = extractFromHTML(descHTMLParsed, "Secondary");
-		if (result) {
-			secondary = extractSecondary(result);
-console.log("secondary:", secondary);
-/* 	-------	CHECK if "Secondary" has a "Condition". --------------------------- */
-			if (hasCondition( result, conditions )) {
-/* 	-----------	EXTRACT "Condition". --------------------------------------- */
-				condition = getConditionBreakdown(result);
-console.log("condition:", condition);
-			}
-		}
+		fltrd = extractFromHTML(descHTMLParsed, "Secondary");
+		secondary = (fltrd) ? true : false;
 
 /* 	---	EXTRACT "Effect". -------------------------------------------------- */
-		result = extractFromHTML(descHTMLParsed, "Effect");
-		if (result) {
-			effect = extractEffect(result);
+		fltrd = extractFromHTML(descHTMLParsed, "Effect");
+		if (fltrd) {
+			effect = extractEffect(fltrd);
 console.log("effect:", effect);
 /* 	-------	CHECK if "Effect" has a "Condition". --------------------------- */
-			if (!condition && hasCondition( result, conditions )) {
+			if (!condition && hasCondition( fltrd, conditions )) {
 /* 	-----------	EXTRACT "Condition". --------------------------------------- */
-				condition = getConditionBreakdown(result);
+				condition = getConditionBreakdown(fltrd);
 console.log("condition:", condition);
 			}
 		}
@@ -402,8 +390,8 @@ if (_SHOW) debugger
 		effectNote = await effectNote.replace(REPLACE_THIS_WITH_BUFF_UUID, buffUuid);
 
 /* 	-------	SET <effectNote> in <itemData>. -------------------------------- */
-		result = await foundry.utils.setProperty(itemData, ATTR_EFF_NOTE, effectNote);
-		if (!result) {
+		rslt = await foundry.utils.setProperty(itemData, ATTR_EFF_NOTE, effectNote);
+		if (!rslt) {
 			console.warn(_VERSION, "itemData property [", ATTR_EFF_NOTE, "] not set to:", effectNote );
 		}
 
@@ -442,13 +430,13 @@ if (_SHOW) debugger
 		
 /*	WRITE new Item in Compendium ------------------------------------------- */
 		try {
-			result = await Item.create(itemData, { pack: CRP_ITEMS, folder: CRP_FLDR_ITM_PSN, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_ITM_PSN) });
+			rslt = await Item.create(itemData, { pack: CRP_ITEMS, folder: CRP_FLDR_ITM_PSN, source: ("Compendium." + CRP_ITEMS + ".Folder." + CRP_FLDR_ITM_PSN) });
 		} catch (error) {
 			console.error(error, _VERSION, "Item:", itemData.name, "failed to create.");
 			return;
 		}
 		if (_VERBOSE) {
-			console.log(_VERSION, 'create item result:', result);
+			console.log(_VERSION, 'create item result:', rslt);
 		}
 
 	}
@@ -541,34 +529,70 @@ function savingThrows() {
 	];
 }
 
-function getConditionBreakdown(htm) {
-debugger
-	let cond = "";
-//	const RGX_COND = /(\w+)\s+for\s+(\d+(?:d\d+)?)\s+(minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w)\b/i;
+function damageTypes() {
+	return [
+		{ key: "acid", value: "Acid" },
+		{ key: "cold", value: ["Cold", "Ice"] },
+		{ key: "electric", value: ["Electricity", "Electrical", "Lightning", "Arc"] },
+		{ key: "fire", value: ["Flame", "Fire"] },
+		{ key: "sonic", value: ["Sonic", "Thunder"] },
+		{ key: "magic", value: "Magic" },
+		{ key: "force", value: "Force" },
+		{ key: "negative", value: ["Negative", "Neg"] },
+		{ key: "positive", value: ["Positive", "Pos"] },
+		{ key: "slashing", value: ["Slashing", "Slash", "Cut", "S"] },
+		{ key: "piercing", value: ["Piercing", "Pierce", "Stab", "P"] },
+		{ key: "bludgeoning", value: ["Bludgeoning", "Bludgeon", "Club", "Beat", "B"] },
+		{ key: "wounds", value: ["Wounds", "Wound", "Critical", "Crit"] }	
+	]
+}
+
+function getConditionBreakdown(htm, cond) {
+	let condition = "";
 	const RGX_COND = /(\w+)\s+(?:for\s+)?(\d+d\d+|\d+)\s+(minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w)/i;
+debugger
 	const rslt = htm.match(RGX_COND);
 	if (rslt) {
-		cond = {
+		condition = {
 			effect: rslt[0],
 			name: rslt[1],
 			duration: rslt[2],
 			units: durations().find(entry => entry.value.includes(rslt[3].toLowerCase())).key||null,
 			mult: 1
 		};
-		if ((cond.duration.includes("d")) && (cond.units !== "round")) {
+		if ((condition.duration.includes("d")) && (condition.units !== "round")) {
 			//	We have a die equation that only resolves as "rounds" from
 			//	the Enricher.  Get the <mult> for the "units" key from the 
 			//	<conditions> dataset and update <cond.mult>.  Units need to
 			//	be set to "rounds".
-			cond.mult = durations().find(entry => entry.key === cond.units).mult||null;
-			cond.units = "round";
+			condition.mult = durations().find(entry => entry.key === condition.units).mult||null;
+			condition.units = "round";
+		}
+	} else {
+		//  only contains the condition with no extra info
+		fltrd = cond.find(f => htm.includes(f));
+		if (fltrd) {
+			condition = {
+				effect: fltrd,
+				name: fltrd,
+				duration: -1,
+				units: "",
+				mult: 1
+			}
 		}
 	}
-	return cond;
+	return condition;
+}
+
+function hasInitial(htm) {
+	return htm.toLowerCase().includes("initial");	
+}
+
+function hasSecondary(htm) {
+	return htm.toLowerCase().includes("secondary");	
 }
 
 function extractInitial(htm) {
-debugger
 	const RGX_INITIAL = /<strong>Initial(?: Effect)?<\/strong>\s*(\d+(?:d\d+)?)\s*(Str|Dex|Con|Int|Wis|Cha)/i;
 	let rslt = htm.match(RGX_INITIAL);
 	if (rslt) {
@@ -579,7 +603,6 @@ debugger
 }
 
 function extractSecondary(htm) {
-debugger
 	const RGX_SECONDARY = /(<strong>Secondary(?: Effect)?<\/strong>\s*(([\w\s]*?)\s*(\d+d\d+|\d+)\s*(minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w|Str|Dex|Con|Int|Wis|Cha)(?:\s*damage)?))/i;
 	let rslt = htm.match(RGX_SECONDARY);
 	if (rslt) {
@@ -609,13 +632,13 @@ function extractEffect(htm) {
 }
 
 function getEachEffect(htm) {
-	const RGX_EA_EFF = /(\d+(?:d\d+)?)\s+(Str|Dex|Con|Int|Wis|Cha)(?:\s+damage)?/gi;
+	const RGX_EA_EFF = /(\d+(?:d\d+)?)\s+(str|dex|con|int|wis|cha|acid|cold|electricity|fire|sonic|magic|force|negative|positive)(?:\s+damage)?/gi;
 	return htm.match(RGX_EA_EFF);
 }
 
 function getEffectBreakdown(htm) {
-//	const RGX_EFF_BRKD = /(?<number>\d+(?:d\d+)?)\s+(?<word>\w+)/i;
-	const RGX_EFF_BRKD = /(?<number>\d+(?:d\d+)?)\s+(Str|Dex|Con|Int|Wis|Cha)(?:\s+damage)?/i;
+	const RGX_EFF_BRKD = /(?<number>\d+(?:d\d+)?)\s+(str|dex|con|int|wis|cha|acid|cold|electricity|fire|sonic|magic|force|negative|positive)(?:\s+damage)?/i;
+debugger
 	const rslt = htm.match(RGX_EFF_BRKD);
 	if (rslt) {
 		return {
@@ -642,6 +665,7 @@ function extractCure(htm) {
 }
 
 function extractFrequency(htm) {
+debugger
 	const RGX_FREQ = /<(.*?)>Frequency<\/\1>\s*(.*?(\d+d\d+|\d+)\s+(minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w)\b)/i
 	const rslt = htm.match(RGX_FREQ);
 	if (rslt) {
@@ -650,8 +674,13 @@ function extractFrequency(htm) {
 			duration: rslt[3],
 			units: durations().find(entry => entry.value.includes(rslt[4].toLowerCase())).key||null
 		}
+	} else {
+		return {
+			html: "Only occurs once.",
+			duration: 0,
+			units: ""
+		}
 	}
-	return null;
 }
 
 function extractOnset(htm) {
@@ -680,30 +709,31 @@ function createChangesData(d, e, i) {
 	//		LOOP as needed
 	const changes = [];
 	for (let effect of e) {
-		
-        let name = getNameFromData(d.name);
-		let dFlags = "@dFlags." + name + "." + effect.ability;
-		let amount = "";
-		if (effect.amount.includes("d")) {
-			const n = effect.amount.charAt(0);
-			const m = effect.amount.charAt(2);
-			amount = `(${n} * floor(random() * ${m} + 1))`;
-		} else {
-			amount = effect.amount;
+		if (!damageTypes().find(f => f.includes(effect.name))) {
+			let name = getNameFromData(d.name);
+			let dFlags = "@dFlags." + name + "." + effect.ability;
+			let amount = "";
+			if (effect.amount.includes("d")) {
+				const n = effect.amount.charAt(0);
+				const m = effect.amount.charAt(2);
+				amount = `(${n} * floor(random() * ${m} + 1))`;
+			} else {
+				amount = effect.amount;
+			}
+			formula = "-" + amount;
+			if (!i) {
+				//	cumulative damage kept
+				formula +=  " +" + dFlags;
+			}
+			let change = {
+				_id: randomID(8),
+				formula: formula,
+				operator: "add",
+				target: effect.ability,
+				type: "untyped"
+			};
+			changes.push(change);
 		}
-        formula = "-" + amount;
-		if (!i) {
-			//	cumulative damage kept
-			formula +=  " +" + dFlags;
-		}
-		let change = {
-			_id: randomID(8),
-			formula: formula,
-			operator: "add",
-			target: effect.ability,
-			type: "untyped"
-		};
-		changes.push(change);
 	}
 	return changes;
 }
