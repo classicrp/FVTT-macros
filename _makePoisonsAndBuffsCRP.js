@@ -1,4 +1,4 @@
-const _VERSION = '0.5.18';
+const _VERSION = '0.5.19';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -340,12 +340,12 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 /* 	---	EXTRACT "Effect". -------------------------------------------------- */
 		fltrd = extractFromHTML(descHTMLParsed, "Effect");
 		if (fltrd) {
-			effect = extractEffect(fltrd);
+			effect = extractEffect(fltrd, initial, secondary);
 console.log("effect:", effect);
 /* 	-------	CHECK if "Effect" has a "Condition". --------------------------- */
 			if (!condition && hasCondition( fltrd, conditions )) {
 /* 	-----------	EXTRACT "Condition". --------------------------------------- */
-				condition = getConditionBreakdown(fltrd);
+				condition = getConditionBreakdown(fltrd, conditions);
 console.log("condition:", condition);
 			}
 		}
@@ -550,7 +550,6 @@ function damageTypes() {
 function getConditionBreakdown(htm, cond) {
 	let condition = "";
 	const RGX_COND = /(\w+)\s+(?:for\s+)?(\d+d\d+|\d+)\s+(minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w)/i;
-debugger
 	const rslt = htm.match(RGX_COND);
 	if (rslt) {
 		condition = {
@@ -570,6 +569,7 @@ debugger
 		}
 	} else {
 		//  only contains the condition with no extra info
+debugger
 		fltrd = cond.find(f => htm.includes(f));
 		if (fltrd) {
 			condition = {
@@ -607,7 +607,7 @@ function extractSecondary(htm) {
 	let rslt = htm.match(RGX_SECONDARY);
 	if (rslt) {
 		let eff = getEffectBreakdown(rslt[0]);
-		let cnd = getConditionBreakdown(rslt[0]);
+		let cnd = getConditionBreakdown(rslt[0], conditions);
 		if (eff && !cnd) {
 			rslt = eff;
 		} else if (!eff && cnd) {
@@ -619,7 +619,7 @@ function extractSecondary(htm) {
 	return rslt;
 }
 
-function extractEffect(htm) {
+function extractEffect(htm, i, s) {
 	let arr = [], eff = "";
 	const rslt = getEachEffect(htm);
 	if (rslt) {
@@ -631,12 +631,13 @@ function extractEffect(htm) {
 	return arr;
 }
 
-function getEachEffect(htm) {
+function getEachEffect(htm, i, s) {
 	const RGX_EA_EFF = /(\d+(?:d\d+)?)\s+(str|dex|con|int|wis|cha|acid|cold|electricity|fire|sonic|magic|force|negative|positive)(?:\s+damage)?/gi;
+debugger	
 	return htm.match(RGX_EA_EFF);
 }
 
-function getEffectBreakdown(htm) {
+function getEffectBreakdown(htm, i, s) {
 	const RGX_EFF_BRKD = /(?<number>\d+(?:d\d+)?)\s+(str|dex|con|int|wis|cha|acid|cold|electricity|fire|sonic|magic|force|negative|positive)(?:\s+damage)?/i;
 debugger
 	const rslt = htm.match(RGX_EFF_BRKD);
@@ -665,7 +666,6 @@ function extractCure(htm) {
 }
 
 function extractFrequency(htm) {
-debugger
 	const RGX_FREQ = /<(.*?)>Frequency<\/\1>\s*(.*?(\d+d\d+|\d+)\s+(minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w)\b)/i
 	const rslt = htm.match(RGX_FREQ);
 	if (rslt) {
@@ -872,6 +872,7 @@ function populateEffectNote(o, i, e, s, c) {
 	const TXT_EFF_NOTE_EFCT = "<strong>Effect:</strong> ";
 	const TXT_EFF_NOTE_SECD = "<strong>Secondary:</strong> ";
 	let effectNote = TXT_NOTE_START;
+debugger
 	if (o) {
 		effectNote += o.html;
 	} 
