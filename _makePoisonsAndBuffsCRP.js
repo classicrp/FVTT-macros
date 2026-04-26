@@ -1,4 +1,4 @@
-const _VERSION = '0.5.21';
+const _VERSION = '0.5.22';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -149,7 +149,6 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	const TXT_UNK_NAME = "Vial of liquid";
 	const TXT_UNK_DESC = "<p>Some liquid in a vial.</p>";
 	const TXT_NOTE_START = `<span style="font-size:1.2em">`;
-	const TXT_NOTE_APPLY = " @Apply[" + REPLACE_THIS_WITH_BUFF_UUID + "]<br>";
 		
 	for (const s of srcs) {
 		let descHTML = "", itemName = "", buffName = "";
@@ -510,16 +509,36 @@ function hasCondition(t, cond) {
 	return cond.find(f => t.includes(f))||"";
 }
 
+function abilities() {
+	return [
+		{ key: "str", value: ["strength", "str", "st"]},
+		{ key: "dex", value: ["dexterity", "dex", "dx"]},
+		{ key: "con", value: ["constitution", "con", "cn"]},
+		{ key: "int", value: ["intelligence", "int", "in"]},
+		{ key: "wis", value: ["wisdom", "wis", "ws"]},
+		{ key: "cha", value: ["charisma", "cha", "ch"]}		
+	]
+}
+
+function isAbility(t) {
+	return abilities().some(s => s.value.includes(t.toLowerCase()));
+}
+
 function durations() {
 	return [
-      { key: "round", value: ["r", "rnd", "round", "rounds", "rnds"], mult: 1 },
-      { key: "minute", value: ["m", "min", "mins", "minute", "minutes"], mult: 10 },
-      { key: "turn", value: ["t", "trn", "turn", "trns", "turns"], mult: 100 },
-      { key: "hour", value: ["h", "hr", "hrs", "hour", "hours"], mult: 600 },
-      { key: "day", value: ["d", "day", "days"], mult: 14400  },
-      { key: "week", value: ["w", "wk", "wks", "week", "weeks"], mult: 100800 }
+		{ key: "round", value: ["r", "rnd", "round", "rounds", "rnds"], mult: 1 },
+		{ key: "minute", value: ["m", "min", "mins", "minute", "minutes"], mult: 10 },
+		{ key: "turn", value: ["t", "trn", "turn", "trns", "turns"], mult: 100 },
+		{ key: "hour", value: ["h", "hr", "hrs", "hour", "hours"], mult: 600 },
+		{ key: "day", value: ["d", "day", "days"], mult: 14400  },
+		{ key: "week", value: ["w", "wk", "wks", "week", "weeks"], mult: 100800 }
     ];
 }
+
+function isDuration(t) {
+	return durations().some(s => s.value.includes(t.toLowerCase()));
+}
+
 
 function savingThrows() {
 	return [
@@ -529,22 +548,30 @@ function savingThrows() {
 	];
 }
 
+function isSavingThrow(t) {
+	return savingThrows().some(s => s.value.includes(t.toLowerCase()));
+}
+
 function damageTypes() {
 	return [
-		{ key: "acid", value: "Acid" },
-		{ key: "cold", value: ["Cold", "Ice"] },
-		{ key: "electric", value: ["Electricity", "Electrical", "Lightning", "Arc"] },
-		{ key: "fire", value: ["Flame", "Fire"] },
-		{ key: "sonic", value: ["Sonic", "Thunder"] },
-		{ key: "magic", value: "Magic" },
-		{ key: "force", value: "Force" },
-		{ key: "negative", value: ["Negative", "Neg"] },
-		{ key: "positive", value: ["Positive", "Pos"] },
-		{ key: "slashing", value: ["Slashing", "Slash", "Cut", "S"] },
-		{ key: "piercing", value: ["Piercing", "Pierce", "Stab", "P"] },
-		{ key: "bludgeoning", value: ["Bludgeoning", "Bludgeon", "Club", "Beat", "B"] },
-		{ key: "wounds", value: ["Wounds", "Wound", "Critical", "Crit"] }	
+		{ key: "acid", value: ["acid"] },
+		{ key: "cold", value: ["cold", "ice"] },
+		{ key: "electric", value: ["electricity", "electrical", "lightning", "arc"] },
+		{ key: "fire", value: ["flame", "fire"] },
+		{ key: "sonic", value: ["sonic", "thunder"] },
+		{ key: "magic", value: ["magic"] },
+		{ key: "force", value: ["force"] },
+		{ key: "negative", value: ["negative", "neg"] },
+		{ key: "positive", value: ["positive", "pos"] },
+		{ key: "slashing", value: ["slashing", "slash", "cut", "s"] },
+		{ key: "piercing", value: ["piercing", "pierce", "stab", "p"] },
+		{ key: "bludgeoning", value: ["bludgeoning", "bludgeon", "club", "beat", "b"] },
+		{ key: "wounds", value: ["wounds", "wound", "critical", "crit", "wnd"] }
 	]
+}
+
+function isdamageType(t) {
+	return damageTypes().some(s => s.value.includes(t.toLowerCase()));
 }
 
 function getConditionBreakdown(htm, cond) {
@@ -590,15 +617,17 @@ function getConditionBreakdown(htm, cond) {
 function getTiming(htm, txt) {
 	// 	locate a condition, an effect or a damage type
 	//	one of { initial: 'i', secondary: 's', effect: 'e' }
-	regex = RegExp(txt);
+	regex = RegExp(txt);	// does not include 'i' for case indifference
+	RGX_INI = /initial/i;
+	RGX_SEC = /secondary/i;
 	let arr = [], rslt = "";
 	const srcs = foundry.utils.parseHTML(htm);
 	for (let src of srcs) {
 		let idx = src.nextSibling.textContent.toLowerCase().search(regex);
 		if (idx !== -1) {
 			//	<txt> is in this Node
-			let i = src.innerText.search(/initial/i);
-			let s = src.innerText.search(/secondary/i);
+			let i = src.innerText.search(RGX_INI);
+			let s = src.innerText.search(RGX_SEC);
 			if (i !== -1) {
 				rslt = "i";
 			} else if (s !== -1) {
@@ -899,34 +928,106 @@ function checkImage(img) {
 }
 
 function populateEffectNote(o, i, e, s, c) {
-	const TXT_EFF_NOTE_INIT = "<strong>Initial:</strong> ";
-	const TXT_EFF_NOTE_EFCT = "<strong>Effect:</strong> ";
-	const TXT_EFF_NOTE_SECD = "<strong>Secondary:</strong> ";
+	const TXT_EFF_NOTE = "<strong>Effect:</strong> ";
+	const TXT_EFF_NOTE_APPLY = "@Apply[REPLACE_EFFECT_WITH_BUFF_UUID]";
+	const TXT_INI_NOTE = "<strong>Initial:</strong> ";
+	const TXT_INI_NOTE_APPLY = "@Apply[REPLACE_INITIAL_WITH_BUFF_UUID]";
+	const TXT_SEC_NOTE = "<strong>Secondary:</strong> ";
+	const TXT_SEC_NOTE_APPLY = "@Apply[REPLACE_SECONDARY_WITH_BUFF_UUID]";
+	let ieTrip = false, icTrip = false, seTrip = false, scTrip = false, eeTrip = false, ecTrip = false;
+	let effect = "", cond = "";
 	let effectNote = TXT_NOTE_START;
 debugger
+	if (e) {
+		
+	}
+	if (c) {
+		cond = _buildConditionPortion(c);
+	}
 	if (o) {
 		effectNote += o.html;
 	} 
 	if (i) {
-		effectNote += TXT_EFF_NOTE_INIT;
-	} 
-	if (e && !i) {
-		effectNote += TXT_EFF_NOTE_EFCT;
-	}
-	effectNote += TXT_NOTE_APPLY;
-	if (s) {
-		effectNote += TXT_EFF_NOTE_SECD;
-	}
-	if (c) {
-		const TXT_COND_START = `@Condition[${c.name};duration=`;
-		let txtCond = TXT_COND_START;
-		if (c.mult !== 1 && c.units === "round" && !Number.isInteger(c.duration)) {
-			txtCond += c.duration + "*" + c.mult + "]";
-		} else {
-			txtCond += c.duration + " " + c.units + "]";
+		effectNote += TXT_INI_NOTE;
+		if (e) {
+			for (let eff of e) {
+				if (eff.timing === "i") {
+					if (isAbility(eff.ability)) {
+						ieTrip = true;
+						effectNote += TXT_INI_NOTE_APPLY;
+					}
+				}
+			}
 		}
-		effectNote += " " + txtCond;
+		if (c && cond.timing === "i") {
+			icTrip = true;
+			if (ieTrip) {
+				effectNote += " and ";
+			}
+			effectNote += cond.content;
+		}
+	} 
+	if (s) {
+		if (ieTrip || icTrip) {
+			effectNote += "<br>";
+		}
+		effectNote += TXT_SEC_NOTE;
+		if (e) {
+			for (let eff of e) {
+				if (eff.timing === "s") {
+					if (isAbility(eff.ability)) {
+						seTrip = true;
+						effectNote += TXT_SEC_NOTE_APPLY;
+					}
+				}
+			}
+		}
+		if (c && cond.timing === "s") {
+			scTrip = true;
+			if (seTrip) {
+				effectNote += " and ";
+			}
+			effectNote += cond.content;
+		}
+	}
+	if (!i && !s) {
+		effectNote += TXT_EFF_NOTE;
+		if (e) {
+			eeTrip = true;
+			effectNote += TXT_EFF_NOTE_APPLY;
+		}
+		if (cond) {
+			ecTrip = true;
+			if (eeTrip) {
+				effectNote += "<br>";
+			}
+			effectNote += cond.content;
+		}
 	}
 	effectNote += "</span>";
 	return effectNote;
+}
+
+function _buildConditionPortion(c) {
+	const TXT_COND_START = `@Condition[${c.name}`;
+	const TXT_COND_DUR = ";duration=";
+	let rslt = "";
+	let txtCond = TXT_COND_START;
+	if (c) {
+		if (c.duration === -1) {
+			//	no duration present
+			txtCond += "]";
+		} else if (c.mult !== 1 && c.units === "round" && !Number.isInteger(c.duration)) {
+			//	die expression present
+			txtCond += TXT_COND_DUR + c.duration + "*" + c.mult + "]";
+		} else {
+			//	regular amount/time
+			txtCond += TXT_COND_DUR + c.duration + " " + c.units + "]";
+		}
+		rslt = {
+			content: txtCond,
+			timing: c.timing
+		}
+	}
+	return rslt;
 }
