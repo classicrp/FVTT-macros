@@ -1,4 +1,4 @@
-const _VERSION = '0.5.20';
+const _VERSION = '0.5.21';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -412,7 +412,7 @@ if (_SHOW) debugger
 
 /*	---	CREATE <changes> in <buff> ----------------------------------------- */
 		try {
-			await pf1.components.ItemChange.create(createChangesData(buff, effect, initial), { parent: buff })
+			await pf1.components.ItemChange.create(createChangesData(buff, effect, frequency), { parent: buff })
 		} catch (error) {
 			console.error(error, _VERSION, "Buff:", buff.name, ", Action: [ createChangesData() ], failed to write.");
 			return;
@@ -731,7 +731,7 @@ function getFrequencyBreakdown(htm) {
 	return htm.match(RGX_FREQ);
 }
 
-function createChangesData(d, e, i) {
+function createChangesData(d, e, f) {
 	//	CREATE a new <changes> object for each type of damage listed in Details
 	//		SET <target> to damage type (mostly an ability)
 	//		SET <formula> to number or in case of dice; "-floor(random() * [ size of dice ] + 1) +@dFlags.poison(poison name).(target)
@@ -740,7 +740,7 @@ function createChangesData(d, e, i) {
 	const changes = [];
 debugger
 	for (let effect of e) {
-		if (!damageTypes().find(f => f.includes(effect.name))) {
+		if (!damageTypes().find(f => f.key === effect.ability)) {
 			let name = getNameFromData(d.name);
 			let dFlags = "@dFlags." + name + "." + effect.ability;
 			let amount = "";
@@ -752,7 +752,7 @@ debugger
 				amount = effect.amount;
 			}
 			formula = "-" + amount;
-			if (!i) {
+			if (f.duration !== 0) {
 				//	cumulative damage kept
 				formula +=  " +" + dFlags;
 			}
