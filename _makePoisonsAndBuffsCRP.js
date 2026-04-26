@@ -1,4 +1,4 @@
-const _VERSION = '0.5.19';
+const _VERSION = '0.5.20';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -414,7 +414,7 @@ if (_SHOW) debugger
 		try {
 			await pf1.components.ItemChange.create(createChangesData(buff, effect, initial), { parent: buff })
 		} catch (error) {
-			console.error(error, _VERSION, "Buff:", buff.name, ", Action: [ createActionsData() ], failed to write.");
+			console.error(error, _VERSION, "Buff:", buff.name, ", Action: [ createChangesData() ], failed to write.");
 			return;
 		}
 		
@@ -557,7 +557,8 @@ function getConditionBreakdown(htm, cond) {
 			name: rslt[1],
 			duration: rslt[2],
 			units: durations().find(entry => entry.value.includes(rslt[3].toLowerCase())).key||null,
-			mult: 1
+			mult: 1,
+			timing: ""
 		};
 		if ((condition.duration.includes("d")) && (condition.units !== "round")) {
 			//	We have a die equation that only resolves as "rounds" from
@@ -569,7 +570,6 @@ function getConditionBreakdown(htm, cond) {
 		}
 	} else {
 		//  only contains the condition with no extra info
-debugger
 		fltrd = cond.find(f => htm.includes(f));
 		if (fltrd) {
 			condition = {
@@ -577,11 +577,38 @@ debugger
 				name: fltrd,
 				duration: -1,
 				units: "",
-				mult: 1
+				mult: 1,
+				timing: ""
 			}
 		}
 	}
+	const timing = getTiming(htm, condition.name);
+	condition.timing = timing;
 	return condition;
+}
+
+function getTiming(htm, txt) {
+	// 	locate a condition, an effect or a damage type
+	//	one of { initial: 'i', secondary: 's', effect: 'e' }
+	regex = RegExp(txt);
+	let arr = [], rslt = "";
+	const srcs = foundry.utils.parseHTML(htm);
+	for (let src of srcs) {
+		let idx = src.nextSibling.textContent.toLowerCase().search(regex);
+		if (idx !== -1) {
+			//	<txt> is in this Node
+			let i = src.innerText.search(/initial/i);
+			let s = src.innerText.search(/secondary/i);
+			if (i !== -1) {
+				rslt = "i";
+			} else if (s !== -1) {
+				rslt = "s";
+			} else {
+				rslt = "e";
+			}
+		}
+	}
+	return rslt;
 }
 
 function hasInitial(htm) {
@@ -619,36 +646,39 @@ function extractSecondary(htm) {
 	return rslt;
 }
 
-function extractEffect(htm, i, s) {
+function extractEffect(htm) {
 	let arr = [], eff = "";
 	const rslt = getEachEffect(htm);
 	if (rslt) {
 		for (let r of rslt) {
-			eff = getEffectBreakdown(r);
+			eff = getEffectBreakdown(r, htm);
 			arr.push(eff);
 		}
 	}
 	return arr;
 }
 
-function getEachEffect(htm, i, s) {
+function getEachEffect(htm) {
 	const RGX_EA_EFF = /(\d+(?:d\d+)?)\s+(str|dex|con|int|wis|cha|acid|cold|electricity|fire|sonic|magic|force|negative|positive)(?:\s+damage)?/gi;
-debugger	
-	return htm.match(RGX_EA_EFF);
+	let rslt = "";
+	rslt = htm.match(RGX_EA_EFF);
+	return rslt;
 }
 
-function getEffectBreakdown(htm, i, s) {
+function getEffectBreakdown(txt, htm) {
 	const RGX_EFF_BRKD = /(?<number>\d+(?:d\d+)?)\s+(str|dex|con|int|wis|cha|acid|cold|electricity|fire|sonic|magic|force|negative|positive)(?:\s+damage)?/i;
-debugger
-	const rslt = htm.match(RGX_EFF_BRKD);
-	if (rslt) {
-		return {
-			effect: htm,
-			ability: rslt[2].toLowerCase(),
-			amount: rslt[1]
+	let rslt = null;
+	const srcs = txt.match(RGX_EFF_BRKD);
+	if (srcs) {
+		rslt = {
+			effect: txt,
+			ability: srcs[2].toLowerCase(),
+			amount: srcs[1],
+			timing: ""
 		}
+		rslt.timing = getTiming(htm, rslt.ability);
 	}
-	return null;
+	return rslt;
 }
 
 function extractCure(htm) {
@@ -708,6 +738,7 @@ function createChangesData(d, e, i) {
 	//		ENSURE <operator> is "add"
 	//		LOOP as needed
 	const changes = [];
+debugger
 	for (let effect of e) {
 		if (!damageTypes().find(f => f.includes(effect.name))) {
 			let name = getNameFromData(d.name);
