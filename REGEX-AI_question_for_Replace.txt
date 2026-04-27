@@ -1,0 +1,22 @@
+Using REGEX
+From: "@Apply[REPLACE_THIS_WITH_BUFF_UUID]"
+Extract: "REPLACE_THIS_WITH_BUFF_UUID"
+where "THIS" is one of { "INITIAL, "SECONDARY", "EFFECT"}
+
+To extract the specific UUID string from that pattern, use this regular expression:
+
+@Apply\[([A-Z_]+_BUFF_UUID)\]
+
+Breakdown
+
+@Apply\[ : Matches the literal text @Apply[
+( : Starts the capture group (the part you want to extract)
+[A-Z_]+ : Matches any combination of uppercase letters and underscores (covers INITIAL, SECONDARY, or EFFECT)
+_BUFF_UUID : Matches that specific suffix
+) : Ends the capture group
+\] : Matches the literal closing bracket ] 
+
+🚀 Quick Tip: If you only need the part inside the brackets, use a Positive Lookbehind and Lookahead (if your engine supports it):
+(?<=@Apply\[).*(?=\]) 
+
+REGEX = /(?<=@Apply\[).*(?=\])/
