@@ -1,4 +1,4 @@
-const _VERSION = '0.5.23';
+const _VERSION = '0.5.24';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -380,7 +380,8 @@ if (_SHOW) debugger
 		const buffUuid = "Compendium." + CRP_ITEMS + ".Item." + buff._id;
 
 		/* 	UPDEATE Item <effectNote> with <buffUuid> ---------------------- */
-		effectNote = await effectNote.replace(REPLACE_THIS_WITH_BUFF_UUID, buffUuid);
+		const RGX_REPLACE = /(?<=@Apply\[).*(?=\])/;
+		effectNote = await effectNote.replace(RGX_REPLACE, buffUuid);
 
 		/* 	SET <effectNote> in <itemData> --------------------------------- */
 		rslt = await foundry.utils.setProperty(itemData, ATTR_EFF_NOTE, effectNote);
@@ -727,9 +728,9 @@ function extractFrequency(htm) {
 		}
 	} else {
 		return {
-			html: "Only occurs once.",
+			html: "<em>Only occurs once.</em>",
 			duration: 0,
-			units: ""
+			units: "none"
 		}
 	}
 }
