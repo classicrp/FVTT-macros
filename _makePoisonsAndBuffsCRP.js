@@ -1,9 +1,8 @@
-const _VERSION = '0.5.22';
+const _VERSION = '0.5.23';
 const _SHOW = true;		// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
 const _TEST = true;		//	test mode flag
-const _MEMTEST = false;	//	virtual memory heap dump flag
 /*  
 	Special Thanks: With help from the crew on Discord::FVTT#macro-polo; 
 					@Micheal, @Zhell and mentions to @Freeze and @Flix for 
@@ -21,18 +20,18 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	const RGX_COND_LIST = /<h2>(.*?)<\/h2>/g;
 	const UUID_JRNL_COND = "Compendium.pf-content.pf-rules.JournalEntry.FH4DP3oqkBwhLFNS";
 
-/* 	CREATE an instance of the specified [ItemJournalPF]. ------------------- */
+/* 	CREATE an instance of the specified [ItemJournalPF] -------------------- */
 	const jrnl = await fromUuid(UUID_JRNL_COND);
 	
-/*	EXTRACT the data & structure from <jrnl> for processing. --------------- */
+/*	EXTRACT the data & structure from <jrnl> for processing ---------------- */
 	const jrnlData = await game.journal.fromCompendium(jrnl);
 	
-/*	GET the HTML contents from <jrnlData>. --------------------------------- */
+/*	GET the HTML contents from <jrnlData> ---------------------------------- */
 	const contentHTML = await foundry.utils.getProperty(jrnlData, ATTR_JRNL_CONT);
 	
-/*	USE REGEX to extract only the <h2></h2> tags and text. ----------------- */
+/*	USE REGEX to extract only the <h2></h2> tags and text ------------------ */
 	let conditions = await contentHTML.toLowerCase().match(RGX_COND_LIST);
-/*	---	REMOVE the wrapping tags. ---------------------------------------------- */
+	/*	REMOVE the wrapping tags ------------------------------------------- */
 	for (let i = 0; i < conditions.length; i++) {
 		conditions[i] = removeHTML(conditions[i], false);
 	}
@@ -47,7 +46,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 	const FLTR_SUBTYPE = "poison";
 	
 	if (_TEST) {
-/* 	---	TEST CASE BEGIN ---------------------------------------------------- */
+	/* 	TEST CASE BEGIN ---------------------------------------------------- */
 		const name = "Dhabba spittle";
 		const ERR_MSG_TEST = "Unable to retrieve specified poison from pack data.";
 		//	this handles a specific request that returns all copies in Compendiums
@@ -58,7 +57,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			return;
 		}	
 	} else {
-/* 	--- LIVE CASE BEGIN ---------------------------------------------------- */
+	/* 	LIVE CASE BEGIN ---------------------------------------------------- */
 		//	this handles the top set of items with each index for a Compendium,
 		//	that needs to be manually filtered.
 		const ERR_MSG_LIVE = "Unable to retrieve any poisons from pack data.";
@@ -114,7 +113,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		rslt = null;
 		fltrd = null;
 		obj = null;
-/* 	--- LIVE CASE END ------------------------------------------------------ */
+	/* 	LIVE CASE END ------------------------------------------------------ */
 	}
 	if (_VERBOSE) {
 		console.log(_VERSION, 'srcs:', srcs);
@@ -155,19 +154,19 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		let cure = "", frequency = "", price = "", effect = "", onset = "";
 		let secondary = "", initial = "", condition = "";
 
-/*	GRAB the needed <uuid>. ------------------------------------------------ */
+	/*	GRAB the needed <uuid> --------------------------------------------- */
 		const itemUuid = s.uuid;
 		if (_VERBOSE) {
 			console.log(_VERSION, "itemUuid:", itemUuid);
 		}
 
-/*	CREATE an instance of the current [ItemConsumablePF]. ------------------ */
+	/*	CREATE an instance of the current [ItemConsumablePF] --------------- */
 		const item = await fromUuid(itemUuid);
 		if (_VERBOSE) {
 			console.log(_VERSION, "item:", item);
 		}
 
-/*	EXTRACT the data structure from <item> for further processing. --------- */
+	/*	EXTRACT the data structure from <item> for further processing ------ */
 		let itemData = await game.items.fromCompendium(item);
 		if (_VERBOSE) {
 			console.log(_VERSION, "itemData:", itemData);
@@ -180,25 +179,25 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			console.warn(_VERSION, "itemData property [", ATTR_IMG, "] not set to:", img);
 		}
 		
-/*	SET <Unidentified Name> to "Vial of liquid". --------------------------- */
+/*	SET <Unidentified Name> to "Vial of liquid" ---------------------------- */
 		rslt = await foundry.utils.setProperty(itemData, ATTR_UKN_NAME, TXT_UNK_NAME);
 		if (!rslt) {
 			console.warn(_VERSION, "itemData property [", ATTR_UKN_NAME, "] not set to:", TXT_UNK_NAME);
 		}
 
-/*	SET <Superficial Details> to "Some liquid in a vial. ------------------- */
+/*	SET <Superficial Details> to "Some liquid in a vial -------------------- */
 		rslt = await foundry.utils.setProperty(itemData, ATTR_UKN_DESC, TXT_UNK_DESC);
 		if (!rslt) {
 			console.warn(_VERSION, "itemData property [", ATTR_UKN_DESC, "] not set to:", TXT_UNK_DESC );
 		}
 
-/*	SET	<equipped> to FALSE. ----------------------------------------------- */
+/*	SET	<equipped> to FALSE ------------------------------------------------ */
 		rslt = await foundry.utils.setProperty(itemData, ATTR_ITM_EQP, false);
 		if (!rslt) {
 			console.warn(_VERSION, "itemData property [", ATTR_ITM_EQP, "] not set to:", false );
 		}
 
-/*	SET <carried> to FALSE. ------------------------------------------------ */
+/*	SET <carried> to FALSE ------------------------------------------------- */
 		rslt = await foundry.utils.setProperty(itemData, ATTR_ITM_CARRIED, false);
 		if (!rslt) {
 			console.warn(_VERSION, "itemData property [", ATTR_ITM_CARRIED, "] not set to:", false );
@@ -209,22 +208,21 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 */
 		descHTML = foundry.utils.getProperty(itemData, ATTR_KNWN_DESC);
 
-/*	-------	CONVERT descHTML into an HTML Array. --------------------------- */
+	/*	CONVERT descHTML into an HTML Array -------------------------------- */
 		let descHTMLParsed = foundry.utils.parseHTML(descHTML);
 
-/*	---	ADD at top "<h3>" + <Item.name> + "</h3>" -------------------------- */
+	/*	ADD at top "<h3>" + <Item.name> + "</h3>" -------------------------- */
 		itemName = foundry.utils.getProperty(itemData, "name");
 		const TXT_HDR = `<h3>${itemName}</h3>`;
 		descHTML = TXT_HDR + descHTML;
 
-/*	---	INSERT after "Cure..." - "</p>" + "; <b>Value</b> " + <price> +_
-			" gp.</p>". ---------------------------------------------------- */
+	/*	INSERT after "Cure..." - "</p>" + "; <b>Value</b> " + <price> +	" gp.</p>" */
 
-/*	-------	CREATE "Value". ------------------------------------------------ */
+		/*	CREATE "Value" ------------------------------------------------- */
 		price = foundry.utils.getProperty(itemData, ATTR_KNWN_PRC);
 		const TXT_VALUE = `<strong>Value</strong> ${price} gp.`;
 
-/*	-------	EXTRACT "Cure". ------------------------------------------------ */
+		/*	EXTRACT "Cure" ------------------------------------------------- */
 		const TXT_CURE = "<strong>Cure</strong> 1 save";
 		rslt = extractFromHTML(descHTMLParsed, "Cure");
 		if (!rslt) {
@@ -233,7 +231,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			cure = await extractCure(rslt);
 		}
 
-/*	-------	BUILD "Cure; Value" line. -------------------------------------- */
+		/*	BUILD "Cure; Value" line --------------------------------------- */
 		const RGX_LAST_PARA_TAG = /<\/p>$/;
 		if (!descHTML.includes('Cure')) {			
 			descHTML = descHTML + "<p>" + cure.html + "; " + TXT_VALUE + "</p>";
@@ -241,13 +239,13 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			descHTML = descHTML.replace(RGX_LAST_PARA_TAG, ("; " + TXT_VALUE)) + "</p>";
 		}
 
-/*	---	SET updated <Identified Properties> -------------------------------- */
+	/*	SET updated <Identified Properties> -------------------------------- */
 		rslt = await foundry.utils.setProperty(itemData, ATTR_KNWN_DESC, descHTML);
 		if (!rslt) {
 			console.warn(_VERSION, "itemData property [", ATTR_KNWN_DESC, "] not set to:", descHTML );
 		}
 
-/*	-------	UPDATE Parsed Array. ------------------------------------------- */
+		/*	UPDATE Parsed Array -------------------------------------------- */
 		descHTMLParsed = foundry.utils.parseHTML(descHTML);
 
 /*
@@ -256,7 +254,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		+ (cure from details OR 1 if none exists there) + " save(s)</span>" 
 */
 
-/*	---	EXTRACT "Frequency". ----------------------------------------------- */
+	/*	EXTRACT "Frequency" ------------------------------------------------ */
 		fltrd = extractFromHTML(descHTMLParsed, "Frequency");
 		frequency = await extractFrequency(fltrd);
 		if (!frequency) {
@@ -264,16 +262,16 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			console.warn(_VERSION, WRN_MSG_FREQ );
 		}
 
-/*	---	POPULATE <savingThrowEffect>. -------------------------------------- */
+	/*	POPULATE <savingThrowEffect> --------------------------------------- */
 		const savingThrowEffect = TXT_NOTE_START + frequency.html + "<br>" + cure.html + "</span>";
 
-/*	---	SET <savingThrowEffect>. ------------------------------------------- */
+	/*	SET <savingThrowEffect> -------------------------------------------- */
 		rslt = await foundry.utils.setProperty(itemData, ATTR_ITM_ACT_SAV_DESC, savingThrowEffect);
 		if (!rslt) {
 			console.warn(_VERSION, "itemData property [", ATTR_ITM_ACT_SAV_DESC, "] not set to:", savingThrowEffect );
 		}
 
-/*	CLEAR any pre-existing <actionEffect>. --------------------------------- */
+/*	CLEAR any pre-existing <actionEffect> ---------------------------------- */
 		rslt = await foundry.utils.setProperty(itemData, ATTR_ITM_ACT_NOTE_EFF, "");
 		if (!rslt) {
 			console.warn(_VERSION, "itemData property [", ATTR_ITM_ACT_NOTE_EFF, "] not set to:", " " );
@@ -288,7 +286,7 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			
 		}
 
-/*	SET <identified> flag to FALSE. ---------------------------------------- */
+/*	SET <identified> flag to FALSE ----------------------------------------- */
 		rslt = await foundry.utils.setProperty(itemData, ATTR_ITM_IDNT, false);
 		if (!rslt) {
 			console.warn(_VERSION, "itemData property [", ATTR_ITM_IDNT, "] not set to:", false );
@@ -300,13 +298,13 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 			console.warn(_VERSION, "itemData property [", ATTR_FLDR, "] not set to:", CRP_FLDR_ITM_PSN );
 		}
 
-/*	SET <duplicateSource> to originating item UUID. ------------------------ */
+/*	SET <duplicateSource> to originating item UUID ------------------------- */
 		rslt = await foundry.utils.setProperty(itemData, ATTR_ITM_STS_DSRC, itemUuid);
 		if (!rslt) {
 			console.warn(_VERSION, "itemData property [", ATTR_ITM_STS_DSRC, "] not set to:", savingThrowEffect );
 		}
 
-/*	SET <pack> to proper Compendium. --------------------------------------- */
+/*	SET <pack> to proper Compendium ---------------------------------------- */
 		rslt = await foundry.utils.setProperty(itemData, ATTR_PACK, CRP_ITEMS);
 		if (!rslt) {
 			console.warn(_VERSION, "itemData property [", ATTR_PACK, "] not set to:", CRP_ITEMS );
@@ -322,34 +320,32 @@ const _MEMTEST = false;	//	virtual memory heap dump flag
 		14400 for "d"} OR number + "m" or "t" or "h" or "d" + "]</span>"
 */
 
-/* 	---	EXTRACT "Onset". --------------------------------------------------- */
+	/* 	EXTRACT "Onset" ---------------------------------------------------- */
 		fltrd = extractFromHTML(descHTMLParsed, "Onset").replace(`; ${frequency.html}`, '');
 		if (fltrd) {
 			onset = extractOnset(fltrd);
 		}
 
-/* 	---	EXTRACT "Initial". ------------------------------------------------- */
+	/* 	EXTRACT "Initial" -------------------------------------------------- */
 		fltrd = extractFromHTML(descHTMLParsed, "Initial");
-		initial = (fltrd) ? true : false;
+		initial = hasInitial(fltrd);
 
-/* 	---	EXTRACT "Secondary". ----------------------------------------------- */
+	/* 	EXTRACT "Secondary" ------------------------------------------------ */
 		fltrd = extractFromHTML(descHTMLParsed, "Secondary");
-		secondary = (fltrd) ? true : false;
+		secondary = hasSecondary(fltrd);
 
-/* 	---	EXTRACT "Effect". -------------------------------------------------- */
+	/* 	EXTRACT "Effect" --------------------------------------------------- */
 		fltrd = extractFromHTML(descHTMLParsed, "Effect");
 		if (fltrd) {
 			effect = extractEffect(fltrd, initial, secondary);
-console.log("effect:", effect);
-/* 	-------	CHECK if "Effect" has a "Condition". --------------------------- */
-			if (!condition && hasCondition( fltrd, conditions )) {
-/* 	-----------	EXTRACT "Condition". --------------------------------------- */
+		/* 	CHECK if "Effect" has a "Condition" ---------------------------- */
+			if (!condition && hasCondition(fltrd, conditions)) {
+			/* 	EXTRACT "Condition" ---------------------------------------- */
 				condition = getConditionBreakdown(fltrd, conditions);
-console.log("condition:", condition);
 			}
 		}
 
-/* 	---	POPULATE <effectNote>. --------------------------------------------- */
+	/* 	POPULATE <effectNote> ---------------------------------------------- */
 		let effectNote = populateEffectNote(onset, initial, effect, secondary, condition);
 	
 /*
@@ -359,7 +355,7 @@ console.log("condition:", condition);
 
 if (_SHOW) debugger
 
-/*	---	WRITE new Buff in Compendium --------------------------------------- */	
+	/*	WRITE new Buff in Compendium --------------------------------------- */	
 		let buff = "";
 		try {
 			buff = await pf1.documents.item.ItemBuffPF.create(
@@ -378,30 +374,28 @@ if (_SHOW) debugger
 			console.log(_VERSION, 'create buff results:', buff);
 		}
 
-/*
-	---	SET buffUuid of associated Poison Item to newly created BUFF buffUuid. 
-*/
+	/*	SET buffUuid of associated Poison Item to newly created BUFF buffUuid */
 
-/* 	-------	CREATE <buffUuid>. --------------------------------------------- */
+		/* 	CREATE <buffUuid> ---------------------------------------------- */
 		const buffUuid = "Compendium." + CRP_ITEMS + ".Item." + buff._id;
 
-/* 	-------	UPDEATE Item <effectNote> with <buffUuid>. --------------------- */
+		/* 	UPDEATE Item <effectNote> with <buffUuid> ---------------------- */
 		effectNote = await effectNote.replace(REPLACE_THIS_WITH_BUFF_UUID, buffUuid);
 
-/* 	-------	SET <effectNote> in <itemData>. -------------------------------- */
+		/* 	SET <effectNote> in <itemData> --------------------------------- */
 		rslt = await foundry.utils.setProperty(itemData, ATTR_EFF_NOTE, effectNote);
 		if (!rslt) {
 			console.warn(_VERSION, "itemData property [", ATTR_EFF_NOTE, "] not set to:", effectNote );
 		}
 
-/*	-------	SET "Save" <save> to <itemData.system.actions.0.save> ----- */
+		/*	SET "Save" <save> to <itemData.system.actions.0.save> ----- */
 		const ATTR_ITM_ACT_SAV = "system.actions.0.save";
 		const ATTR_ACT_SAV_DC = "save.dc";
 		const ATTR_ACT_SAV_DESC = "save.description";
 		const ATTR_ACT_SAV_TYP = "save.type";
 		const saveFromItemData = foundry.utils.getProperty( itemData, ATTR_ITM_ACT_SAV );
 
-/*	---	CREATE <actions> in <buff> ------------------------------------------ */
+	/*	CREATE <actions> in <buff> ------------------------------------------ */
 		try {
 			await pf1.components.ItemAction.create(createActionsData(buff, saveFromItemData), { parent: buff })
 		} catch (error) {
@@ -409,7 +403,7 @@ if (_SHOW) debugger
 			return;
 		}
 
-/*	---	CREATE <changes> in <buff> ----------------------------------------- */
+	/*	CREATE <changes> in <buff> ----------------------------------------- */
 		try {
 			await pf1.components.ItemChange.create(createChangesData(buff, effect, frequency), { parent: buff })
 		} catch (error) {
@@ -417,7 +411,7 @@ if (_SHOW) debugger
 			return;
 		}
 		
-/*	---	CREATE <scriptCalls> in <buff> ------------------------------------- */
+	/*	CREATE <scriptCalls> in <buff> ------------------------------------- */
 		try {
 			await pf1.components.ItemScriptCall.create(createScriptCallData(), { parent: buff })
 		} catch (error) {
@@ -437,7 +431,6 @@ if (_SHOW) debugger
 		if (_VERBOSE) {
 			console.log(_VERSION, 'create item result:', rslt);
 		}
-
 	}
 
 return;
@@ -504,9 +497,9 @@ function extractFromHTML(srcs, tag) {
 	return rslt;
 }
 
-function hasCondition(t, cond) {
+function hasCondition(content, cond) {
 	//	See if the passed in "Effect" line holds a known Condition
-	return cond.find(f => t.includes(f))||"";
+	return cond.find(f => content.includes(f))||"";
 }
 
 function abilities() {
@@ -538,7 +531,6 @@ function durations() {
 function isDuration(t) {
 	return durations().some(s => s.value.includes(t.toLowerCase()));
 }
-
 
 function savingThrows() {
 	return [
@@ -865,7 +857,10 @@ function createBuffData(htm, data, c, e, f) {
 	};
 	for (let effect of e) {
 		//	add in [effect.abilities]: 0,
-		buffData.system.flags.dictionary[effect.ability] = 0;
+		if (isAbility(effect.ability)) {
+			//	only add in actual "abilities"
+			buffData.system.flags.dictionary[effect.ability] = 0;
+		}
 	}
 	return buffData;
 }
