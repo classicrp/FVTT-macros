@@ -1,4 +1,4 @@
-const _VERSION = '0.5.26';
+const _VERSION = '0.5.27';
 const _SHOW = false;	// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -191,21 +191,24 @@ const _TEST = true;		//	test mode flag
 			console.warn(_VERSION, "itemData property [", ATTR_UKN_DESC, "] not set to:", TXT_UNK_DESC );
 		}
 
-/*	SET	<equipped> to FALSE ------------------------------------------------ */
+/*	SET	<equipped> to FALSE ------------------------------------------------ 
 		rslt = await foundry.utils.setProperty(itemData, ATTR_ITM_EQP, false);
 		if (!rslt) {
 			console.warn(_VERSION, "itemData property [", ATTR_ITM_EQP, "] not set to:", false );
 		}
 
-/*	SET <carried> to FALSE ------------------------------------------------- */
+/*	SET <carried> to FALSE ------------------------------------------------- 
 		rslt = await foundry.utils.setProperty(itemData, ATTR_ITM_CARRIED, false);
 		if (!rslt) {
 			console.warn(_VERSION, "itemData property [", ATTR_ITM_CARRIED, "] not set to:", false );
-		}
+		} */
 
 /*
 	GET <Identified Properties>
 */
+
+debugger
+
 		descHTML = foundry.utils.getProperty(itemData, ATTR_KNWN_DESC);
 
 	/*	CONVERT descHTML into an HTML Array -------------------------------- */
@@ -223,13 +226,7 @@ const _TEST = true;		//	test mode flag
 		const TXT_VALUE = `<strong>Value</strong> ${price} gp.`;
 
 		/*	EXTRACT "Cure" ------------------------------------------------- */
-		const TXT_CURE = "<strong>Cure</strong> 1 save";
-		rslt = extractFromHTML(descHTMLParsed, "Cure");
-		if (!rslt) {
-			cure = await extractCure(TXT_CURE);
-		} else {
-			cure = await extractCure(rslt);
-		}
+		cure = await extractCure(descHTMLParsed);
 
 		/*	BUILD "Cure; Value" line --------------------------------------- */
 		descHTML = await buildCureValueLine(descHTMLParsed, rslt, cure, TXT_VALUE);
@@ -698,35 +695,50 @@ function getEffectBreakdown(txt, htm) {
 	return rslt;
 }
 
-function extractCure(htm) {
-	const RGX_CURE = /(<(\w+)>.*?<\/\2>)\s+(\d+)\s+(consecutive\s+)?(saves?)/i;
-	const rslt = htm.match(RGX_CURE);
-	const consec = htm.toLowerCase().includes("consecutive");
-	if (rslt) {
-		return {
-			html: rslt[0],
-			savesNeeded: Number(rslt[3]),
-			consecutive: ((!consec) ? -1 : 0)
-		}
+function extractCure(d) {
+	
+debugger
+	
+	const TXT_CURE = "<strong>Cure</strong> 1 save";
+	let htm = "", fltrd = "";
+	let rslt = extractFromHTML(d, "Cure");
+	if (!rslt) {
+		htm = TXT_CURE;
+	} else {
+		htm = rslt;
 	}
-	return null;
+	const RGX_CURE = /<(\w+)>Cure<\/\1>\s+(\d+)\s+(consecutive\s+)?(save[s]?)/i;
+	fltrd = htm.match(RGX_CURE);
+	const consec = htm.toLowerCase().includes("consecutive");
+	if (fltrd) {
+		rslt = {
+			html: fltrd[0],
+			savesNeeded: Number(fltrd[3]),
+			consecutive: ((!consec) ? -1 : 0)
+		};
+	} else {
+		rslt = null;	
+	}
+	return rslt;
 }
 
 function buildCureValueLine(d, r, c, v) {
-debugger
 	const lineCnV = "<p>" + c.html + "; " + v + "</p>";
 	let rslt = "";
 	for (let l of d) {
-		rslt += l.outerHTML;
 		if (!r) {
 			//	No "Cure" line exists, have to insert after last "Effect" line.
 			if (l.innerText.toLowerCase().includes("effect")) {
-				rslt += lineCnV;
+				rslt += l.outerHTML + lineCnV;
+			} else {
+				rslt += l.outerHTML;
 			}
 		} else {
 			//	Replace existing "Cure" line with new <lineCnV>.
 			if (l.innerText.toLowerCase().includes("cure")) {
-				console.log(l.outerHTML);
+				rslt += lineCnV;
+			} else {
+				rslt += l.outerHTML;				
 			}
 		}
 	}
@@ -789,7 +801,7 @@ function createChangesData(d, e, f) {
 				amount = effect.amount;
 			}
 			formula = "-" + amount;
-			if (f.duration !== 0) {
+			if (f.duration !== 0 && effect.timing !== "i") {
 				//	cumulative damage kept
 				formula +=  " +" + dFlags;
 			}
