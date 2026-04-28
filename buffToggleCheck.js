@@ -1,6 +1,6 @@
-const version = '0.4.4';
+const version = '0.4.5';
 const show = false;
-const verbose = true;
+const verbose = false;
 const paused = true;
 const GETCHATIDFORLASTTYPE = 'Compendium.crp-contents.crp-macros.Macro.AJukQPfiRAiOBj1x';
 const CHECKSAVE = 'Compendium.crp-contents.crp-macros.Macro.xFjVPT4MkdLpoTXM';
@@ -8,6 +8,9 @@ const CHECKSAVE = 'Compendium.crp-contents.crp-macros.Macro.xFjVPT4MkdLpoTXM';
 let chkDone = false, chkSaved = false, chkFinished = false;
 let cmsg = '', lm = '', rslt = '', damage = [];
 
+debugger
+
+if (item.hasItemBooleanFlag('cured')) return;
 let unitsPassed = await Number(item.getItemDictionaryFlag('unitsPassed'))||0;
 const unit = await item.getItemDictionaryFlag('frequencyUnit')||'';
 const dur = await Number(item.getItemDictionaryFlag('frequencyDuration'))||1;
@@ -74,10 +77,11 @@ if (!state) {
 				chkFinished = rslt.chkFinished;
 				chkSaved = rslt.chkSaved;
 				await item.setItemDictionaryFlag('savesMade', rslt.saves);
+				savesMade = rslt.saves;
 				if (chkSaved) await item.setItemDictionaryFlag('lastSaveId', chatId);
-
 				if (consecutiveSaves !== rslt.consec) {
 					await item.setItemDictionaryFlag('consecutiveSaves', rslt.consec);
+					consecutiveSaves = rslt.consec;
 				}
 			}
 		}
@@ -118,11 +122,17 @@ if (!state) {
 				chkFinished = rslt.chkFinished;
 				chkSaved = rslt.chkSaved;
 				await item.setItemDictionaryFlag('savesMade', rslt.saves);
+				savesMade = rslt.saves;
 				if (consecutiveSaves !== rslt.consec) {
 					await item.setItemDictionaryFlag('consecutiveSaves', rslt.consec);
+					consecutiveSaves = rslt.consec;
 				}
 			}
 			if (chkFinished) await turnOffDuration();
+			if ((savesMade >= savesNeeded) && (savesNeeded === 1)) {
+				await item.addItemBooleanFlag('cured');
+				await item.delete();
+			}
 		}
 	}
 }
@@ -138,7 +148,6 @@ function checkSaves(a, b) {
 
 function turnOffDuration() {
 	//	turn off duration checks
-debugger
 	const promise = []
     promise.push(item.update({ ['system.duration.units']: "" }));
 	for (const c of item.changes.contents) {
@@ -149,11 +158,13 @@ debugger
 	return promise;
 }
 
-function BuffDamageCRP(t, sv, rv, tv) {
-	this.target = t;
-	this.stored = sv;
-	this.rolled = rv;
-	this.total = tv;
+function buffDamage(t, sv, rv, tv) {
+	return {
+		target: t,
+		stored: sv,
+		rolled: rv,
+		total: tv
+	}
 }
 
 function collectDamageInfo(c) {
@@ -163,7 +174,7 @@ function collectDamageInfo(c) {
 	const rolledVal = totVal - storVal;  
 		// was adding a negative to a negative making a bigger negative
 	if (verbose) console.log(version, target, "old:", storVal, "roll:", rolledVal, "tot:", totVal);
-	return new BuffDamageCRP(target, storVal, rolledVal, totVal);
+	return buffDamage(target, storVal, rolledVal, totVal);
 }
 
 function chatMessage(messageContent) {
