@@ -1,5 +1,5 @@
-const _VERSION = '0.5.24';
-const _SHOW = true;		// 	debug point flag
+const _VERSION = '0.5.25';
+const _SHOW = false;	// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
 const _TEST = true;		//	test mode flag
@@ -760,7 +760,6 @@ function createChangesData(d, e, f) {
 	//		ENSURE <operator> is "add"
 	//		LOOP as needed
 	const changes = [];
-debugger
 	for (let effect of e) {
 		if (!damageTypes().find(f => f.key === effect.ability)) {
 			let name = getNameFromData(d.name);
@@ -933,10 +932,6 @@ function populateEffectNote(o, i, e, s, c) {
 	let ieTrip = false, icTrip = false, seTrip = false, scTrip = false, eeTrip = false, ecTrip = false;
 	let effect = "", cond = "";
 	let effectNote = TXT_NOTE_START;
-debugger
-	if (e) {
-		
-	}
 	if (c) {
 		cond = _buildConditionPortion(c);
 	}
