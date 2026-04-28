@@ -1,4 +1,4 @@
-const _VERSION = '0.5.25';
+const _VERSION = '0.5.26';
 const _SHOW = false;	// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -47,7 +47,7 @@ const _TEST = true;		//	test mode flag
 	
 	if (_TEST) {
 	/* 	TEST CASE BEGIN ---------------------------------------------------- */
-		const name = "Dhabba spittle";
+		const name = "Bloodbrain Venom";
 		const ERR_MSG_TEST = "Unable to retrieve specified poison from pack data.";
 		//	this handles a specific request that returns all copies in Compendiums
 		srcs = await game.packs?.filter(f => f.title.toLowerCase().includes('item')).map(g => g.index.getName(name)).filter(g => (typeof g !== 'undefined'));
@@ -232,12 +232,7 @@ const _TEST = true;		//	test mode flag
 		}
 
 		/*	BUILD "Cure; Value" line --------------------------------------- */
-		const RGX_LAST_PARA_TAG = /<\/p>$/;
-		if (!descHTML.includes('Cure')) {			
-			descHTML = descHTML + "<p>" + cure.html + "; " + TXT_VALUE + "</p>";
-		} else {
-			descHTML = descHTML.replace(RGX_LAST_PARA_TAG, ("; " + TXT_VALUE)) + "</p>";
-		}
+		descHTML = await buildCureValueLine(descHTMLParsed, rslt, cure, TXT_VALUE);
 
 	/*	SET updated <Identified Properties> -------------------------------- */
 		rslt = await foundry.utils.setProperty(itemData, ATTR_KNWN_DESC, descHTML);
@@ -715,6 +710,27 @@ function extractCure(htm) {
 		}
 	}
 	return null;
+}
+
+function buildCureValueLine(d, r, c, v) {
+debugger
+	const lineCnV = "<p>" + c.html + "; " + v + "</p>";
+	let rslt = "";
+	for (let l of d) {
+		rslt += l.outerHTML;
+		if (!r) {
+			//	No "Cure" line exists, have to insert after last "Effect" line.
+			if (l.innerText.toLowerCase().includes("effect")) {
+				rslt += lineCnV;
+			}
+		} else {
+			//	Replace existing "Cure" line with new <lineCnV>.
+			if (l.innerText.toLowerCase().includes("cure")) {
+				console.log(l.outerHTML);
+			}
+		}
+	}
+	return rslt;
 }
 
 function extractFrequency(htm) {
