@@ -1,6 +1,6 @@
-const version = '0.1.2';
-const verbose = true;
-const show = true;
+const version = '0.1.3';
+const verbose = false;
+const show = false;
 // Passed in: cmsg [ChatMessagePF], made [Number], needed [Number], consecutive [Boolean], 
 //				damage (Array of [BuffDamageCRP {target, stored, rolled, total}]).
 
@@ -77,13 +77,15 @@ function checkSave(roll, made, need, consec, dmg) {
 			d.total = d.rolled + d.stored;
 		}
 	}
-	return new CheckResultCRP(cf, cs, sav, consec, damage);
+	return checkResult(cf, cs, sav, consec, damage);
 }
 
-function CheckResultCRP(cf, cs, sav, consec, dmg) {
-	this.chkFinished = cf;
-	this.chkSaved = cs;
-	this.saves = sav;
-	this.consec = consec;
-	this.damage = dmg;
+function checkResult(cf, cs, sav, consec, dmg) {
+	return {
+		chkFinished: cf,
+		chkSaved: cs,
+		saves: sav,
+		consec: consec,
+		damage: dmg
+	}
 }
