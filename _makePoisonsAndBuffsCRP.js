@@ -1,4 +1,4 @@
-const _VERSION = '0.5.27';
+const _VERSION = '0.5.28';
 const _SHOW = false;	// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -207,17 +207,15 @@ const _TEST = true;		//	test mode flag
 	GET <Identified Properties>
 */
 
-debugger
-
 		descHTML = foundry.utils.getProperty(itemData, ATTR_KNWN_DESC);
-
-	/*	CONVERT descHTML into an HTML Array -------------------------------- */
-		let descHTMLParsed = foundry.utils.parseHTML(descHTML);
 
 	/*	ADD at top "<h3>" + <Item.name> + "</h3>" -------------------------- */
 		itemName = foundry.utils.getProperty(itemData, "name");
 		const TXT_HDR = `<h3>${itemName}</h3>`;
 		descHTML = TXT_HDR + descHTML;
+
+	/*	CONVERT descHTML into an HTML Array -------------------------------- */
+		let descHTMLParsed = foundry.utils.parseHTML(descHTML);
 
 	/*	INSERT after "Cure..." - "</p>" + "; <b>Value</b> " + <price> +	" gp.</p>" */
 
@@ -229,7 +227,7 @@ debugger
 		cure = await extractCure(descHTMLParsed);
 
 		/*	BUILD "Cure; Value" line --------------------------------------- */
-		descHTML = await buildCureValueLine(descHTMLParsed, rslt, cure, TXT_VALUE);
+		descHTML = await includeCureValueLine(descHTMLParsed, rslt, cure, TXT_VALUE);
 
 	/*	SET updated <Identified Properties> -------------------------------- */
 		rslt = await foundry.utils.setProperty(itemData, ATTR_KNWN_DESC, descHTML);
@@ -319,12 +317,10 @@ debugger
 		}
 
 	/* 	EXTRACT "Initial" -------------------------------------------------- */
-		fltrd = extractFromHTML(descHTMLParsed, "Initial");
-		initial = hasInitial(fltrd);
+		initial = hasInitial(descHTML);
 
 	/* 	EXTRACT "Secondary" ------------------------------------------------ */
-		fltrd = extractFromHTML(descHTMLParsed, "Secondary");
-		secondary = hasSecondary(fltrd);
+		secondary = hasSecondary(descHTML);
 
 	/* 	EXTRACT "Effect" --------------------------------------------------- */
 		fltrd = extractFromHTML(descHTMLParsed, "Effect");
@@ -606,6 +602,9 @@ function getTiming(htm, txt) {
 	RGX_INI = /initial/i;
 	RGX_SEC = /secondary/i;
 	let arr = [], rslt = "";
+
+debugger
+
 	const srcs = foundry.utils.parseHTML(htm);
 	for (let src of srcs) {
 		let idx = src.nextSibling.textContent.toLowerCase().search(regex);
@@ -613,9 +612,9 @@ function getTiming(htm, txt) {
 			//	<txt> is in this Node
 			let i = src.innerText.search(RGX_INI);
 			let s = src.innerText.search(RGX_SEC);
-			if (i !== -1) {
+			if (i !== -1 && src.innerText.toLowerCase().includes("initial")) {
 				rslt = "i";
-			} else if (s !== -1) {
+			} else if (s !== -1 && src.innerText.toLowerCase().includes("secondary")) {
 				rslt = "s";
 			} else {
 				rslt = "e";
@@ -696,9 +695,6 @@ function getEffectBreakdown(txt, htm) {
 }
 
 function extractCure(d) {
-	
-debugger
-	
 	const TXT_CURE = "<strong>Cure</strong> 1 save";
 	let htm = "", fltrd = "";
 	let rslt = extractFromHTML(d, "Cure");
@@ -713,7 +709,7 @@ debugger
 	if (fltrd) {
 		rslt = {
 			html: fltrd[0],
-			savesNeeded: Number(fltrd[3]),
+			savesNeeded: Number(fltrd[2]),
 			consecutive: ((!consec) ? -1 : 0)
 		};
 	} else {
@@ -722,7 +718,7 @@ debugger
 	return rslt;
 }
 
-function buildCureValueLine(d, r, c, v) {
+function includeCureValueLine(d, r, c, v) {
 	const lineCnV = "<p>" + c.html + "; " + v + "</p>";
 	let rslt = "";
 	for (let l of d) {
