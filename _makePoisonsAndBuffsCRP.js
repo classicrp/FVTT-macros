@@ -1,4 +1,4 @@
-const _VERSION = '0.5.33';
+const _VERSION = '0.5.34';
 const _SHOW = false;	// 	debug point flag
 const _VERBOSE = false;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -357,9 +357,6 @@ if (_SHOW) debugger
 
 		/* 	CREATE <buffUuid> ---------------------------------------------- */
 		const buffUuid = "Compendium." + CRP_ITEMS + ".Item." + buff._id;
-
-debugger
-
 		/* 	UPDEATE Item <effectNote> with <buffUuid> ---------------------- */
 		const RGX_REPLACE = /(?<=@Apply\[)(REPLACE_\w+_WITH_BUFF_UUID)(?=\])/;
 		effectNote = await effectNote.replace(RGX_REPLACE, buffUuid);
@@ -666,14 +663,14 @@ function extractEffect(htm) {
 }
 
 function getEachEffect(htm) {
-	const RGX_EA_EFF = /(\d+(?:d\d+)?)\s+(str|dex|con|int|wis|cha|acid|cold|electricity|fire|sonic|magic|force|negative|positive)(?:\s+damage)?/gi;
+	const RGX_EA_EFF = /(\d+(?:d\d+)?)\s+(str|dex|con|int|wis|cha|acid|cold|electricity|fire|sonic|magic|force|negative|positive)(?:\s+damage|\s+drain)?/gi;
 	let rslt = "";
 	rslt = htm.match(RGX_EA_EFF);
 	return rslt;
 }
 
 function getEffectBreakdown(txt, htm) {
-	const RGX_EFF_BRKD = /(?<number>\d+(?:d\d+)?)\s+(str|dex|con|int|wis|cha|acid|cold|electricity|fire|sonic|magic|force|negative|positive)(?:\s+damage)?/i;
+	const RGX_EFF_BRKD = /(?<number>\d+(?:d\d+)?)\s+(str|dex|con|int|wis|cha|acid|cold|electricity|fire|sonic|magic|force|negative|positive)(?:\s+damage|\s+drain)?/i;
 	let rslt = null;
 	const srcs = txt.match(RGX_EFF_BRKD);
 	if (srcs) {
