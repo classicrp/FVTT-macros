@@ -1,4 +1,4 @@
-const _VERSION = '0.5.29';
+const _VERSION = '0.5.30';
 const _SHOW = false;	// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -788,6 +788,10 @@ function createChangesData(d, e, f) {
 	//		ENSURE <operator> is "add"
 	//		LOOP as needed
 	const changes = [];
+	//	Language dependent
+	const TXT_CHG_INIT = "[Initital]";
+	const TXT_CHG_SEC = "[Secondary]";
+
 	for (let effect of e) {
 		if (!damageTypes().find(f => f.key === effect.ability)) {
 			let name = getNameFromData(d.name);
@@ -800,14 +804,15 @@ function createChangesData(d, e, f) {
 			} else {
 				amount = effect.amount;
 			}
-			formula = "-" + amount;
-			
+			formula = `${amount}`;
+			let timing = (effect.timing === "i") ? TXT_CHG_INIT : (effect.timing === "s") ? TXT_CHG_SEC : "";
 debugger
 
 			if (f.duration !== 0 && effect.timing !== "i") {
 				//	cumulative damage kept
-				formula +=  " +" + dFlags;
+				formula =  `(${formula} + ${dFlags})`;
 			}
+			formula += timing;
 			let change = {
 				_id: randomID(8),
 				formula: formula,
