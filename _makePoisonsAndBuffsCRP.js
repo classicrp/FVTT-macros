@@ -1,6 +1,6 @@
-const _VERSION = '0.5.30';
+const _VERSION = '0.5.31';
 const _SHOW = false;	// 	debug point flag
-const _VERBOSE = true;	//	console.log() flag
+const _VERBOSE = false;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
 const _TEST = true;		//	test mode flag
 /*  
@@ -47,7 +47,7 @@ const _TEST = true;		//	test mode flag
 	
 	if (_TEST) {
 	/* 	TEST CASE BEGIN ---------------------------------------------------- */
-		const name = "Bloodbrain Venom";
+		const name = "Blistercap spore";
 		const ERR_MSG_TEST = "Unable to retrieve specified poison from pack data.";
 		//	this handles a specific request that returns all copies in Compendiums
 		srcs = await game.packs?.filter(f => f.title.toLowerCase().includes('item')).map(g => g.index.getName(name)).filter(g => (typeof g !== 'undefined'));
@@ -602,9 +602,6 @@ function getTiming(htm, txt, part) {
 	RGX_INI = /initial/i;
 	RGX_SEC = /secondary/i;
 	let arr = [], rslt = "";
-
-debugger
-
 	const srcs = foundry.utils.parseHTML(htm);
 	for (let src of srcs) {
 		if (!src.nextSibling.textContent.includes(part)) continue;
@@ -804,10 +801,8 @@ function createChangesData(d, e, f) {
 			} else {
 				amount = effect.amount;
 			}
-			formula = `${amount}`;
+			formula = `-${amount}`;
 			let timing = (effect.timing === "i") ? TXT_CHG_INIT : (effect.timing === "s") ? TXT_CHG_SEC : "";
-debugger
-
 			if (f.duration !== 0 && effect.timing !== "i") {
 				//	cumulative damage kept
 				formula =  `(${formula} + ${dFlags})`;
@@ -936,8 +931,7 @@ function getNameFromData(n) {
 			if (index === 0) {
 				return word.toLowerCase(); // lowercase first word: "poison"
 			}
-			// Capitalize the first letter of every other word
-debugger			
+			// Capitalize the first letter of every other word			
 			return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
 		})
 		.join(''); // Join them back together
