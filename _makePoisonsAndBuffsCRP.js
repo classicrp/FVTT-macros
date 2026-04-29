@@ -1,4 +1,4 @@
-const _VERSION = '0.5.32';
+const _VERSION = '0.5.33';
 const _SHOW = false;	// 	debug point flag
 const _VERBOSE = false;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -358,8 +358,10 @@ if (_SHOW) debugger
 		/* 	CREATE <buffUuid> ---------------------------------------------- */
 		const buffUuid = "Compendium." + CRP_ITEMS + ".Item." + buff._id;
 
+debugger
+
 		/* 	UPDEATE Item <effectNote> with <buffUuid> ---------------------- */
-		const RGX_REPLACE = /(?<=@Apply\[).*(?=\])/;
+		const RGX_REPLACE = /(?<=@Apply\[)(REPLACE_\w+_WITH_BUFF_UUID)(?=\])/;
 		effectNote = await effectNote.replace(RGX_REPLACE, buffUuid);
 
 		/* 	SET <effectNote> in <itemData> --------------------------------- */
@@ -550,9 +552,6 @@ function getConditionBreakdown(htm, cond) {
 	let condition = "";
 	const RGX_COND = /(\w+)\s+(?:for\s+)?(\d+d\d+|\d+)\s+(minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w)/i;
 	const rslt = htm.match(RGX_COND);
-
-debugger
-
 	if (rslt) {
 		condition = {
 			effect: rslt[0],
@@ -607,9 +606,6 @@ function getTiming(htm, txt, part) {
 			//	<txt> is in this Node
 			let i = src.innerText.search(RGX_INI);
 			let s = src.innerText.search(RGX_SEC);
-			if (typeof part === "undefined") {
-				part = txt;
-			}
 			if (i !== -1) { 		//}) && src.outerText.toLowerCase().includes("initial")) {
 				rslt = "i";
 			} else if (s !== -1) {	//} && src.outerText.toLowerCase().includes("secondary")) {
@@ -959,7 +955,7 @@ function populateEffectNote(o, i, e, s, c) {
 	const TXT_SEC_NOTE_APPLY = "@Apply[REPLACE_SECONDARY_WITH_BUFF_UUID]";
 	let ieTrip = false, icTrip = false, seTrip = false, scTrip = false, eeTrip = false, ecTrip = false;
 	let effect = "", cond = "";
-	let effectNote = TXT_NOTE_START;
+	let effectNote = TXT_NOTE_START;	
 	if (c) {
 		cond = _buildConditionPortion(c);
 	}
@@ -973,7 +969,9 @@ function populateEffectNote(o, i, e, s, c) {
 				if (eff.timing === "i") {
 					if (isAbility(eff.ability)) {
 						ieTrip = true;
-						effectNote += TXT_INI_NOTE_APPLY;
+						if (!effectNote.includes(TXT_INI_NOTE_APPLY)) {
+							effectNote += TXT_INI_NOTE_APPLY;
+						}
 					}
 				}
 			}
@@ -996,7 +994,9 @@ function populateEffectNote(o, i, e, s, c) {
 				if (eff.timing === "s") {
 					if (isAbility(eff.ability)) {
 						seTrip = true;
-						effectNote += TXT_SEC_NOTE_APPLY;
+						if (!effectNote.includes(TXT_SEC_NOTE_APPLY)) {
+							effectNote += TXT_SEC_NOTE_APPLY;
+						}
 					}
 				}
 			}
@@ -1013,7 +1013,9 @@ function populateEffectNote(o, i, e, s, c) {
 		effectNote += TXT_EFF_NOTE;
 		if (e) {
 			eeTrip = true;
-			effectNote += TXT_EFF_NOTE_APPLY;
+			if (!effectNote.includes(TXT_EFF_NOTE_APPLY)) {
+				effectNote += TXT_EFF_NOTE_APPLY;
+			}
 		}
 		if (cond) {
 			ecTrip = true;
