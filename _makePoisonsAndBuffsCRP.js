@@ -1,4 +1,4 @@
-const _VERSION = '0.5.34';
+const _VERSION = '0.5.35';
 const _SHOW = false;	// 	debug point flag
 const _VERBOSE = false;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -149,6 +149,9 @@ const _TEST = true;		//	test mode flag
 	const TXT_UNK_DESC = "<p>Some liquid in a vial.</p>";
 	const TXT_NOTE_START = `<span style="font-size:1.2em">`;
 		
+	const WRN_MSG_PROP = "itemData property [";
+	const WRN_MSG_NOT = "] not set to:";
+
 	for (const s of srcs) {
 		let descHTML = "", itemName = "", buffName = "";
 		let cure = "", frequency = "", price = "", effect = "", onset = "";
@@ -239,9 +242,6 @@ const _TEST = true;		//	test mode flag
 			const WRN_MSG_FREQ = `Could not locate any "Frequency" information from item description.`;
 			console.warn(_VERSION, WRN_MSG_FREQ );
 		}
-
-	const WRN_MSG_PROP = "itemData property [";
-	const WRN_MSG_NOT = "] not set to:";
 	
 	/*	POPULATE <savingThrowEffect> --------------------------------------- */
 		const savingThrowEffect = TXT_NOTE_START + frequency.html + "<br>" + cure.html + "</span>";
