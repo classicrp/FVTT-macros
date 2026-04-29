@@ -1,4 +1,4 @@
-const _VERSION = '0.5.28';
+const _VERSION = '0.5.29';
 const _SHOW = false;	// 	debug point flag
 const _VERBOSE = true;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -595,7 +595,7 @@ function getConditionBreakdown(htm, cond) {
 	return condition;
 }
 
-function getTiming(htm, txt) {
+function getTiming(htm, txt, part) {
 	// 	locate a condition, an effect or a damage type
 	//	one of { initial: 'i', secondary: 's', effect: 'e' }
 	regex = RegExp(txt);	// does not include 'i' for case indifference
@@ -607,14 +607,18 @@ debugger
 
 	const srcs = foundry.utils.parseHTML(htm);
 	for (let src of srcs) {
+		if (!src.nextSibling.textContent.includes(part)) continue;
 		let idx = src.nextSibling.textContent.toLowerCase().search(regex);
 		if (idx !== -1) {
 			//	<txt> is in this Node
 			let i = src.innerText.search(RGX_INI);
 			let s = src.innerText.search(RGX_SEC);
-			if (i !== -1 && src.innerText.toLowerCase().includes("initial")) {
+			if (typeof part === "undefined") {
+				part = txt;
+			}
+			if (i !== -1) { 		//}) && src.outerText.toLowerCase().includes("initial")) {
 				rslt = "i";
-			} else if (s !== -1 && src.innerText.toLowerCase().includes("secondary")) {
+			} else if (s !== -1) {	//} && src.outerText.toLowerCase().includes("secondary")) {
 				rslt = "s";
 			} else {
 				rslt = "e";
@@ -689,7 +693,7 @@ function getEffectBreakdown(txt, htm) {
 			amount: srcs[1],
 			timing: ""
 		}
-		rslt.timing = getTiming(htm, rslt.ability);
+		rslt.timing = getTiming(htm, rslt.ability, txt);
 	}
 	return rslt;
 }
@@ -797,6 +801,9 @@ function createChangesData(d, e, f) {
 				amount = effect.amount;
 			}
 			formula = "-" + amount;
+			
+debugger
+
 			if (f.duration !== 0 && effect.timing !== "i") {
 				//	cumulative damage kept
 				formula +=  " +" + dFlags;
@@ -925,6 +932,7 @@ function getNameFromData(n) {
 				return word.toLowerCase(); // lowercase first word: "poison"
 			}
 			// Capitalize the first letter of every other word
+debugger			
 			return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
 		})
 		.join(''); // Join them back together
