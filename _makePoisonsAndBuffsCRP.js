@@ -1,4 +1,4 @@
-const _VERSION = '0.5.31';
+const _VERSION = '0.5.32';
 const _SHOW = false;	// 	debug point flag
 const _VERBOSE = false;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -176,32 +176,20 @@ const _TEST = true;		//	test mode flag
 		const img = checkImage(itemData.img);
 		rslt = await foundry.utils.setProperty(itemData, ATTR_IMG, img);
 		if (!rslt) {
-			console.warn(_VERSION, "itemData property [", ATTR_IMG, "] not set to:", img);
+			console.warn(_VERSION, WRN_MSG_PROP, ATTR_IMG, WRN_MSG_NOT, img);
 		}
 		
 /*	SET <Unidentified Name> to "Vial of liquid" ---------------------------- */
 		rslt = await foundry.utils.setProperty(itemData, ATTR_UKN_NAME, TXT_UNK_NAME);
 		if (!rslt) {
-			console.warn(_VERSION, "itemData property [", ATTR_UKN_NAME, "] not set to:", TXT_UNK_NAME);
+			console.warn(_VERSION, WRN_MSG_PROP, ATTR_UKN_NAME, WRN_MSG_NOT, TXT_UNK_NAME);
 		}
 
 /*	SET <Superficial Details> to "Some liquid in a vial -------------------- */
 		rslt = await foundry.utils.setProperty(itemData, ATTR_UKN_DESC, TXT_UNK_DESC);
 		if (!rslt) {
-			console.warn(_VERSION, "itemData property [", ATTR_UKN_DESC, "] not set to:", TXT_UNK_DESC );
+			console.warn(_VERSION, WRN_MSG_PROP, ATTR_UKN_DESC, WRN_MSG_NOT, TXT_UNK_DESC );
 		}
-
-/*	SET	<equipped> to FALSE ------------------------------------------------ 
-		rslt = await foundry.utils.setProperty(itemData, ATTR_ITM_EQP, false);
-		if (!rslt) {
-			console.warn(_VERSION, "itemData property [", ATTR_ITM_EQP, "] not set to:", false );
-		}
-
-/*	SET <carried> to FALSE ------------------------------------------------- 
-		rslt = await foundry.utils.setProperty(itemData, ATTR_ITM_CARRIED, false);
-		if (!rslt) {
-			console.warn(_VERSION, "itemData property [", ATTR_ITM_CARRIED, "] not set to:", false );
-		} */
 
 /*
 	GET <Identified Properties>
@@ -232,7 +220,7 @@ const _TEST = true;		//	test mode flag
 	/*	SET updated <Identified Properties> -------------------------------- */
 		rslt = await foundry.utils.setProperty(itemData, ATTR_KNWN_DESC, descHTML);
 		if (!rslt) {
-			console.warn(_VERSION, "itemData property [", ATTR_KNWN_DESC, "] not set to:", descHTML );
+			console.warn(_VERSION, WRN_MSG_PROP, ATTR_KNWN_DESC, WRN_MSG_NOT, descHTML );
 		}
 
 		/*	UPDATE Parsed Array -------------------------------------------- */
@@ -252,26 +240,29 @@ const _TEST = true;		//	test mode flag
 			console.warn(_VERSION, WRN_MSG_FREQ );
 		}
 
+	const WRN_MSG_PROP = "itemData property [";
+	const WRN_MSG_NOT = "] not set to:";
+	
 	/*	POPULATE <savingThrowEffect> --------------------------------------- */
 		const savingThrowEffect = TXT_NOTE_START + frequency.html + "<br>" + cure.html + "</span>";
 
 	/*	SET <savingThrowEffect> -------------------------------------------- */
 		rslt = await foundry.utils.setProperty(itemData, ATTR_ITM_ACT_SAV_DESC, savingThrowEffect);
 		if (!rslt) {
-			console.warn(_VERSION, "itemData property [", ATTR_ITM_ACT_SAV_DESC, "] not set to:", savingThrowEffect );
+			console.warn(_VERSION, WRN_MSG_PROP, ATTR_ITM_ACT_SAV_DESC, WRN_MSG_NOT, savingThrowEffect );
 		}
 
 /*	CLEAR any pre-existing <actionEffect> ---------------------------------- */
 		rslt = await foundry.utils.setProperty(itemData, ATTR_ITM_ACT_NOTE_EFF, "");
 		if (!rslt) {
-			console.warn(_VERSION, "itemData property [", ATTR_ITM_ACT_NOTE_EFF, "] not set to:", " " );
+			console.warn(_VERSION, WRN_MSG_PROP, ATTR_ITM_ACT_NOTE_EFF, WRN_MSG_NOT, " " );
 		}
 
 /*	SET <system.actions.0.img> to <img> if they don't match ---------------- */
 		if (itemData.system.actions[0].img !== img) {
 			rslt = await foundry.utils.setProperty(itemData, ATTR_ITM_ACT_IMG, img);
 			if (!rslt) {
-				console.warn(_VERSION, "itemData property [", ATTR_ITM_ACT_IMG, "] not set to:", img );
+				console.warn(_VERSION, WRN_MSG_PROP, ATTR_ITM_ACT_IMG, WRN_MSG_NOT, img );
 			}
 			
 		}
@@ -279,25 +270,25 @@ const _TEST = true;		//	test mode flag
 /*	SET <identified> flag to FALSE ----------------------------------------- */
 		rslt = await foundry.utils.setProperty(itemData, ATTR_ITM_IDNT, false);
 		if (!rslt) {
-			console.warn(_VERSION, "itemData property [", ATTR_ITM_IDNT, "] not set to:", false );
+			console.warn(_VERSION, WRN_MSG_PROP, ATTR_ITM_IDNT, WRN_MSG_NOT, false );
 		}
 
 /*	SET destination <folder> within Compendium ----------------------------- */
 		rslt = await foundry.utils.setProperty(itemData, ATTR_FLDR, CRP_FLDR_ITM_PSN);
 		if (!rslt) {
-			console.warn(_VERSION, "itemData property [", ATTR_FLDR, "] not set to:", CRP_FLDR_ITM_PSN );
+			console.warn(_VERSION, WRN_MSG_PROP, ATTR_FLDR, WRN_MSG_NOT, CRP_FLDR_ITM_PSN );
 		}
 
 /*	SET <duplicateSource> to originating item UUID ------------------------- */
 		rslt = await foundry.utils.setProperty(itemData, ATTR_ITM_STS_DSRC, itemUuid);
 		if (!rslt) {
-			console.warn(_VERSION, "itemData property [", ATTR_ITM_STS_DSRC, "] not set to:", savingThrowEffect );
+			console.warn(_VERSION, WRN_MSG_PROP, ATTR_ITM_STS_DSRC, WRN_MSG_NOT, savingThrowEffect );
 		}
 
 /*	SET <pack> to proper Compendium ---------------------------------------- */
 		rslt = await foundry.utils.setProperty(itemData, ATTR_PACK, CRP_ITEMS);
 		if (!rslt) {
-			console.warn(_VERSION, "itemData property [", ATTR_PACK, "] not set to:", CRP_ITEMS );
+			console.warn(_VERSION, WRN_MSG_PROP, ATTR_PACK, WRN_MSG_NOT, CRP_ITEMS );
 		}
 
 /* 	SET <effectNote> = "<span style="font-size:1.2em"><b>Onset:</b>	+ onset 
@@ -326,11 +317,11 @@ const _TEST = true;		//	test mode flag
 		fltrd = extractFromHTML(descHTMLParsed, "Effect");
 		if (fltrd) {
 			effect = extractEffect(fltrd, initial, secondary);
-		/* 	CHECK if "Effect" has a "Condition" ---------------------------- */
-			if (!condition && hasCondition(fltrd, conditions)) {
+		}
+	/* 	CHECK if "Effect" has a "Condition" ---------------------------- */
+		if (hasCondition(fltrd, conditions)) {
 			/* 	EXTRACT "Condition" ---------------------------------------- */
-				condition = getConditionBreakdown(fltrd, conditions);
-			}
+			condition = getConditionBreakdown(fltrd, conditions);
 		}
 
 	/* 	POPULATE <effectNote> ---------------------------------------------- */
@@ -374,7 +365,7 @@ if (_SHOW) debugger
 		/* 	SET <effectNote> in <itemData> --------------------------------- */
 		rslt = await foundry.utils.setProperty(itemData, ATTR_EFF_NOTE, effectNote);
 		if (!rslt) {
-			console.warn(_VERSION, "itemData property [", ATTR_EFF_NOTE, "] not set to:", effectNote );
+			console.warn(_VERSION, WRN_MSG_PROP, ATTR_EFF_NOTE, WRN_MSG_NOT, effectNote );
 		}
 
 		/*	SET "Save" <save> to <itemData.system.actions.0.save> ----- */
@@ -559,6 +550,9 @@ function getConditionBreakdown(htm, cond) {
 	let condition = "";
 	const RGX_COND = /(\w+)\s+(?:for\s+)?(\d+d\d+|\d+)\s+(minutes|rounds|minute|round|turns|hours|weeks|rnds|mins|turn|trns|hour|days|week|rnd|min|trn|hrs|day|wks|hr|wk|r|m|t|h|d|w)/i;
 	const rslt = htm.match(RGX_COND);
+
+debugger
+
 	if (rslt) {
 		condition = {
 			effect: rslt[0],
@@ -604,6 +598,9 @@ function getTiming(htm, txt, part) {
 	let arr = [], rslt = "";
 	const srcs = foundry.utils.parseHTML(htm);
 	for (let src of srcs) {
+		if (typeof part === "undefined" ) {
+			part = txt;
+		}
 		if (!src.nextSibling.textContent.includes(part)) continue;
 		let idx = src.nextSibling.textContent.toLowerCase().search(regex);
 		if (idx !== -1) {
