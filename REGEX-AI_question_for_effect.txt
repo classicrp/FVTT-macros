@@ -4,10 +4,11 @@ Extract: "1d3 Dex damage" and "1 Con damage"
 where "Dex" and "Con" can be any word in {"Str", "Dex", "Con", "Int", "Wis", "Cha"}
 where 1 can be any number OR a die expression like 1d3
 where "damage" may or may not be present
+where "drain" may or may not be present
 where "," may or may not be present
 
 To extract the ability damage or drain expressions from your text, use the following regular expression:
-(\d+(?:d\d+)?)\s+(Str|Dex|Con|Int|Wis|Cha)(?:\s+damage)?
+(\d+(?:d\d+)?)\s+(Str|Dex|Con|Int|Wis|Cha)(?:\s+damage|\s+drain)?
 
 ⚙️ How it works
 
@@ -22,3 +23,5 @@ To extract the ability damage or drain expressions from your text, use the follo
 (Str|Dex|Con|Int|Wis|Cha): Captures any of your six specific attribute keywords.
 
 (?:\s+damage)?: Optionally matches the word "damage" if it follows the attribute, so it doesn't break the match. 
+
+REGEX = /(\d+(?:d\d+)?)\s+(Str|Dex|Con|Int|Wis|Cha)(?:\s+damage|\s+drain)?/i
