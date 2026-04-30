@@ -1,4 +1,4 @@
-const _VERSION = '0.5.35';
+const _VERSION = '0.5.36';
 const _SHOW = false;	// 	debug point flag
 const _VERBOSE = false;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -673,11 +673,15 @@ function getEffectBreakdown(txt, htm) {
 	const RGX_EFF_BRKD = /(?<number>\d+(?:d\d+)?)\s+(str|dex|con|int|wis|cha|acid|cold|electricity|fire|sonic|magic|force|negative|positive)(?:\s+damage|\s+drain)?/i;
 	let rslt = null;
 	const srcs = txt.match(RGX_EFF_BRKD);
+
+debugger
+
 	if (srcs) {
 		rslt = {
 			effect: txt,
 			ability: srcs[2].toLowerCase(),
 			amount: srcs[1],
+			drain: srcs[0].toLowerCase().includes("drain"),
 			timing: ""
 		}
 		rslt.timing = getTiming(htm, rslt.ability, txt);
@@ -1040,7 +1044,7 @@ function _buildConditionPortion(c) {
 			txtCond += TXT_COND_DUR + c.duration + "*" + c.mult + "]";
 		} else {
 			//	regular amount/time
-			txtCond += TXT_COND_DUR + c.duration + " " + c.units + "]";
+			txtCond += TXT_COND_DUR + c.duration + c.units + "]";
 		}
 		rslt = {
 			content: txtCond,
