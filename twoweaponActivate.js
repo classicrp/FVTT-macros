@@ -1,8 +1,9 @@
 // async function anonymous(speaker,actor,token,character,scope,item,shared,action,state,startTime
-const version = '0.6.5';
-const show = false;
-const twoweaponUse = 'Compendium.crp-contents.crp-macros.Macro.gOFO6ByH6vrt6g6e';
-const useAction = 'Compendium.crp-contents.crp-macros.Macro.VgwfQ1Hk2rC4NOXB';
+const _VERSION = '0.6.6';
+const _SHOW = false;
+const _TWOWEAPONUSE = 'Compendium.crp-contents.crp-macros.Macro.gOFO6ByH6vrt6g6e';
+const _USEACTION = 'Compendium.crp-contents.crp-macros.Macro.VgwfQ1Hk2rC4NOXB';
+
 let rslt = "";
 
 // see if we have the buff, if not then go get it from Compendium
@@ -30,7 +31,7 @@ if (action.tag === 'start') {
 		let srcs = actor.items.contents.find(f => f._id === w.id);	// find returns object, filter returns array
 		const local  = await setWeaponToHaveUTWMacro(actor, srcs);
 			//	returns updated copy of "local"
-//		if (show) debugger
+//		if (_SHOW) debugger
 		if (local.length !== 0) {
 			//	changes need to be made
 //			await srcs.update({ ['system.scriptCalls']: []});
@@ -41,7 +42,7 @@ if (action.tag === 'start') {
 		}
 	}
 		// 	make sure each weapon has the "useTwoWeapon" macro 1st, 
-		//	"useAction" macro second.
+		//	"_USEACTION" macro second.
 	
 	const maxcost = 2;
 	let dHtml = await buildHTML(maxcost, fWeap);
@@ -103,7 +104,7 @@ if (action.tag === 'start') {
 	//	update the buff to "target" the selected weapons
 	rslt = await buff.setFlag('ckl-roll-bonuses','target_weapon', response.weaponSelect);
 	rslt = await buff.setActive(true);
-	if (show) debugger
+	if (_SHOW) debugger
 	
 } else if (action.tag === 'stop') {
 	//	turn off the buff
@@ -124,14 +125,23 @@ function getOneHandedWeapons(_a) {
 	const weapTypes = "rwak, mwak, twak, save";
 	let skip = true;
 	let fWeap = [];
-	let weaps = deepClone(_a._itemTypes.weapon.filter(f => (f.system.actions.length !== 0 && f.system.hands === 1)).concat(_a._itemTypes.attack.filter(f => (f.system.actions.length !== 0 ))));
+	let weaps = deepClone(_a._itemTypes.weapon.filter(f => 
+		(f.system.actions.length !== 0 && f.system.hands === 1))
+		.concat(_a._itemTypes.attack.filter(f => (f.system.actions.length !== 0 ))))
+		.sort(function(a, b){
+			let x = a.name.toLowerCase();
+			let y = b.name.toLowerCase();
+			if (x < y) {return -1;}
+			if (x > y) {return 1;}
+			return 0;
+		});
 	const weap = {
 		id: "",
 		name: "",
 		type: ""
 	};
 	for (const w of weaps) {
-		let o = weap.constructor();
+		let o = new weap;	//.constructor();
 		if (w.actions.size !== 0) {
 			o.id = w._id;
 			o.name = w.name;
@@ -178,9 +188,9 @@ debugger
 	} else  {
 		//	see if it has the correct macros
 		for (const l of local) {
-			if (l.category === "use" && l.value === twoweaponUse) {
+			if (l.category === "use" && l.value === _TWOWEAPONUSE) {
 				skipone = true;
-			} else if (l.category === "use" && l.value === useAction) {
+			} else if (l.category === "use" && l.value === _USEACTION) {
 				skiptwo = true;
 			} else {
 				skip = false;					
@@ -189,19 +199,19 @@ debugger
 		skip = skip && skipone && skiptwo;
 	}
 	if (!skipone) {
-        //	get and add in to copy the "twoweaponUse" macro
-        let uTW = buildtwoweaponUse(twoweaponUse)
+        //	get and add in to copy the "_TWOWEAPONUSE" macro
+        let uTW = build_TWOWEAPONUSE(_TWOWEAPONUSE)
    		local.push(uTW);
     }
     if (!skiptwo) {
-        //	get and add in to copy the "useAction" macro
-  		let uA = buildUseAction(useAction);
+        //	get and add in to copy the "_USEACTION" macro
+  		let uA = buildUseAction(_USEACTION);
    		local.push(uA);
     }
 	if (skipone && skiptwo) {
 		local = [];
 	}
-	if (show) debugger
+	if (_SHOW) debugger
 	return local;
 }
 
@@ -259,13 +269,13 @@ function onRender(_event, app){
 }
 
 function buildUseAction(m) {
-/* ---- object definition for 'useAction' macro ---------------------------------------	*/
+/* ---- object definition for '_USEACTION' macro ---------------------------------------	*/
 	const id = randomID(8);
 	let o = {
 		category: "use",
 		hidden: false,
 		img: "modules/game-icons-net/whitebackground/movement-sensor.svg",
-		name: "useAction",
+		name: "_USEACTION",
 		type: "macro",
 		value: m,
 		_id: id
@@ -273,14 +283,14 @@ function buildUseAction(m) {
 	return o;
 }
 	
-function buildtwoweaponUse(m) {
-/* ----	object definition for 'twoweaponUse' macro ----------------------------------	*/
+function build_TWOWEAPONUSE(m) {
+/* ----	object definition for '_TWOWEAPONUSE' macro ----------------------------------	*/
 	const id = randomID(8);
 	let o = { 
 		category: "use",
 		hidden: false, 
 		img: "resource/35E/icons/feats/two-weapon-fighting.png", 
-		name: "twoweaponUse", 
+		name: "_TWOWEAPONUSE", 
 		type: "macro", 
 		value: m, 
 		_id: id
