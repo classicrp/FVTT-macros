@@ -1,4 +1,4 @@
-const _VERSION = '0.1.2';
+const _VERSION = '0.1.3';
 const _SHOW = true;
 
 /*	Changes chat output for an attack by removing all formula data that is
@@ -22,28 +22,45 @@ let srcs = await foundry.utils.getProperty(shared, ATTR_CHAT_ATZ_ATK);
 let sum = await foundry.utils.getProperty(srcs, ATTR_DMG_TOT);
 
 if (_SHOW) debugger
-for (let s of srcs[ATTR_CRIT_DMG][ATTR_ROLLS]) {
+let rolls = srcs[ATTR_CRIT_DMG][ATTR_ROLLS];
+const len = rolls.length;
+for (let i = 0; i < len; i++) {
+	let rolled = 0, length = 0;
+	let r = rolls[i];
 	//	Match <rolls> formula to only include die expression
-	let fltrd = s[ATTR_FRML].match(/\b(?:\d+d\d+|\d+)\[Roll\]/i);
+	let fltrd = r[ATTR_FRML].match(/\b(?:\d+d\d+|\d+)\[Roll\]/i);
 	if (isEmpty(fltrd)) {
-		//	Not a die roll, remove it
-		await srcs[ATTR_CRIT_DMG][ATTR_ROLLS].pop();
-		break;
+		await delete rolls[i];
+		continue;
 	}
 	//	Change <rolls> formula to that of dice rolls only
-	rslt = await foundry.utils.setProperty(s, ATTR_FRML, fltrd.at(0));
-	let length = s[ATTR_TRMS].length;
+	rslt = await foundry.utils.setProperty(r, ATTR_FRML, fltrd.at(0));
+	length = r[ATTR_TRMS].length;
 	for (let n = length; n !== 1; n--) {
 		//	remove all <terms> not a die roll
-		await s[ATTR_TRMS].pop();
+		await r[ATTR_TRMS].pop();
 	}
 	//	Set current <terms> total to include only dice rolls
-	const rolled = await foundry.utils.getProperty(s, ATTR_DIE_TOT);
-	rslt = await foundry.utils.setProperty(s, ATTR_TOT, rolled);
+	rolled = await foundry.utils.getProperty(r, ATTR_DIE_TOT);
+	rslt = await foundry.utils.setProperty(r, ATTR_TOT, rolled);
 	//	Increase <sum> with new total 
 	sum += rolled;
 }
+await fixRolls(rolls);
 rslt = await foundry.utils.setProperty(srcs, ATTR_CRITDMG_TOT, sum);
 rslt = await foundry.utils.setProperty(srcs, ATTR_CRITDMG_HLF, Math.floor(sum/2));
 
 return
+
+function fixRolls(r) {
+	let rslt = "";
+	let len = r.length;
+	rslt = r.sort();
+	for (let n = 0; n < len; n++) {
+		if (isEmpty(r[n])) {
+			// delete it
+			r.pop();
+		}
+	}
+	return
+}
