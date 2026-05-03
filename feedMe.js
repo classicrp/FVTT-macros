@@ -4,7 +4,7 @@
 	==========================================================================
 	<item> is the item object launching the request.
 	<state> determines if the buff is active
-	sets flags on <item> to show status
+	sets flags on <item> to _SHOW status
 	returns: void
 	==========================================================================
 	Logic:
@@ -28,17 +28,17 @@
 // Try that first.
 
 */
-const curVer = 'v1.0.9';
-const head = `Macro.feedMe(${curVer}): `;
+const _VERSION = 'v1.0.10';
+const _LEAD = `Macro.feedMe(${_VERSION}): `;
 let msg = '';
 let failure = false;
 const state = true;
-const show = true;
+const _SHOW = true;
 
 // Check that the serrated edge was used
 if (action.tag == 'havokGash') {
     	
-	if (show) debugger
+	if (_SHOW) debugger
     // check that there was a target selected
     if (shared.chatAttacks[0].targets !== null) {
         // there is a target
