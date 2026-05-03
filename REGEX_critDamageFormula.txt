@@ -12,3 +12,14 @@ The regular expression to match that specific string is
 (?:\d+d\d+|\d+) - Non-capturing group that matches either:\d+d\d+ - A dice expression (e.g., 1d6, 2d20)
 \d+ - A plain number (e.g., 4, 12)
 \[Roll\] - Matches the exact string [Roll] (brackets are escaped because they are special regex characters)
+
+SECOND Condition
+================
+Using REGEX
+From 'sizeRoll(1,12,4,3)[Roll] + (3)[Enhancement Bonus] + 7[Strength] + 2[Weapon Specialization]'
+Return '1d6[Roll]'
+Return 'sizeRoll(1,12,4,3)[Roll]'
+where 'sizeRoll' is literally 'sizeRoll'
+where all numbers between round brackets are needed
+where '1d6' may be a number or dice expression
+where '[Roll]' is literally '[Roll]'
