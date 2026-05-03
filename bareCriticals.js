@@ -1,5 +1,6 @@
-const _VERSION = '0.1.4';
+const _VERSION = '0.1.5';
 const _SHOW = false;
+const _HEAD = `Macro.bareCriticals(${_VERSION})`;
 
 /*	Changes chat output for an attack by removing all formula data that is
 	not strictly a Die (or Dice) roll(s).  Does not currently include extras
