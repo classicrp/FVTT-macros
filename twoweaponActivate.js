@@ -1,5 +1,6 @@
 // async function anonymous(speaker,actor,token,character,scope,item,shared,action,state,startTime
-const _VERSION = '0.6.7';
+const _VERSION = '0.6.8';
+const _HEAD = `Macro.twoWeaponActivate(${_VERSION})`;
 const _SHOW = true;
 const _TWOWEAPONUSE = 'Compendium.crp-contents.crp-macros.Macro.gOFO6ByH6vrt6g6e';
 const _USEACTION = 'Compendium.crp-contents.crp-macros.Macro.VgwfQ1Hk2rC4NOXB';
@@ -298,6 +299,7 @@ function build_TWOWEAPONUSE(m) {
 }
 
 function getWeaponForList() {
+//	returns a simple data object
 	return {
 		id: "",
 		name: "",
