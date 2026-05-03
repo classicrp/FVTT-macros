@@ -1,4 +1,4 @@
-const _VERSION = '0.0.8';
+const _VERSION = '0.0.9';
 const _SHOW = true;
 
 let buff = actor._itemTypes.buff.filter(b => b.name === 'Two Weapon Use').at(0);
@@ -18,9 +18,9 @@ if (used < 2) {
 //	await useAction(weapon);
 	await buff.setItemDictionaryFlag('used', used);
 	if (item.id === firstW) {
-		await.weapons[0].use();
+		await weapons[0].use();
 	} else {
-		await.weapons[1].use();
+		await weapons[1].use();
 	}
 	return true;
 } else {
