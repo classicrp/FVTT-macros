@@ -1,6 +1,6 @@
-const _VERSION = '1.3.0';
+const _VERSION = '1.3.1';
 const _HEAD = `Macro.selectorForBladeThirst(${_VERSION})`;
-const _SHOW = true;
+const _SHOW = false;
 const _VERBOSE = true;
 if (_VERBOSE) console.log(_HEAD);
 
@@ -105,6 +105,7 @@ if (_VERBOSE) console.log(_HEAD);
 
 	if (_VERBOSE) console.log("Buff Select Array:", fBuff);
 	wBuff = await deepClone(fBuff);
+	if (_SHOW) debugger
 
 	//	HTML BUILDING
 	let dHtml = "";
@@ -222,7 +223,6 @@ if (_VERBOSE) console.log(_HEAD);
 return
 
 function clearDictionary() {
-//debugger
 	if (_SHOW) debugger
     item.update({ ['system.flags.dictionary']: [] });  
 	shared.chatMessage = false;
@@ -230,12 +230,12 @@ function clearDictionary() {
 }
 
 function onRender(_event, app){
-//	debugger
+	if (_SHOW) debugger
 	if (typeof item === 'undefined') return;
 	const html = app.element;
 	const multi = html.querySelector("multi-select[name=buffSelect]")
 	multi.addEventListener("change", () => {
-//debugger
+		if (_SHOW) debugger
 		const values = multi.value;
 		const cost = values.reduce((acc,e)=> fBuff.find(i=> e.includes(i.id)).cost + acc, 0);
 		const newMax = maxcost - cost;
@@ -247,15 +247,15 @@ function onRender(_event, app){
 	});
 	const single = html.querySelector("select[name=weaponSelect]")
 	single.addEventListener("change", () => {
-//debugger
+		if (_SHOW) debugger
 		// now the sneaky bit.  change contents of multi-select from a change in the single-select.
 		const sValue = single.value;
 		const sType = fWeap.find(i=> i.id === sValue).type;	
 		// filter full list of buffs based on weapon select
-		fBuff = wBuff.filter(f => f.type.includes(sType));
+		fBuff = wBuff.filter(f => f.type.includes(sType.toString()));
 		// rebuild the needed html
  		const inner = fBuff.reduce((acc,e)=>{
-			if(e.type.includes(sType)) return acc+=`<option value="${e.id}">${e.name}</option>\n`;
+			if(e.type.includes(sType.toString())) return acc+=`<option value="${e.id}">${e.name}</option>\n`;
 			return acc;
 		},`<option value=""></option>`);
 		// set the multi-select to the filtered buffs
