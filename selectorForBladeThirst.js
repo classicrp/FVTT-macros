@@ -1,10 +1,10 @@
-const _VERSION = '1.3.1';
+const _VERSION = '1.3.2';
 const _HEAD = `Macro.selectorForBladeThirst(${_VERSION})`;
 const _SHOW = false;
-const _VERBOSE = true;
+const _VERBOSE = false;
 if (_VERBOSE) console.log(_HEAD);
 
-	if (action.tag === `btstop`) {
+	if (action.tag === 'btstop' || action.tag === 'btchange') {
 		//	Turn off any active "BladeThirst" buffs
 		const actBuffs = await actor._itemTypes.buff
 			.filter(b => (b.system.tags.includes('bladethirst') && b.system.active));
@@ -14,8 +14,9 @@ if (_VERBOSE) console.log(_HEAD);
 		}
 		await clearDictionary();
 		return;
-	} else if (action.tag === `btchange`) {
+	} else {
 		await clearDictionary();
+        console.warn(_HEAD, action.tag);
 	}
 
 	//	CLASS DATA
