@@ -1,5 +1,5 @@
-const _VERSION = '0.1.3';
-const _SHOW = true;
+const _VERSION = '0.1.4';
+const _SHOW = false;
 
 /*	Changes chat output for an attack by removing all formula data that is
 	not strictly a Die (or Dice) roll(s).  Does not currently include extras
@@ -14,7 +14,7 @@ const ATTR_CRIT_DMG = "critDamage";
 const ATTR_ROLLS = "rolls";
 const ATTR_FRML = "_formula";
 const ATTR_TRMS = "terms";
-const ATTR_DIE_TOT = "terms.0.results.0.result";
+const ATTR_TRMS_TOT = "terms.0.total";
 const ATTR_TOT = "_total";
 
 let rslt = null;
@@ -25,10 +25,18 @@ if (_SHOW) debugger
 let rolls = srcs[ATTR_CRIT_DMG][ATTR_ROLLS];
 const len = rolls.length;
 for (let i = 0; i < len; i++) {
-	let rolled = 0, length = 0;
+	let rolled = 0, length = 0, fltrd = null;
 	let r = rolls[i];
 	//	Match <rolls> formula to only include die expression
-	let fltrd = r[ATTR_FRML].match(/\b(?:\d+d\d+|\d+)\[Roll\]/i);
+	if (r[ATTR_FRML].includes('sizeRoll')) {
+		//	sizeRoll must be present, [Roll] is optional
+		const RGX_SIZRL = /\bsizeRoll\([\d,]+\)(?:\[Roll\])/i;
+		fltrd = r[ATTR_FRML].match(RGX_SIZRL);
+	} else {
+		//	[Roll] must be present for this capture
+		const RGX_NRML = /\b(?:\d+d\d+|\d+)\[Roll\]/i;
+		fltrd = r[ATTR_FRML].match(RGX_NRML);
+	}
 	if (isEmpty(fltrd)) {
 		await delete rolls[i];
 		continue;
@@ -41,7 +49,7 @@ for (let i = 0; i < len; i++) {
 		await r[ATTR_TRMS].pop();
 	}
 	//	Set current <terms> total to include only dice rolls
-	rolled = await foundry.utils.getProperty(r, ATTR_DIE_TOT);
+	rolled = await foundry.utils.getProperty(r, ATTR_TRMS_TOT);
 	rslt = await foundry.utils.setProperty(r, ATTR_TOT, rolled);
 	//	Increase <sum> with new total 
 	sum += rolled;
