@@ -1,4 +1,4 @@
-const _VERSION = '0.5.36';
+const _VERSION = '0.6.0';
 const _SHOW = false;	// 	debug point flag
 const _VERBOSE = false;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -373,6 +373,15 @@ if (_SHOW) debugger
 		const ATTR_ACT_SAV_DESC = "save.description";
 		const ATTR_ACT_SAV_TYP = "save.type";
 		const saveFromItemData = foundry.utils.getProperty( itemData, ATTR_ITM_ACT_SAV );
+		
+/*	NEW - Check the effects object and set <damageTypes> and <abilities> damage and/or drain
+			for the default <action>	*/
+		const ATTR_ACT_DMG_PRTS = "system.actions.0.damage.parts";
+	/*	EXAMPLE	*/
+		// 	system.actions.0.damage.parts.0.formula = "1d2[Str Drain]";
+		// 	system.actions.0.damage.parts.0.types.0 = "strength drain";
+		//	system.actions.0.damage.parts.1.formula = "1[Con Drain]";
+		//	system.actions.0.damage.parts.1.types.0 = "con drain";
 
 	/*	CREATE <actions> in <buff> ------------------------------------------ */
 		try {
@@ -679,12 +688,12 @@ debugger
 	if (srcs) {
 		rslt = {
 			effect: txt,
-			ability: srcs[2].toLowerCase(),
+			type: srcs[2].toLowerCase(),
 			amount: srcs[1],
 			drain: srcs[0].toLowerCase().includes("drain"),
 			timing: ""
 		}
-		rslt.timing = getTiming(htm, rslt.ability, txt);
+		rslt.timing = getTiming(htm, rslt.type, txt);
 	}
 	return rslt;
 }
@@ -784,9 +793,9 @@ function createChangesData(d, e, f) {
 	const TXT_CHG_SEC = "[Secondary]";
 
 	for (let effect of e) {
-		if (!damageTypes().find(f => f.key === effect.ability)) {
+		if (!damageTypes().find(f => f.key === effect.type)) {
 			let name = getNameFromData(d.name);
-			let dFlags = "@dFlags." + name + "." + effect.ability;
+			let dFlags = "@dFlags." + name + "." + effect.type;
 			let amount = "";
 			if (effect.amount.includes("d")) {
 				const n = effect.amount.charAt(0);
@@ -806,7 +815,7 @@ function createChangesData(d, e, f) {
 				_id: randomID(8),
 				formula: formula,
 				operator: "add",
-				target: effect.ability,
+				target: effect.type,
 				type: "untyped"
 			};
 			changes.push(change);
@@ -882,9 +891,9 @@ function createBuffData(htm, data, c, e, f) {
 	};
 	for (let effect of e) {
 		//	add in [effect.abilities]: 0,
-		if (isAbility(effect.ability)) {
+		if (isAbility(effect.type)) {
 			//	only add in actual "abilities"
-			buffData.system.flags.dictionary[effect.ability] = 0;
+			buffData.system.flags.dictionary[effect.type] = 0;
 		}
 	}
 	return buffData;
@@ -968,7 +977,7 @@ function populateEffectNote(o, i, e, s, c) {
 		if (e) {
 			for (let eff of e) {
 				if (eff.timing === "i") {
-					if (isAbility(eff.ability)) {
+					if (isAbility(eff.type)) {
 						ieTrip = true;
 						if (!effectNote.includes(TXT_INI_NOTE_APPLY)) {
 							effectNote += TXT_INI_NOTE_APPLY;
@@ -993,7 +1002,7 @@ function populateEffectNote(o, i, e, s, c) {
 		if (e) {
 			for (let eff of e) {
 				if (eff.timing === "s") {
-					if (isAbility(eff.ability)) {
+					if (isAbility(eff.type)) {
 						seTrip = true;
 						if (!effectNote.includes(TXT_SEC_NOTE_APPLY)) {
 							effectNote += TXT_SEC_NOTE_APPLY;
