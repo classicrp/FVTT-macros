@@ -1,7 +1,10 @@
-const version = '0.0.7';
+const _VERSION = '0.0.8';
+const _SHOW = true;
+
 let buff = actor._itemTypes.buff.filter(b => b.name === 'Two Weapon Use').at(0);
 if (!buff.isActive) return false;
-debugger
+
+if (_SHOW) debugger
 if (item.hasItemBooleanFlag('abort')) return;
 let used = Number(buff.getItemDictionaryFlag('used'));
 used++;
@@ -10,9 +13,15 @@ if (used < 2) {
 	firstW = weapons[0];
 	secondW = weapons[1];
 	//	get second attack weapon
-	weapon = (item.id === firstW) ? actor.items.contents.filter(a => a.id === secondW).at(0).name : actor.items.contents.filter(a => a.id === firstW).at(0).name;
-	await useAction(weapon);
+//	weapon = (item.id === firstW) ? actor.items.contents.filter(a => a.id === secondW).at(0).name : actor.items.contents.filter(a => a.id === firstW).at(0).name;
+	weapons =  await actor.items.contents.filter(a => a.id === secondW).at(0).join(actor.items.contents.filter(a => a.id === firstW).at(0));
+//	await useAction(weapon);
 	await buff.setItemDictionaryFlag('used', used);
+	if (item.id === firstW) {
+		await.weapons[0].use();
+	} else {
+		await.weapons[1].use();
+	}
 	return true;
 } else {
 	//	second weapon attack, rest count to zero	
