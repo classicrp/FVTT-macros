@@ -1,3 +1,11 @@
+const _VERSION = '0.1.0';
+const _SHOW = true;
+
+/*	Changes chat output for an attack by removing all formula data that is
+	not strictly a Die (or Dice) roll(s).  Does not currently include extras
+	from the [Roll Bonuses] module or anything other than default system.
+*/
+
 debugger
 const ATTR_CHAT_ATZ_ATK = "attacks.0.chatAttack";
 const ATTR_DMG_TOT = "damage.total";
@@ -14,6 +22,7 @@ let rslt = null;
 let srcs = await foundry.utils.getProperty(shared, ATTR_CHAT_ATZ_ATK);
 let sum = await foundry.utils.getProperty(srcs, ATTR_DMG_TOT);
 
+if (_SHOW) debugger
 for (let s of srcs[ATTR_CRIT_DMG][ATTR_ROLLS]) {
 	//	Match <rolls> formula to only include die expression
 	let fltrd = s[ATTR_FRML].match(/\b(?:\d+d\d+|\d+)\[Roll\]/i).at(0);
