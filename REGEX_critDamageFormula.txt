@@ -1,0 +1,14 @@
+Using REGEX
+From '1d6[Roll] + (1)[Enhancement Bonus] + 4[Dexterity]'
+Return '1d6[Roll]'
+where '1d6' may be a number or dice expression
+where '[Roll]' is literally '[Roll]'
+
+The regular expression to match that specific string is 
+\b(?:\d+d\d+|\d+)\[Roll\].
+
+🔍 Regex Breakdown
+\b - Word boundary ensures the match starts at the beginning of the number or dice expression
+(?:\d+d\d+|\d+) - Non-capturing group that matches either:\d+d\d+ - A dice expression (e.g., 1d6, 2d20)
+\d+ - A plain number (e.g., 4, 12)
+\[Roll\] - Matches the exact string [Roll] (brackets are escaped because they are special regex characters)
