@@ -1,6 +1,7 @@
 // async function anonymous(speaker,actor,token,character,scope,item,shared,action,state,startTime
-const _VERSION = '0.2.8';
+const _VERSION = '0.2.10';
 const _SHOW = true;
+const _HEAD = `Macro.twoWeaponUse(${_VERSION})`;
 
 let rslt = "";
 
@@ -16,9 +17,9 @@ if (_SHOW) debugger
 		const weapons = await actor.items.contents.filter(a => a.id === firstW).concat(actor.items.contents.filter(a => a.id === secondW));
 		await buff.setItemDictionaryFlag('used', used);
 		if (item.id === firstW) {
-			rslt = weapons[1].use();
+			rslt = await weapons[1].use();
 		} else {
-			rslt = weapons[0].use();
+			rslt = await weapons[0].use();
 		}
 //		await useAction(weapon);
 		return true;
