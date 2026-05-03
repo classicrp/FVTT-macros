@@ -1,6 +1,6 @@
 // async function anonymous(speaker,actor,token,character,scope,item,shared,action,state,startTime
-const _VERSION = '0.6.6';
-const _SHOW = false;
+const _VERSION = '0.6.7';
+const _SHOW = true;
 const _TWOWEAPONUSE = 'Compendium.crp-contents.crp-macros.Macro.gOFO6ByH6vrt6g6e';
 const _USEACTION = 'Compendium.crp-contents.crp-macros.Macro.VgwfQ1Hk2rC4NOXB';
 
@@ -95,6 +95,11 @@ if (action.tag === 'start') {
 		} else {
 			msg += `<em>${name}</em>.</span></p>`;
 		}
+		if (_SHOW) debugger
+		//	activate the default <actions> for the weapon
+//		rslt = await weap.actions.contents[0].use();
+		//	OR activate the weapon and let the user decide
+		rslt = await weap.use();
 	}
 	shared.chatAttacks[0].effectNotesHTML = await msg;
 //	if (typeof shared.__nasPendingAttackFootnotes !== 'undefined') {
@@ -135,13 +140,8 @@ function getOneHandedWeapons(_a) {
 			if (x > y) {return 1;}
 			return 0;
 		});
-	const weap = {
-		id: "",
-		name: "",
-		type: ""
-	};
 	for (const w of weaps) {
-		let o = new weap;	//.constructor();
+		let o = getWeaponForList();	//.constructor();
 		if (w.actions.size !== 0) {
 			o.id = w._id;
 			o.name = w.name;
@@ -181,7 +181,6 @@ function setWeaponToHaveUTWMacro(_a, s) {
 	[2]	local.length < 2, one macro missing -> update the macros
 	[3]	local.length === 2, verify the macros normally
 */
-debugger
 	let skipone = false, skiptwo = false;
 	if (local.length === 0) {
 		skip = false;
@@ -296,4 +295,12 @@ function build_TWOWEAPONUSE(m) {
 		_id: id
 	}
 	return o;
+}
+
+function getWeaponForList() {
+	return {
+		id: "",
+		name: "",
+		type: ""
+	};
 }
