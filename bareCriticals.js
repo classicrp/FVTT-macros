@@ -1,4 +1,4 @@
-const _VERSION = '0.1.0';
+const _VERSION = '0.1.1';
 const _SHOW = true;
 
 /*	Changes chat output for an attack by removing all formula data that is
@@ -6,7 +6,6 @@ const _SHOW = true;
 	from the [Roll Bonuses] module or anything other than default system.
 */
 
-debugger
 const ATTR_CHAT_ATZ_ATK = "attacks.0.chatAttack";
 const ATTR_DMG_TOT = "damage.total";
 const ATTR_CRITDMG_TOT = "critDamage.total";
