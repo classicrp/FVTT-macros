@@ -1,7 +1,7 @@
-const _VERSION = '1.2.9';
+const _VERSION = '1.3.0';
 const _HEAD = `Macro.selectorForBladeThirst(${_VERSION})`;
-const _SHOW = false;
-const _VERBOSE = false;
+const _SHOW = true;
+const _VERBOSE = true;
 if (_VERBOSE) console.log(_HEAD);
 
 	if (action.tag === `btstop`) {
@@ -29,7 +29,7 @@ if (_VERBOSE) console.log(_HEAD);
 	if (_VERBOSE) console.log("maxcost:", maxcost);
 
 	//	WEAPON DATA
-	const weapTypes = "rwak, mwak, twak, save";
+	const weapTypes = ["rwak", "mwak", "twak", "save"];
 	let skip = true;
 	const lastweap = await item.getItemDictionaryFlag('weapon');
 	let weaps = await deepClone(actor._itemTypes.weapon
@@ -43,23 +43,22 @@ if (_VERBOSE) console.log(_HEAD);
 		});
 
 	if (_VERBOSE) console.log('weaps:', weaps);
-	// if (_SHOW) debugger;
+	if (_SHOW) debugger;
 	let fWeap = [];
 	for (const w of weaps) {
-		let o = getWeaponForList();
+		let o = createWeaponObject();
 		if (w.actions.size !== 0) {
 			o.id = w._id;
 			o.name = w.name;
 			skip = true;
 			for (let i=0; i < w.system.actions.length; i++) {
 				if (weapTypes.includes(w.system.actions[i].actionType)) {
-					if (typeof o.type === "undefined") {
-						o.type = w.system.actions[i].actionType;
+					if (o.type === []) {
+						o.type.push(w.system.actions[i].actionType);
 					} else {
 						if (!o.type.includes(w.system.actions[i].actionType)) {
 							//  only want one copy of each
-							o.type = o.type.concat((i < w.system.actions.length) ? ", " : "");
-							o.type = o.type.concat(w.system.actions[i].actionType);
+							o.type.push(w.system.actions[i].actionType);
 						};
 					};
 					skip = skip && false;
@@ -74,30 +73,37 @@ if (_VERBOSE) console.log(_HEAD);
 		if (!skip) {
 			fWeap.push(o);
 		}
-	//	if (_VERBOSE) console.log("Weapon Select Array:", fWeap);
 	}
+	if (_VERBOSE) console.log("Weapon Select Array:", fWeap);
 
+	if (_SHOW) debugger
 	//	BUFF DATA
-	const buffs = deepClone(actor._itemTypes.buff.filter(b => (b.system.tags.includes('bladethirst') && b.system.level <= maxcost)));
-	const buff = {
-		id: "",
-		name: "",
-		feature: "",
-		cost: 0,
-		type: "",
-		tag: ""
-	};
+	const buffs = deepClone(actor._itemTypes.buff
+		.filter(b => (b.system.tags.includes('bladethirst') && b.system.level <= maxcost)))
+		.sort(function(a, b){
+			let x = a.name.toLowerCase();
+			let y = b.name.toLowerCase();
+			if (x < y) {return -1;}
+			if (x > y) {return 1;}
+			return 0;
+		});
+
 	let fBuff = [], wBuff = [];
 	for (const b of buffs) {
-		let o = buff.constructor();
+		let o = createBuffObject();
 		//  debugger;
 		o.id = b._id;
 		o.name = b.name.replace(' (bladethirst)', '');
 		o.feature = b.system.tags[0];
 		o.cost = b.system.level;
-		o.type = b.system.tags.filter(t => t.toLowerCase() !== 'bladethirst' && t.toString().length !== 1).toString();
+		let fltrd = b.system.tags.filter(t => t.toLowerCase() !== 'bladethirst' && t.toString().length !== 1);
+		for (let f of fltrd) {
+			o.type.push(f);
+		}
 		fBuff.push(o);
 	};
+
+	if (_VERBOSE) console.log("Buff Select Array:", fBuff);
 	wBuff = await deepClone(fBuff);
 
 	//	HTML BUILDING
@@ -185,7 +191,7 @@ if (_VERBOSE) console.log(_HEAD);
 	//	now do something with it!
 	//debugger
 	//console.log(response);
-	if (response === 'cancel') {
+	if (response === 'cancel' || isEmpty(response)) {
 		shared.reject = true;
 		return;
 	} 
@@ -271,11 +277,22 @@ function hasArchetype(actor, c, a) {
 	return mCl;	
 }
 
-function getWeaponForList() {
+function createWeaponObject() {
 //	returns a simple data object
 	return {
 		id: "",
 		name: "",
-		type: ""
+		type: []
+	};
+}
+
+function createBuffObject() {
+//	returns a simple data object
+	return {
+		id: "",
+		name: "",
+		feature: "",
+		cost: 0,
+		type: []
 	};
 }
