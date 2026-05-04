@@ -1,4 +1,4 @@
-const _VERSION = '0.1.7';
+const _VERSION = '0.1.8';
 const _SHOW = false;
 const _HEAD = `Macro.bareCriticals(${_VERSION})`;
 
@@ -16,10 +16,14 @@ const ATTR_ROLLS = "rolls";
 const ATTR_FRML = "_formula";
 const ATTR_TRMS = "terms";
 const ATTR_TRMS_TOT = "terms.0.total";
+const ATTR_TRMS_RSLT = "terms.0.results.0.result"
 const ATTR_TOT = "_total";
 const ATTR_OPT_TYP = "options.type";
 
 let rslt = null;
+let fltrd = null;
+let frml = "";
+let indices = [];
 let srcs = await foundry.utils.getProperty(shared, ATTR_CHAT_ATZ_ATK);
 let sum = await foundry.utils.getProperty(srcs, ATTR_DMG_TOT);
 
@@ -27,7 +31,9 @@ if (_SHOW) debugger
 let rolls = srcs[ATTR_CRIT_DMG][ATTR_ROLLS];
 const len = rolls.length;
 for (let i = 0; i < len; i++) {
-	let rolled = 0, length = 0, fltrd = [];
+	fltrd = [];
+	let rolled = 0;
+	let length = 0;
 	let r = rolls[i];
 	let type = foundry.utils.getProperty(r, ATTR_OPT_TYP);
 	if (type === "crit") {
@@ -85,42 +91,36 @@ function fixRolls(r) {
 
 function collectLikeRolls(a) {
 debugger
-	const len = a.length;
 	let sum = 0;
+	let current = null;
+	const len = a.length;
 	for (let i = 0; i < len; i++) {
 		//	step through each one and compare to next ones
-		let frml = a.at(i).formula;
-		let indicies = a.forEach(getMatchingIndices(frml));
-		let fltrd = a.filter(f => f.index === indicies);
+		current = a[i];
+		frml = current[ATTR_FRML];
+		indices = [];
+		fltrd = [];
+		rslt = a.forEach(getMatchingIndices);
 		let number = fltrd.length;
 		if (fltrd && number > 1) {
 			//	We have multiples of current index
 			if (frml.at(1) === "d") {
 				//	Die expression
-				frml.replace(frml.at(0), fltrd.length.toString());
+				rslt = frml.replace(frml.at(0), number.toString());
 			} else if (frml.includes("sizeRoll")) {
-				frml.replace(frml.at(9), fltrd.length.toString());
+				rslt = frml.replace(frml.at(9), number.toString());
 			}
-			a[0].terms[0].results[0].result
-		}
-		let rslt = checkOtherRolls(a, i, frml);
-		if (rslt !== i) {
-			//	this will be the matching index
+			
+			rslt = a.at(i);
 		}
 	}
 	return
 }
 
-function checkOtherRolls(a, idx, t) {
-	const len = 0;
-	return idx;
-}
-
-function getMatchingIndicies(frml, item, index) {
-debugger
-	let rslt = [];	
-	if (item.formula === frml) {
-		rslt.push(index);
+function getMatchingIndices(item, index) {
+	if (item[ATTR_FRML] === frml) {
+		indices.push(index);
+		fltrd.push(item);
 	}
-	return rslt;
+	return;
 }
