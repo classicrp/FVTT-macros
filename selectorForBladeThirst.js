@@ -1,4 +1,4 @@
-const _VERSION = '1.3.2';
+const _VERSION = '1.3.3';
 const _HEAD = `Macro.selectorForBladeThirst(${_VERSION})`;
 const _SHOW = false;
 const _VERBOSE = false;
@@ -193,7 +193,7 @@ if (_VERBOSE) console.log(_HEAD);
 	//	now do something with it!
 	//debugger
 	//console.log(response);
-	if (response === 'cancel' || isEmpty(response)) {
+	if (response === 'cancel' || foundry.utils.isEmpty(response)) {
 		shared.reject = true;
 		return;
 	} 
