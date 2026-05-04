@@ -1,4 +1,4 @@
-const _VERSION = '0.2.1';
+const _VERSION = '0.2.2';
 const _SHOW = false;
 const _HEAD = `Macro.bareCriticals(${_VERSION})`;
 
@@ -108,8 +108,9 @@ console.log("After:", rolls);
 	let critDmg = await getTermsAmount(rolls, ATTR_TOT);
 	let dmgTot = foundry.utils.getProperty(srcs, ATTR_DMG_TOT);
 	sum = critDmg + dmgTot;
+debugger
 	rslt = await foundry.utils.setProperty(srcs, ATTR_CRITDMG_TOT, sum);
-	rslt = await foundry.utils.setProperty(srcs, ATTR_CRITDMG_TOT, Math.floor(sum/2));
+//	rslt = await foundry.utils.setProperty(srcs, ATTR_CRITDMG_HLF, Math.floor(sum/2));
 return
 
 function fixRolls(r) {
@@ -204,8 +205,6 @@ function getMatchingIndices(item, index) {
 }
 
 function getTermsAmount(a, attr) {
-	
-debugger
 	let sum = 0;
 	for (const me of a) {
 		sum += foundry.utils.getProperty(me, attr);
