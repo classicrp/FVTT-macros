@@ -1,4 +1,4 @@
-const _VERSION = '0.1.9';
+const _VERSION = '0.2.0';
 const _SHOW = false;
 const _HEAD = `Macro.bareCriticals(${_VERSION})`;
 
@@ -76,6 +76,7 @@ await fixRolls(rolls);
 rslt = await foundry.utils.setProperty(srcs, ATTR_CRITDMG_TOT, sum);
 rslt = await foundry.utils.setProperty(srcs, ATTR_CRITDMG_HLF, Math.floor(sum/2));
 await collectLikeRolls(rolls);
+await fixRolls(rolls);
 
 return
 
