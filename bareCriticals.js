@@ -1,5 +1,5 @@
-const _VERSION = '0.1.6';
-const _SHOW = true;
+const _VERSION = '0.1.7';
+const _SHOW = false;
 const _HEAD = `Macro.bareCriticals(${_VERSION})`;
 
 /*	Changes chat output for an attack by removing all formula data that is
@@ -66,6 +66,7 @@ for (let i = 0; i < len; i++) {
 await fixRolls(rolls);
 rslt = await foundry.utils.setProperty(srcs, ATTR_CRITDMG_TOT, sum);
 rslt = await foundry.utils.setProperty(srcs, ATTR_CRITDMG_HLF, Math.floor(sum/2));
+await collectLikeRolls(rolls);
 
 return
 
@@ -80,4 +81,46 @@ function fixRolls(r) {
 		}
 	}
 	return
+}
+
+function collectLikeRolls(a) {
+debugger
+	const len = a.length;
+	let sum = 0;
+	for (let i = 0; i < len; i++) {
+		//	step through each one and compare to next ones
+		let frml = a.at(i).formula;
+		let indicies = a.forEach(getMatchingIndices(frml));
+		let fltrd = a.filter(f => f.index === indicies);
+		let number = fltrd.length;
+		if (fltrd && number > 1) {
+			//	We have multiples of current index
+			if (frml.at(1) === "d") {
+				//	Die expression
+				frml.replace(frml.at(0), fltrd.length.toString());
+			} else if (frml.includes("sizeRoll")) {
+				frml.replace(frml.at(9), fltrd.length.toString());
+			}
+			a[0].terms[0].results[0].result
+		}
+		let rslt = checkOtherRolls(a, i, frml);
+		if (rslt !== i) {
+			//	this will be the matching index
+		}
+	}
+	return
+}
+
+function checkOtherRolls(a, idx, t) {
+	const len = 0;
+	return idx;
+}
+
+function getMatchingIndicies(frml, item, index) {
+debugger
+	let rslt = [];	
+	if (item.formula === frml) {
+		rslt.push(index);
+	}
+	return rslt;
 }
