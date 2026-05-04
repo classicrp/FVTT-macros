@@ -1,4 +1,4 @@
-const _VERSION = '0.1.8';
+const _VERSION = '0.1.9';
 const _SHOW = false;
 const _HEAD = `Macro.bareCriticals(${_VERSION})`;
 
@@ -16,7 +16,10 @@ const ATTR_ROLLS = "rolls";
 const ATTR_FRML = "_formula";
 const ATTR_TRMS = "terms";
 const ATTR_TRMS_TOT = "terms.0.total";
-const ATTR_TRMS_RSLT = "terms.0.results.0.result"
+const ATTR_TRMS_RSLT = "terms.0.results.0.result";
+const ATTR_TRMS_NMBR = "terms.0._number";
+const ATTR_TRMS_OPT_FLV = "terms.0.options.flavor";
+const ATTR_TRMS_EXP = "terms.0.expression";
 const ATTR_TOT = "_total";
 const ATTR_OPT_TYP = "options.type";
 
@@ -97,6 +100,7 @@ debugger
 	for (let i = 0; i < len; i++) {
 		//	step through each one and compare to next ones
 		current = a[i];
+		if (isEmpty(current)) continue;
 		frml = current[ATTR_FRML];
 		indices = [];
 		fltrd = [];
@@ -104,14 +108,33 @@ debugger
 		let number = fltrd.length;
 		if (fltrd && number > 1) {
 			//	We have multiples of current index
+			let newFrml = "";
 			if (frml.at(1) === "d") {
 				//	Die expression
-				rslt = frml.replace(frml.at(0), number.toString());
+				newFrml = frml.replace(frml.at(0), number.toString());
 			} else if (frml.includes("sizeRoll")) {
-				rslt = frml.replace(frml.at(9), number.toString());
+				newFrml = frml.replace(frml.at(9), number.toString());
 			}
+			//	Set combined <._formula> on first index
+			rslt = foundry.utils.setProperty(current, ATTR_FRML, newFrml);
+			//	Set new <._number> of dice on first index
+			rslt = foundry.utils.setProperty(current, ATTR_TRMS_NMBR, number);			
+			//	Set combined dice rolls <.result> on first index
+			sum = getTermsAmount(fltrd, ATTR_TRMS_RSLT);
+			rslt = foundry.utils.setProperty(current, ATTR_TRMS_RSLT, sum);
+			//	Set combined dice rolls <._total> on first index
+			rslt = foundry.utils.setProperty(current, ATTR_TRMS_TOT, sum);
+			//	Set <.terms.0.options.expression> to new dice expression on first index
+			let flv = foundry.utils.getProperty(current, ATTR_TRMS_OPT_FLV);
+			let exprs = newFrml.replace(`[${flv}]`, "");
+			rslt = foundry.utils.setProperty(current, ATTR_TRMS_EXP, exprs);
+			//	Now delete the other copies
+			let tbr = indices.filter(f => f !== i);
+			for (let t of tbr) {
+				delete a[t];
+			}
+debugger
 			
-			rslt = a.at(i);
 		}
 	}
 	return
@@ -123,4 +146,12 @@ function getMatchingIndices(item, index) {
 		fltrd.push(item);
 	}
 	return;
+}
+
+function getTermsAmount(a, attr) {
+	let sum = 0;
+	for (const me of a) {
+		sum += foundry.utils.getProperty(me, attr);
+	}
+	return sum;
 }
