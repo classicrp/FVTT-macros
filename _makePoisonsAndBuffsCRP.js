@@ -1,4 +1,4 @@
-const _VERSION = '0.6.0';
+const _VERSION = '0.6.1';
 const _SHOW = false;	// 	debug point flag
 const _VERBOSE = false;	//	console.log() flag
 const _PAUSED = true;	//	pause at specified point flag
@@ -377,7 +377,8 @@ if (_SHOW) debugger
 /*	NEW - Check the effects object and set <damageTypes> and <abilities> damage and/or drain
 			for the default <action>	*/
 		const ATTR_ACT_DMG_PRTS = "system.actions.0.damage.parts";
-	/*	EXAMPLE	*/
+	/*	EXAMPLE	*/  
+		// 	Remember .capitalize() is what I thought .toTitleCase() would be!
 		// 	system.actions.0.damage.parts.0.formula = "1d2[Str Drain]";
 		// 	system.actions.0.damage.parts.0.types.0 = "strength drain";
 		//	system.actions.0.damage.parts.1.formula = "1[Con Drain]";
