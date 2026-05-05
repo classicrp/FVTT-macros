@@ -1,4 +1,4 @@
-const _VERSION = '0.2.3';
+const _VERSION = '0.2.4';
 const _VERBOSE = true;
 const _SHOW = true;
 const _HEAD = `Macro.bareCriticals(${_VERSION})`;
@@ -39,6 +39,7 @@ const _HEAD = `Macro.bareCriticals(${_VERSION})`;
 	let len;
 	let indices = [];
 	let sum;
+	let chkSZRL = false;
 	let srcs = await foundry.utils.getProperty(shared, ATTR_CHAT_ATK);
 	result = [];
 
@@ -54,21 +55,27 @@ const _HEAD = `Macro.bareCriticals(${_VERSION})`;
 			let length = 0;
 			let r = rolls[i];
 			type = foundry.utils.getProperty(r, ATTR_OPT_TYP);
+
 			if (type === "crit") {
 				//	"crit" line specifically, keep as is
-				await fltrd.push(r[ATTR_FRML]);
+				rslt = await fltrd.push(r[ATTR_FRML]);
+
 			} else {
 				//	Match <rolls> formula to only include die expression
+
 				if (r[ATTR_FRML].includes('sizeRoll')) {
 					//	sizeRoll must be present, [Roll] is optional
 					fltrd = r[ATTR_FRML].match(RGX_SZRL);
+					chkSZRL = true;
+
 				} else {
 					//	[Roll] must be present for this capture
 					fltrd = r[ATTR_FRML].match(RGX_ROLL);
+					chkSZRL = false;
 				}
 			}
 			if (foundry.utils.isEmpty(fltrd)) {
-				await delete rolls[i];
+				rslt = await delete rolls[i];
 				continue;
 			}
 
@@ -79,15 +86,9 @@ const _HEAD = `Macro.bareCriticals(${_VERSION})`;
 				//	remove all <terms> not a die roll
 				await r[ATTR_TRMS].pop();
 			}
-			//	Set current <terms> total to include only dice rolls
-//			rolled = await foundry.utils.getProperty(r, ATTR_TRMS_TOT);
-//			rslt = await foundry.utils.setProperty(r, ATTR_TOT, rolled);
-			//	Increase <sum> with new total 
-//			sum += rolled;
 		}
-//		rslt = await foundry.utils.setProperty(s, ATTR_CRITDMG_TOT, sum);
 		rslt = await collectLikeRolls(srcs, rolls);
-		if (rslt) {
+		if (rslt.length > 0) {
 		//	Only do this section if rolls were combined
 			//	await reroll(rolls);
 			if (_VERBOSE) console.log("Before:", rolls);
@@ -104,11 +105,11 @@ const _HEAD = `Macro.bareCriticals(${_VERSION})`;
 				).evaluate();
 				if (_VERBOSE) console.log("New Roll:", roll);
 				//	Update the whole roll
-				await delete rolls[n];
-				await rolls.push(roll);
+				rslt = await delete rolls[n];
+				rslt = await rolls.push(roll);
 			}
 			if (_VERBOSE) console.log("After:", rolls);
-			await fixRolls(rolls);
+			rslt = await fixRolls(rolls);
 			let critDmg = await getPropertySum(rolls, ATTR_TOT);
 			let dmgTot = foundry.utils.getProperty(s, ATTR_DMG_TOT);
 			sum = critDmg + dmgTot;
@@ -151,22 +152,19 @@ function collectLikeRolls(s, a) {
 			if (frml.at(1) === "d") {
 				//	Die expression
 				newFrml = frml.replace(frml.at(0), number.toString());
-
+				chkSZRL = false;
 			} else if (frml.includes("sizeRoll")) {
 				//	sizeRoll() expression
 				newFrml = frml.replace(frml.at(9), number.toString());
-			}
-			//	Turn off <._evaluated> flag
-//			rslt = foundry.utils.setProperty(current, ATTR_EVAL, false);
-
-			//	Turn off <.terms.0._evaluated> flag
-//			rslt = foundry.utils.setProperty(current, ATTR_TRMS_EVAL, false);
-			
+				chkSZRL = true;
+			}			
 			//	Set combined <._formula> on first index
 			rslt = foundry.utils.setProperty(current, ATTR_FRML, newFrml);
-
 			//	Set new <._number> of dice on first index
-			rslt = foundry.utils.setProperty(current, ATTR_TRMS_NMBR, number);			
+			if (!chkSZRL) {
+				// <
+				rslt = foundry.utils.setProperty(current, ATTR_TRMS_NMBR, number);
+			}
 /*
 			//	Set combined dice rolls <.result> on first index
 			sum = getPropertySum(fltrd, ATTR_TRMS_RSLT);
@@ -189,8 +187,8 @@ function collectLikeRolls(s, a) {
 					dataObject: current
 				})
 			);	//, rollData: current} ));
-			promise.push(current.evaluate({ formula: newFrml }));
 */			
+			promise.push(current.evaluate({ formula: newFrml }));
 			//	Now delete the other copies
 			let tbr = indices.filter(f => f !== i);
 			for (let t of tbr) {
