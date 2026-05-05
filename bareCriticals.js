@@ -1,4 +1,4 @@
-const _VERSION = '0.2.6';
+const _VERSION = '0.2.7';
 const _VERBOSE = true;
 const _SHOW = true;
 const _HEAD = `Macro.bareCriticals(${_VERSION})`;
@@ -14,7 +14,9 @@ const _HEAD = `Macro.bareCriticals(${_VERSION})`;
 	const ATTR_CRITDMG_HLF = "critDamage.half";
 	const ATTR_CRIT_DMG = "critDamage";
 	const ATTR_ROLLS = "rolls";
-	const ATTR_FRML = "_formula";
+	const ATTR_FRML = "_formula";	
+	// Switched to "formula" to see if changing it also changes "_formula".  Did not work other way around.
+	//	"formula" only has a _getter so is derived.
 	const ATTR_TRMS = "terms";
 	const ATTR_EVAL = "_evaluated";
 	const ATTR_TRMS_EVAL = "terms.0._evaluated";
@@ -44,7 +46,7 @@ const _HEAD = `Macro.bareCriticals(${_VERSION})`;
 	let srcs = await foundry.utils.getProperty(shared, ATTR_CHAT_ATK);
 	result = [];
 
-//	if (_SHOW) debugger
+	if (_SHOW) debugger
 	
 	for (let s of srcs) {
 		rolls = s[ATTR_CRIT_DMG][ATTR_ROLLS];
@@ -149,7 +151,7 @@ function collectLikeRolls(s, a) {
 		fltrd = [];
 		rslt = a.forEach(getMatchingIndices);
 		let number = fltrd.length;
-		if (fltrd && number > 1) {
+		if (fltrd && number !== 0) {
 			//	We have multiples of current index
 			let newFrml = "";
 			if (frml.at(1) === "d") {
@@ -220,6 +222,7 @@ function getPropertySum(a, attr) {
 
 function getDamageRollData(r) {
 	//	Grab the needed data from the current <roll>
+	if (_SHOW) debugger
 	return {
 		formula: foundry.utils.getProperty(r, ATTR_FRML),
 		options: foundry.utils.getProperty(r, ATTR_OPTS),
