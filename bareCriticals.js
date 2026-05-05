@@ -1,5 +1,6 @@
-const _VERSION = '0.2.2';
-const _SHOW = false;
+const _VERSION = '0.2.3';
+const _VERBOSE = true;
+const _SHOW = true;
 const _HEAD = `Macro.bareCriticals(${_VERSION})`;
 
 /*	Changes chat output for an attack by removing all formula data that is
@@ -7,7 +8,7 @@ const _HEAD = `Macro.bareCriticals(${_VERSION})`;
 	from the [Roll Bonuses] module or anything other than default system.
 */
 
-	const ATTR_CHAT_ATK = "attacks.0.chatAttack";
+	const ATTR_CHAT_ATK = "chatAttacks";
 	const ATTR_DMG_TOT = "damage.total";
 	const ATTR_CRITDMG_TOT = "critDamage.total";
 	const ATTR_CRITDMG_HLF = "critDamage.half";
@@ -27,90 +28,94 @@ const _HEAD = `Macro.bareCriticals(${_VERSION})`;
 	const ATTR_OPT_TYP = "options.type";
 	const ATTR_OPT_DMGTYP = "options.damageType";
 
-	let rslt = null
-	let fltrd = null;
-	let frml = "";
-	let type = "";
+	const RGX_SZRL = /(sizeRoll\(([^)]+)\)(?:\[([^\]]+)\])?)/i;
+	const RGX_ROLL = /\b(?:\d+d\d+|\d+)\[Roll\]/i;
+
+	let rslt;
+	let fltrd;
+	let frml;
+	let type;
+	let rolls;
+	let len;
 	let indices = [];
+	let sum;
 	let srcs = await foundry.utils.getProperty(shared, ATTR_CHAT_ATK);
-	let sum = await foundry.utils.getProperty(srcs, ATTR_DMG_TOT);
 	result = [];
 
 	if (_SHOW) debugger
-	let rolls = srcs[ATTR_CRIT_DMG][ATTR_ROLLS];
-	let len = rolls.length;
-	for (let i = 0; i < len; i++) {
-		fltrd = [];
-		let rolled = 0;
-		let length = 0;
-		let r = rolls[i];
-		type = foundry.utils.getProperty(r, ATTR_OPT_TYP);
-		if (type === "crit") {
-			//	"crit" line specifically, keep as is
-			await fltrd.push(r[ATTR_FRML]);
-		} else {
-			//	Match <rolls> formula to only include die expression
-			if (r[ATTR_FRML].includes('sizeRoll')) {
-				//	sizeRoll must be present, [Roll] is optional
-				const RGX_SIZRL = /\bsizeRoll\([\d,]+\)(?:\[Roll\])/i;
-				fltrd = r[ATTR_FRML].match(RGX_SIZRL);
+	
+	for (let s of srcs) {
+		rolls = s[ATTR_CRIT_DMG][ATTR_ROLLS];
+		len = rolls.length;
+		sum = await foundry.utils.getProperty(s, ATTR_DMG_TOT);
+		for (let i = 0; i < len; i++) {
+			fltrd = [];
+			let rolled = 0;
+			let length = 0;
+			let r = rolls[i];
+			type = foundry.utils.getProperty(r, ATTR_OPT_TYP);
+			if (type === "crit") {
+				//	"crit" line specifically, keep as is
+				await fltrd.push(r[ATTR_FRML]);
 			} else {
-				//	[Roll] must be present for this capture
-				const RGX_NRML = /\b(?:\d+d\d+|\d+)\[Roll\]/i;
-				fltrd = r[ATTR_FRML].match(RGX_NRML);
+				//	Match <rolls> formula to only include die expression
+				if (r[ATTR_FRML].includes('sizeRoll')) {
+					//	sizeRoll must be present, [Roll] is optional
+					fltrd = r[ATTR_FRML].match(RGX_SZRL);
+				} else {
+					//	[Roll] must be present for this capture
+					fltrd = r[ATTR_FRML].match(RGX_ROLL);
+				}
 			}
-		}
-		if (isEmpty(fltrd)) {
-			await delete rolls[i];
-			continue;
-		}
+			if (foundry.utils.isEmpty(fltrd)) {
+				await delete rolls[i];
+				continue;
+			}
 
-		//	Change <rolls> formula to that of dice rolls only
-		rslt = await foundry.utils.setProperty(r, ATTR_FRML, fltrd.at(0));
-		length = r[ATTR_TRMS].length;
-		for (let n = length; n !== 1; n--) {
-			//	remove all <terms> not a die roll
-			await r[ATTR_TRMS].pop();
-		}
-		//	Set current <terms> total to include only dice rolls
-		rolled = await foundry.utils.getProperty(r, ATTR_TRMS_TOT);
-		rslt = await foundry.utils.setProperty(r, ATTR_TOT, rolled);
-		//	Increase <sum> with new total 
-		sum += rolled;
-	}
-	rslt = await foundry.utils.setProperty(srcs, ATTR_CRITDMG_TOT, sum);
-	rslt = await foundry.utils.setProperty(srcs, ATTR_CRITDMG_HLF, Math.floor(sum/2));
-	await collectLikeRolls(shared, rolls);
-//	await reroll(rolls);
-console.log("Before:", rolls);
-	len = rolls.length;
-	for (let n = 0; n < len; n++) { 
-		if (foundry.utils.isEmpty(rolls[n])) continue;
-		//	For each roll get the <formula>
-		frml = foundry.utils.getProperty(rolls[n], ATTR_FRML);
-		type = foundry.utils.getProperty(rolls[n], ATTR_OPT_TYP);
-		let dmgtyp = foundry.utils.getProperty(rolls[n], ATTR_OPT_DMGTYP);
-		let data = foundry.utils.getProperty(rolls[n], ATTR_DATA);
-		//	Make a new roll based on changes
-		let roll = await new pf1.dice
-			.DamageRoll(frml, data, {
-				damageType: dmgtyp,
-				type: type
+			//	Change <rolls> formula to that of dice rolls only
+			rslt = await foundry.utils.setProperty(r, ATTR_FRML, fltrd.at(0));
+			length = r[ATTR_TRMS].length;
+			for (let n = length; n !== 1; n--) {
+				//	remove all <terms> not a die roll
+				await r[ATTR_TRMS].pop();
 			}
-		).evaluate();
-console.log("New Roll:", roll);
-		//	Update the whole roll
-		await delete rolls[n];
-		await rolls.push(roll);
+			//	Set current <terms> total to include only dice rolls
+//			rolled = await foundry.utils.getProperty(r, ATTR_TRMS_TOT);
+//			rslt = await foundry.utils.setProperty(r, ATTR_TOT, rolled);
+			//	Increase <sum> with new total 
+//			sum += rolled;
+		}
+//		rslt = await foundry.utils.setProperty(s, ATTR_CRITDMG_TOT, sum);
+		rslt = await collectLikeRolls(srcs, rolls);
+		if (rslt) {
+		//	Only do this section if rolls were combined
+			//	await reroll(rolls);
+			if (_VERBOSE) console.log("Before:", rolls);
+			len = rolls.length;
+			for (let n = 0; n < len; n++) { 
+				if (foundry.utils.isEmpty(rolls[n])) continue;
+				const drd = await getDamageRollData(rolls[n]);
+				//	Make a new roll based on changes
+				let roll = await new pf1.dice.DamageRoll(
+					drd.formula, 
+					drd.data,
+					drd.damageType,
+					drd.type
+				).evaluate();
+				if (_VERBOSE) console.log("New Roll:", roll);
+				//	Update the whole roll
+				await delete rolls[n];
+				await rolls.push(roll);
+			}
+			if (_VERBOSE) console.log("After:", rolls);
+			await fixRolls(rolls);
+			let critDmg = await getPropertySum(rolls, ATTR_TOT);
+			let dmgTot = foundry.utils.getProperty(s, ATTR_DMG_TOT);
+			sum = critDmg + dmgTot;
+			rslt = await foundry.utils.setProperty(s, ATTR_CRITDMG_TOT, sum);
+		}
+		if (_SHOW) debugger
 	}
-console.log("After:", rolls);
-	await fixRolls(rolls);
-	let critDmg = await getTermsAmount(rolls, ATTR_TOT);
-	let dmgTot = foundry.utils.getProperty(srcs, ATTR_DMG_TOT);
-	sum = critDmg + dmgTot;
-debugger
-	rslt = await foundry.utils.setProperty(srcs, ATTR_CRITDMG_TOT, sum);
-//	rslt = await foundry.utils.setProperty(srcs, ATTR_CRITDMG_HLF, Math.floor(sum/2));
 return
 
 function fixRolls(r) {
@@ -152,10 +157,10 @@ function collectLikeRolls(s, a) {
 				newFrml = frml.replace(frml.at(9), number.toString());
 			}
 			//	Turn off <._evaluated> flag
-			rslt = foundry.utils.setProperty(current, ATTR_EVAL, false);
+//			rslt = foundry.utils.setProperty(current, ATTR_EVAL, false);
 
 			//	Turn off <.terms.0._evaluated> flag
-			rslt = foundry.utils.setProperty(current, ATTR_TRMS_EVAL, false);
+//			rslt = foundry.utils.setProperty(current, ATTR_TRMS_EVAL, false);
 			
 			//	Set combined <._formula> on first index
 			rslt = foundry.utils.setProperty(current, ATTR_FRML, newFrml);
@@ -164,7 +169,7 @@ function collectLikeRolls(s, a) {
 			rslt = foundry.utils.setProperty(current, ATTR_TRMS_NMBR, number);			
 /*
 			//	Set combined dice rolls <.result> on first index
-			sum = getTermsAmount(fltrd, ATTR_TRMS_RSLT);
+			sum = getPropertySum(fltrd, ATTR_TRMS_RSLT);
 			rslt = foundry.utils.setProperty(current, ATTR_TRMS_RSLT, sum);
 			
 			
@@ -175,7 +180,7 @@ function collectLikeRolls(s, a) {
 			let flv = foundry.utils.getProperty(current, ATTR_TRMS_OPT_FLV);
 			let exprs = newFrml.replace(`[${flv}]`, "");
 			rslt = foundry.utils.setProperty(current, ATTR_TRMS_EXP, exprs);
-*/			
+			
 
 			//	Re-evaluate the current <roll>
 			result.push(pf1.dice.DamageRoll
@@ -185,7 +190,7 @@ function collectLikeRolls(s, a) {
 				})
 			);	//, rollData: current} ));
 			promise.push(current.evaluate({ formula: newFrml }));
-			
+*/			
 			//	Now delete the other copies
 			let tbr = indices.filter(f => f !== i);
 			for (let t of tbr) {
@@ -204,10 +209,20 @@ function getMatchingIndices(item, index) {
 	return;
 }
 
-function getTermsAmount(a, attr) {
+function getPropertySum(a, attr) {
 	let sum = 0;
 	for (const me of a) {
 		sum += foundry.utils.getProperty(me, attr);
 	}
 	return sum;
+}
+
+function getDamageRollData(r) {
+	//	Grab the needed data from the current <roll>
+	return {
+		formula: foundry.utils.getProperty(r, ATTR_FRML),
+		type: foundry.utils.getProperty(r, ATTR_OPT_TYP),
+		damageType: foundry.utils.getProperty(r, ATTR_OPT_DMGTYP),
+		data: foundry.utils.getProperty(r, ATTR_DATA)
+	}
 }
