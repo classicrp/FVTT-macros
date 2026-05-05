@@ -1,4 +1,4 @@
-const _VERSION = '0.2.4';
+const _VERSION = '0.2.5';
 const _VERBOSE = true;
 const _SHOW = true;
 const _HEAD = `Macro.bareCriticals(${_VERSION})`;
@@ -25,6 +25,7 @@ const _HEAD = `Macro.bareCriticals(${_VERSION})`;
 	const ATTR_TRMS_EXP = "terms.0.expression";
 	const ATTR_TOT = "_total";
 	const ATTR_DATA = "data";
+	const ATTR_OPTS = "options";
 	const ATTR_OPT_TYP = "options.type";
 	const ATTR_OPT_DMGTYP = "options.damageType";
 
@@ -43,7 +44,7 @@ const _HEAD = `Macro.bareCriticals(${_VERSION})`;
 	let srcs = await foundry.utils.getProperty(shared, ATTR_CHAT_ATK);
 	result = [];
 
-	if (_SHOW) debugger
+//	if (_SHOW) debugger
 	
 	for (let s of srcs) {
 		rolls = s[ATTR_CRIT_DMG][ATTR_ROLLS];
@@ -97,11 +98,11 @@ const _HEAD = `Macro.bareCriticals(${_VERSION})`;
 				if (foundry.utils.isEmpty(rolls[n])) continue;
 				const drd = await getDamageRollData(rolls[n]);
 				//	Make a new roll based on changes
+				//	.DamageRoll(e, t, s) where e = formula, t = data, s = options
 				let roll = await new pf1.dice.DamageRoll(
 					drd.formula, 
-					drd.data,
-					drd.damageType,
-					drd.type
+					drd.options,
+					drd.data
 				).evaluate();
 				if (_VERBOSE) console.log("New Roll:", roll);
 				//	Update the whole roll
@@ -114,6 +115,7 @@ const _HEAD = `Macro.bareCriticals(${_VERSION})`;
 			let dmgTot = foundry.utils.getProperty(s, ATTR_DMG_TOT);
 			sum = critDmg + dmgTot;
 			rslt = await foundry.utils.setProperty(s, ATTR_CRITDMG_TOT, sum);
+			if (_VERBOSE) console.log("Fixed and Updated:", rolls);
 		}
 		if (_SHOW) debugger
 	}
@@ -137,6 +139,7 @@ function collectLikeRolls(s, a) {
 	let current = null;
 	let promise = [];
 	const len = a.length;
+	if (_SHOW) debugger
 	for (let i = 0; i < len; i++) {
 		//	step through each one and compare to next ones
 		current = a[i];
@@ -219,8 +222,7 @@ function getDamageRollData(r) {
 	//	Grab the needed data from the current <roll>
 	return {
 		formula: foundry.utils.getProperty(r, ATTR_FRML),
-		type: foundry.utils.getProperty(r, ATTR_OPT_TYP),
-		damageType: foundry.utils.getProperty(r, ATTR_OPT_DMGTYP),
+		options: foundry.utils.getProperty(r, ATTR_OPTS),
 		data: foundry.utils.getProperty(r, ATTR_DATA)
 	}
 }
