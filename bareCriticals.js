@@ -1,4 +1,4 @@
-const _VERSION = '0.2.5';
+const _VERSION = '0.2.6';
 const _VERBOSE = true;
 const _SHOW = true;
 const _HEAD = `Macro.bareCriticals(${_VERSION})`;
@@ -101,8 +101,8 @@ const _HEAD = `Macro.bareCriticals(${_VERSION})`;
 				//	.DamageRoll(e, t, s) where e = formula, t = data, s = options
 				let roll = await new pf1.dice.DamageRoll(
 					drd.formula, 
-					drd.options,
-					drd.data
+					drd.data,
+					drd.options
 				).evaluate();
 				if (_VERBOSE) console.log("New Roll:", roll);
 				//	Update the whole roll
