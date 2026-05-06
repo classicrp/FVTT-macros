@@ -1,0 +1,8 @@
+Using REGEX
+From "sizeRoll(1,10,4,4)[Lightning] + 5[Strength]"
+Return "sizeRoll(1,10,4,4)[Lightning]" and "(1,10,4,4)" and "Lightning"
+where "sizeRoll" is always present
+where "(1,10,4,4)" all data between the curved brackets are wanted
+where "[Lightning]" may or may not be present and can be any word within the square brackets and is only after "sizeRoll(1,10,4,4)"
+
+REGEX = /(sizeRoll\(([^)]+)\)(?:\[([^\]]+)\])?)/i;
