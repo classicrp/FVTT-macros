@@ -46,15 +46,16 @@ debugger
 	let mflag = false;
 
 	//	get the name of the spellbook we want
-	const spBook = item.system.flags.dictionary.spellbook;	//	i.e. 'primary'
+	const spBook = item.getItemDictionaryFlag('spellbook');
+	//system.flags.dictionary.spellbook;	//	i.e. 'primary'
 	const spBookTag = item.system.tag;
 	//	grab all spellbook spells on actor
 	let spells = await actor._itemTypes.spell;
 	//	filter spells to only include the requested spellbook
 	let mspells = await spells.filter(s => ( s.system.spellbook === spBook ))
 		.sort(function(a, b){
-			let x = a.level;
-			let y = b.level;
+			let x = a.system.level;
+			let y = b.system.level;
 			if (x < y) {return -1;}
 			if (x > y) {return 1;}
 			return 0;
@@ -113,7 +114,7 @@ debugger
 /*	let dot = "", char = "#";
 	let j = 0, numSpells = mspells.length;
 */		
-	mspells.forEach( s => {
+	for (const s of mspells) {
 /*		let percentage = Math.floor((j + 1) / numSpells) * 100;
 		dot = `( ${char.repeat(percentage)} )`;   
 		ui.notifications.info(`Please wait while updating ${actor.name}'s spellbook<br/>${dot}!`);
@@ -123,16 +124,16 @@ debugger
 		// s = s.toObject();
 		spells = true;
 		const mitem = actor.items.get(s._id);
-
 		if (level !== s.system.level) {
 			level = s.system.level;
 		}
+		if (level > 0) break;
 
 /* ---- See if the 'spellPoints' object is present ------------------------------------	*/
 		//	see if spell points are correctly set on spell
-		if (typeof s.system.spellPoints === "undefined") {
+		if (foundry.utils.isEmpty(s.system.spellPoints)) {
 			//	they are not, add them to the spell
-			if (typeof s.spellPoints !== "undefined") {
+			if (!foundry.utils.isEmpty(s.spellPoints)) {
 				//	another failed iteration that needed cleaning
 				delete s.spellPoints;
 			}
@@ -142,7 +143,7 @@ debugger
 		}
 
 /* ---- See that any manual entry for 'spellPoint' cost is removed --------------------	*/			
-		if ((s.system.spellPoints.cost !== "") && (s.system.spellPoints.cost !== null)) {
+		if ((s.system.spellPoints.cost !== "") && (!foundry.utils.isEmpty(s.system.spellPoints.cost))) {
 			//  an older copy of the spell, update to use default SP costs
 			s.system.spellPoints.cost = "";
 			mitem.update({ ["system.spellPoints.cost"]: "" });
@@ -150,8 +151,9 @@ debugger
 		}
 
 /* ---- Update dictionary item 'castings' to be zero ----------------------------------	*/
-		let mcast = s.system.flags.dictionary.castings;
-		if (typeof mcast === "undefined") {	
+//		let mcast = s.system.flags.dictionary.castings;
+		let mcast = s.getItemDictionaryFlag('castings');
+		if (foundry.utils.isEmpty(mcast)) {	
 			// 	add in the dictionary name/value pair
 			mcast = 1;
 			console.log(`${actor.name} (${s.system.spellbook}): ${s.name}[${level}] added dictionary item 'castings'.`);
@@ -162,8 +164,9 @@ debugger
 			}
 		}
 		if (mcast > 0) {
-			s.system.flags.dictionary.castings = 0;
-			mitem.update({ [attr]: 0 });
+			s.setItemDictionaryFlag('castings', 0);
+//			s.system.flags.dictionary.castings = 0;
+//			mitem.update({ [attr]: 0 });
 		}
 			
 /* ---- Now check that the proper macros are present ----------------------------------	*/
@@ -180,18 +183,18 @@ debugger
 			console.log( `${actor.name} (${s.system.spellbook}): ${s.name}[${level}] cleaned up leftovers.` );
 		}
 */		
-//debugger;
+debugger
 
 		let detect = ""
 		let mscripts = s.system.scriptCalls;
 
-		if (typeof mscripts === "undefined") {
+		if (foundry.utils.isEmpty(mscripts)) {
 		//	we have no collection present
 	
-			const scriptCalls = [];
-			mitem.update({ ["system.scriptCalls"]: scriptCalls });
-			console.log( `${actor.name} (${s.system.spellbook}): ${s.name}[${level}] repaired 'system.scriptCalls'.` );
-			mscripts = s.system.scriptCalls;
+//			const scriptCalls = [];
+//			mitem.update({ ["system.scriptCalls"]: scriptCalls });
+//			console.log( `${actor.name} (${s.system.spellbook}): ${s.name}[${level}] repaired 'system.scriptCalls'.` );
+//			mscripts = s.system.scriptCalls;
 			
 			if (mscripts === []) {
 			//	we have no macros present
@@ -200,14 +203,14 @@ debugger
 				detect = "nothing";
 				fOne = true;
 				myObj1._id = foundry.utils.randomID(8);
-				mscripts.push( myObj1 );
+				mitem.scriptCalls.set(myObj1._id, myObj1);
 				console.log( `${actor.name} (${s.system.spellbook}): ${s.name}[${level}] added macro 'useAction'.` );
 							
 			//	add second macro
 				detect = "nothing";
 				fTwo = true;
 				myObj2._id = foundry.utils.randomID(8);
-				mscripts.push( myObj2 );
+				mitem.scriptCalls.set(myObj2._id, myObj2);
 				console.log( `${actor.name} (${s.system.spellbook}): ${s.name}[${level}] added macro 'updateCastings'.` );
 			}
 
@@ -249,7 +252,7 @@ debugger
 				detect = "nothing";
 				fOne = true;
 				myObj1._id = foundry.utils.randomID(8);
-				mscripts.push(myObj1);
+				mitem.scriptCalls.set(myObj1._id, myObj1);
 				console.log( `${actor.name} (${s.system.spellbook}): ${s.name}[${level}] added macro 'useAction'.` );
 				
 			}
@@ -259,15 +262,15 @@ debugger
 				detect = "nothing";
 				fTwo = true;
 				myObj2._id = foundry.utils.randomID(8);
-				mscripts.push(myObj2);
+				mitem.scriptCalls.set(myObj2._id, myObj2);
 				console.log( `${actor.name} (${s.system.spellbook}): ${s.name}[${level}] added macro 'updateCastings'.` );
 			}
 		} 
 		
 		// if (fZero || fOne || fTwo) {
 		//	update whole .scriptCalls
-		mitem.update({ ["system.scriptCalls"]: mscripts });
-		console.log( `${actor.name} (${s.system.spellbook}): ${s.name}[${level}] updated.` );
+//		mitem.update({ ["system.scriptCalls"]: mscripts });
+//		console.log( `${actor.name} (${s.system.spellbook}): ${s.name}[${level}] updated.` );
 		// }	
 		detect = "";	
 
@@ -278,7 +281,7 @@ debugger
 		
 //debugger;
 
-	});
+	}
 
 /* ---- Catch up on made Promises -----------------------------------------------------
 	promiseStack.forEach( async p => {
@@ -302,7 +305,7 @@ debugger
 /* ---- Helper functions --------------------------------------------------------------	*/
 
 	function hasMalformed(a) {
-		var result = false;
+		let result = false;
 		for (i = 0; i < a.length; i++) {
 			if (typeof a[i] === "undefined") {
 				result = true;
@@ -314,8 +317,8 @@ debugger
 	}
 
 	function fixMalformed(a, c) {
-		var result = false;
-		var col = "";
+		let result = false;
+		let col = "";
 		for (i = 0; i < a.length; i++) {
 			if (typeof a[i] === "undefined") {
 			//	an empty set that repairArray() will fix
@@ -364,7 +367,7 @@ debugger
 	}
 	
 	function removeDuplicate(a, t) {
-		var result = false;
+		let result = false;
 		for (i = 0; i < numDuplicates(a, t); i++) {
 			delete a[i];
 			result = true;
