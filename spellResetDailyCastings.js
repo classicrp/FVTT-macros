@@ -122,12 +122,14 @@
 */
 /* ---- Grab each spell in the spellbook ----------------------------------------------	*/
 		// s = s.toObject();
+debugger
 		spells = true;
-		const mitem = actor.items.get(s._id);
+		let mitem = actor.items.get(s._id);
 		if (level !== s.system.level) {
 			level = s.system.level;
 		}
-		if (level > 0) break;
+//		if (level !== 2) continue;
+		console.warn("Now working on Level:", level, s.name);
 
 /* ---- See if the 'spellPoints' object is present ------------------------------------	*/
 		//	see if spell points are correctly set on spell
@@ -189,8 +191,16 @@
 
 		if (foundry.utils.isEmpty(mscripts)) {
 		//	we have no collection present
-debugger
-			const scriptCalls = [];
+//debugger
+		/*	CREATE <scriptCalls> in <buff> ------------------------------------- */
+			try {
+				await pf1.components.ItemScriptCall.create(createScriptCallData(), { parent: mitem })
+			} catch (error) {
+				console.error(error,"Spell:", s.name, ", Action: [ createScriptCallData() ], failed to write.");
+				return;
+			}
+			
+/*			const scriptCalls = [];
 			mitem.update({ ["system.scriptCalls"]: scriptCalls });
 			console.log( `${actor.name} (${s.system.spellbook}): ${s.name}[${level}] repaired 'system.scriptCalls'.` );
 			mscripts = s.system.scriptCalls;
@@ -212,17 +222,17 @@ debugger
 				await mitem.scriptCalls.set(myObj2._id, myObj2);
 				console.log( `${actor.name} (${s.system.spellbook}): ${s.name}[${level}] added macro 'updateCastings'.` );
 			}
-
+*/
 		} else {
 
 			fZero = hasMalformed( mscripts );
 			if (fZero) {
 			//	remove the malformed macros
 				detect = "malformed";
-				while ( hasMalformed( mscripts )) {
-					fixMalformed( mscripts, s.scriptCalls );
-					repairArray( mscripts );
-				}
+//				while ( hasMalformed( mscripts )) {
+//					fixMalformed( mscripts, s.scriptCalls );
+//					repairArray( mscripts );
+//				}
 				console.log( `${actor.name} (${s.system.spellbook}): ${s.name}[${level}] fixed ${detect} macro(s).` );
 			} 
 			
@@ -246,24 +256,26 @@ debugger
 				}
 			}
 
-			if (!hasMatch( mscripts, m1n )) {
-			//	first macro missing
-				detect = "nothing";
-				fOne = true;
-				myObj1._id = foundry.utils.randomID(8);
-				mitem.scriptCalls.set(myObj1._id, myObj1);
-				console.log( `${actor.name} (${s.system.spellbook}): ${s.name}[${level}] added macro 'useAction'.` );
-				
-			}
-			
-			if (!hasMatch( mscripts, m2n )) {
-			//	second macro missing
-				detect = "nothing";
-				fTwo = true;
-				myObj2._id = foundry.utils.randomID(8);
-				mitem.scriptCalls.set(myObj2._id, myObj2);
-				console.log( `${actor.name} (${s.system.spellbook}): ${s.name}[${level}] added macro 'updateCastings'.` );
-			}
+			await pf1.components.ItemScriptCall.create(createScriptCallData(), { parent: mitem })
+//			if (!hasMatch( mscripts, m1n )) {
+//			//	first macro missing
+//				detect = "nothing";
+//				fOne = true;
+//				myObj1._id = foundry.utils.randomID(8);
+//				await mitem.scriptCalls.set(myObj1._id, myObj1);
+//				console.log( `${actor.name} (${s.system.spellbook}): ${s.name}[${level}] added macro 'useAction'.` );
+//				
+//			}
+//			
+//			if (!hasMatch( mscripts, m2n )) {
+//			//	second macro missing
+//				detect = "nothing";
+//				fTwo = true;
+//				myObj2._id = foundry.utils.randomID(8);
+//				await mitem.scriptCalls.set(myObj2._id, myObj2);
+//				console.log( `${actor.name} (${s.system.spellbook}): ${s.name}[${level}] added macro 'updateCastings'.` );
+//			}
+//			*/
 		} 
 		
 		// if (fZero || fOne || fTwo) {
@@ -395,3 +407,27 @@ debugger
 		}
 		return;
 	}
+	
+function createScriptCallData() {
+	/* object definitions for 'useAction' and 'updateCastings' macros -- */
+	return [
+		{
+			category: "use",
+			hidden: false,
+			img: "modules/game-icons-net-font/svg/movement-sensor.svg",
+			name: "useAction",
+			type: "macro",
+			value: "Compendium.crp-contents.crp-macros.Macro.VgwfQ1Hk2rC4NOXB",
+			_id: foundry.utils.randomID(8)
+		},
+		{
+			category: "postUse", 		// watch capital on 'U'
+			hidden: false, 
+			img: "icons/magic/life/crosses-trio-red.webp", 
+			name: "updateCastings", 
+			type: "macro", 
+			value: "Compendium.crp-contents.crp-macros.Macro.A1aJCl2GXOksQe8J", 
+			_id: foundry.utils.randomID(8)
+		}
+	];
+}
