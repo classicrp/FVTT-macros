@@ -1,0 +1,20 @@
+Using REGEX
+from "Craft (armour)"
+replace with "Armour"
+where "Craft" is one of (Craft|Knowledge|Perform|Profession)
+where "armour" can be any word or words between the brackets
+
+Regex Pattern and ReplacementUse the following regular expression configuration to dynamically replace the specified skills while preserving the bracketed text.
+
+Find Pattern: \b(Craft|Knowledge|Perform|Profession)\s*\(([^)]+)\)
+Replace Pattern: $1
+
+How It Works
+\b prevents matching partial words.
+(Craft|Knowledge|Perform|Profession) matches the specific target skill and saves it as Group 1 
+($1).\s* handles any accidental spaces before the opening bracket
+.\( matches the literal opening parenthesis
+.([^)]+) captures any characters/words inside the brackets as Group 2 
+($2).\) matches the literal closing parenthesis.$1 replaces the entire matched string with just the skill name from Group 1, removing the brackets and their contents completely.
+
+REGEX = /\b(Craft|Knowledge|Perform|Profession)\s*\(([^)]+)\)/
