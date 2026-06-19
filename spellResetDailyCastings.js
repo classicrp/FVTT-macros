@@ -39,7 +39,7 @@
         return;
     }
 
-debugger
+//debugger
 
 	let attr = "system.flags.dictionary.castings";
 	let level = -1;
@@ -183,34 +183,33 @@ debugger
 			console.log( `${actor.name} (${s.system.spellbook}): ${s.name}[${level}] cleaned up leftovers.` );
 		}
 */		
-debugger
 
 		let detect = ""
 		let mscripts = s.system.scriptCalls;
 
 		if (foundry.utils.isEmpty(mscripts)) {
 		//	we have no collection present
-	
-//			const scriptCalls = [];
-//			mitem.update({ ["system.scriptCalls"]: scriptCalls });
-//			console.log( `${actor.name} (${s.system.spellbook}): ${s.name}[${level}] repaired 'system.scriptCalls'.` );
-//			mscripts = s.system.scriptCalls;
+debugger
+			const scriptCalls = [];
+			mitem.update({ ["system.scriptCalls"]: scriptCalls });
+			console.log( `${actor.name} (${s.system.spellbook}): ${s.name}[${level}] repaired 'system.scriptCalls'.` );
+			mscripts = s.system.scriptCalls;
 			
-			if (mscripts === []) {
+			if (foundry.utils.isEmpty(mscripts)) {
 			//	we have no macros present
 
 			//	add first macro
 				detect = "nothing";
 				fOne = true;
 				myObj1._id = foundry.utils.randomID(8);
-				mitem.scriptCalls.set(myObj1._id, myObj1);
+				await mitem.scriptCalls.set(myObj1._id, myObj1);
 				console.log( `${actor.name} (${s.system.spellbook}): ${s.name}[${level}] added macro 'useAction'.` );
 							
 			//	add second macro
 				detect = "nothing";
 				fTwo = true;
 				myObj2._id = foundry.utils.randomID(8);
-				mitem.scriptCalls.set(myObj2._id, myObj2);
+				await mitem.scriptCalls.set(myObj2._id, myObj2);
 				console.log( `${actor.name} (${s.system.spellbook}): ${s.name}[${level}] added macro 'updateCastings'.` );
 			}
 
