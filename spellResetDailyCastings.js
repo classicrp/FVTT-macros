@@ -83,28 +83,6 @@
 		cost: ""
 	}
 
-/* ---- object definition for 'useAction' macro ---------------------------------------	*/
-	let myObj1 = {
-		category: "use",
-		hidden: false,
-		img: "modules/game-icons-net-font/svg/movement-sensor.svg",
-		name: "useAction",
-		type: "macro",
-		value: "Compendium.crp-contents.crp-macros.Macro.VgwfQ1Hk2rC4NOXB",
-		_id: ""
-	}
-	
-/* ----	object definition for 'updateCastings' macro ----------------------------------	*/
-	let myObj2 = { 
-		category: "postUse", 		// watch capital on 'U'
-		hidden: false, 
-		img: "icons/magic/life/crosses-trio-red.webp", 
-		name: "updateCastings", 
-		type: "macro", 
-		value: "Compendium.crp-contents.crp-macros.Macro.A1aJCl2GXOksQe8J", 
-		_id: "" 
-	}
-
 	let fZero = false, fOne = false, fTwo = false;
 	const m1n = myObj1.name, m2n = myObj2.name;
 	const lm = await fromUuid(_deleteScriptCalls);
