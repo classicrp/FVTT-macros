@@ -2,7 +2,7 @@
 	==========================================================================
 	Macro Title: Spell Reset Daily Castings Macro for Foundry VTT PF1e
 	Author: classicrp, @raydenx (https://github.com/classicrp)
-	Last updated 2025-12-01
+	Last updated 2026-06-19
 	License: MIT License
 	
 	Description:
@@ -51,7 +51,7 @@
 	const spBookTag = item.system.tag;
 	//	grab all spellbook spells on actor
 	let spells = await actor._itemTypes.spell;
-	//	filter spells to only include the requested spellbook
+	//	filter spells to only include the requested spellbook, sort be level
 	let mspells = await spells.filter(s => ( s.system.spellbook === spBook ))
 		.sort(function(a, b){
 			let x = a.system.level;
@@ -61,7 +61,8 @@
 			return 0;
 		});
 
-	let spBookSrc = await actor.system.attributes.spells.spellbooks[spBook].spellPoints.maxFormula;	//	i.e. '@resources.witchSpells.value'
+	let spBookSrc = await actor.system.attributes.spells.spellbooks[spBook].spellPoints.maxFormula;	
+	//	i.e. '@resources.witchSpells.value'
 
 /* ---- Check that we are using correct amount for spellbook total spell points -------	*/
 	if (spBookSrc.includes(".value")) {
@@ -153,7 +154,6 @@ debugger
 		}
 
 /* ---- Update dictionary item 'castings' to be zero ----------------------------------	*/
-//		let mcast = s.system.flags.dictionary.castings;
 		let mcast = s.getItemDictionaryFlag('castings');
 		if (foundry.utils.isEmpty(mcast)) {	
 			// 	add in the dictionary name/value pair
@@ -167,8 +167,6 @@ debugger
 		}
 		if (mcast > 0) {
 			s.setItemDictionaryFlag('castings', 0);
-//			s.system.flags.dictionary.castings = 0;
-//			mitem.update({ [attr]: 0 });
 		}
 			
 /* ---- Now check that the proper macros are present ----------------------------------	*/
@@ -199,43 +197,18 @@ debugger
 				console.error(error,"Spell:", s.name, ", Action: [ createScriptCallData() ], failed to write.");
 				return;
 			}
-			
-/*			const scriptCalls = [];
-			mitem.update({ ["system.scriptCalls"]: scriptCalls });
-			console.log( `${actor.name} (${s.system.spellbook}): ${s.name}[${level}] repaired 'system.scriptCalls'.` );
-			mscripts = s.system.scriptCalls;
-			
-			if (foundry.utils.isEmpty(mscripts)) {
-			//	we have no macros present
 
-			//	add first macro
-				detect = "nothing";
-				fOne = true;
-				myObj1._id = foundry.utils.randomID(8);
-				await mitem.scriptCalls.set(myObj1._id, myObj1);
-				console.log( `${actor.name} (${s.system.spellbook}): ${s.name}[${level}] added macro 'useAction'.` );
-							
-			//	add second macro
-				detect = "nothing";
-				fTwo = true;
-				myObj2._id = foundry.utils.randomID(8);
-				await mitem.scriptCalls.set(myObj2._id, myObj2);
-				console.log( `${actor.name} (${s.system.spellbook}): ${s.name}[${level}] added macro 'updateCastings'.` );
-			}
-*/
 		} else {
-
 			fZero = hasMalformed( mscripts );
 			if (fZero) {
 			//	remove the malformed macros
 				detect = "malformed";
-//				while ( hasMalformed( mscripts )) {
-//					fixMalformed( mscripts, s.scriptCalls );
-//					repairArray( mscripts );
-//				}
+				while ( hasMalformed( mscripts )) {
+					fixMalformed( mscripts, s.scriptCalls );
+					repairArray( mscripts );
+				}
 				console.log( `${actor.name} (${s.system.spellbook}): ${s.name}[${level}] fixed ${detect} macro(s).` );
 			} 
-			
 			fOne = hasDuplicate( mscripts, m1n );
 			if (fOne) {
 			//	remove the duplicate macro at current "index", restart the search
@@ -245,7 +218,6 @@ debugger
 					console.log( `${actor.name} (${s.system.spellbook}): ${s.name}[${level}] removed ${detect} macro.` );
 				}
 			}
-			
 			fTwo = hasDuplicate( mscripts, m2n );				
 			if (fTwo) {
 			//	remove the duplicate macro at current "index", restart the search
@@ -255,7 +227,6 @@ debugger
 					console.log( `${actor.name} (${s.system.spellbook}): ${s.name}[${level}] removed ${detect} macro.` );
 				}
 			}
-
 			await pf1.components.ItemScriptCall.create(createScriptCallData(), { parent: mitem })
 //			if (!hasMatch( mscripts, m1n )) {
 //			//	first macro missing
@@ -277,21 +248,17 @@ debugger
 //			}
 //			*/
 		} 
-		
 		// if (fZero || fOne || fTwo) {
 		//	update whole .scriptCalls
 //		mitem.update({ ["system.scriptCalls"]: mscripts });
 //		console.log( `${actor.name} (${s.system.spellbook}): ${s.name}[${level}] updated.` );
 		// }	
-		detect = "";	
-
+		detect = "";
 		//	reset the variables for macro checking
 		fZero = false;
 		fOne = false;
 		fTwo = false;
-		
 //debugger;
-
 	}
 
 /* ---- Catch up on made Promises -----------------------------------------------------
@@ -374,7 +341,8 @@ debugger
 
 	function hasDuplicate(a, t) {
 		const cDuplicates = a.filter(s => (s.name === t));
-		return (cDuplicates.length > 1);
+		const result = (cDuplicates.length > 1);
+		return result;
 	}
 	
 	function removeDuplicate(a, t) {
@@ -388,18 +356,19 @@ debugger
 
 	function numDuplicates(a, t) {
 		const cDuplicates = a.filter(s => (s.name === t));
-		return (cDuplicates.length - 1);
+		const result = (cDuplicates.length - 1);
+		return result;
 	}
 	
 	function hasMatch(a, t) {
 		const cMatch = a.filter(s => (s.name === t));
-		return (cMatch.length === 1);
+		const result = (cMatch.length === 1);
+		return result;
 	}
 	
 	function repairArray(a) {
 	//	take the original array and shuffle it around until our object is last
 	//	this should re-index the array
-		a.sort();
 		a.reverse();
 		a.sort();
 		if (hasMalformed(a)) {
@@ -410,7 +379,7 @@ debugger
 	
 function createScriptCallData() {
 	/* object definitions for 'useAction' and 'updateCastings' macros -- */
-	return [
+	const result = [
 		{
 			category: "use",
 			hidden: false,
@@ -430,4 +399,5 @@ function createScriptCallData() {
 			_id: foundry.utils.randomID(8)
 		}
 	];
+	return result;
 }
