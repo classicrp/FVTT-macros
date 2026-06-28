@@ -2,7 +2,7 @@
 	==========================================================================
 	Macro Title: Spell Reset Daily Castings Macro for Foundry VTT PF1e
 	Author: classicrp, @raydenx (https://github.com/classicrp)
-	Last updated 2026-06-19
+	Last updated 2026-06-28
 	License: MIT License
 	
 	Description:
@@ -26,20 +26,18 @@
 	==========================================================================
 */
 
-	const curVer = "v2.28";
+	const curVer = "v0.3.0";
 	const head = `Macro.spellResetDailyCastings(${curVer}): `;
 	let msg = "";
 	let failState = false;
 	const _deleteScriptCalls = "Compendium.crp-contents.crp-macros.Macro.WzUVhGzEHPyY67kY";
 	//"WzUVhGzEHPyY67kY";
 //	=========================================================
-
+//debugger
     if (action.tag !== "reset") {
         //  not this macro
         return;
     }
-
-//debugger
 
 	let attr = "system.flags.dictionary.castings";
 	let level = -1;
@@ -84,7 +82,8 @@
 	}
 
 	let fZero = false, fOne = false, fTwo = false;
-	const m1n = myObj1.name, m2n = myObj2.name;
+	const m1n = "useAction";
+	const m2n = "updateCastings";
 	const lm = await fromUuid(_deleteScriptCalls);
 	//game.macros.get(_deleteScriptCalls);
 
@@ -265,7 +264,7 @@ debugger
 		for (i = 0; i < a.length; i++) {
 			if (typeof a[i] === "undefined") {
 				result = true;
-			} else if (a[i].name === "") {
+			} else if (a[i].value === "") {
 				result = true;
 			}
 		};

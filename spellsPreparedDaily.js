@@ -40,14 +40,14 @@ debugger
 	const spBook = await item.getItemDictionaryFlag('spellbook');	//	i.e. 'primary'
 	const spBookSrc = await deepClone(actor.system.attributes.spells.spellbooks[spBook]);
     const splbkD = createSpellbookObject();
-	splbkD.spellclass = spBookSrc.name.toLowerCase();
+	splbkD.spellclass = spBookSrc.name.toLowerCase() || item.system.associations.classes[0].toLowerCase();
 	splbkD.cl = spBookSrc.cl.total;
 	splbkD.preptype = spBookSrc.spellPreparationMode;
     splbkD.type = spBookSrc.casterType;
 	splbkD.ability = spBookSrc.ability;
 	splbkD.ablMod = actor.system.abilities[splbkD.ability].mod;
     splbkD.kind = spBookSrc.kind;
-    splbkD.domain = spBookSrc.domain;
+    splbkD.domain = spBookSrc.domainSlotValue;
 
 	const spBookAttr = `system.attributes.spells.spellbooks.${spBook}`;
 
@@ -98,6 +98,8 @@ debugger
 	//	make sure we have the latest formula, and use charges set to zero.
     await item.update({ ["system.uses.maxFormula"]: bForm });
 	await item.update({ ["system.uses.autoDeductChargesCost"]: 0 });
+	await actor.update({ [`system.attributes.spells.spellbooks.${spBook}.spellPoints.maxFormula`]: bForm });
+	
 	//	now update the actual spell book page
 	
 	console.log(bSP + " " + bForm);
@@ -175,6 +177,7 @@ function getSpellinfoData(splbkD) {
     }
 	domain.spellclass = splbkD.spellclass;
 	domain.name = temp;
+debugger
 	if (splbkD.domain) {
 		for (let i = 0; i <= maxSpellLvl; i++) {
 			if (i === 0) {
