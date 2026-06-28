@@ -35,12 +35,12 @@
     }
 
 //	build array from school in Dictionary
-
+debugger
 	//	get the name of the spellbook we want
 	const spBook = await item.getItemDictionaryFlag('spellbook');	//	i.e. 'primary'
 	const spBookSrc = await deepClone(actor.system.attributes.spells.spellbooks[spBook]);
     const splbkD = createSpellbookObject();
-	splbkD.spellclass = spBookSrc.class;
+	splbkD.spellclass = spBookSrc.name.toLowerCase();
 	splbkD.cl = spBookSrc.cl.total;
 	splbkD.preptype = spBookSrc.spellPreparationMode;
     splbkD.type = spBookSrc.casterType;
@@ -54,12 +54,12 @@
     const spellinfo = getSpellinfoData(splbkD);
 
 	const bSpells = await spBookSrc.spells;
-	let bOut = [], i = 0, zAllot = 0, bPoints = 0, bSlots = 0, zCasts = 0;
+	let bOut = [], i = 0, zAllot = 0, splPoints = 0, bSlots = 0, zCasts = 0;
 	let sDomain = "", sHTML = "", sOut = "", temp = null;
 	let tBase = 0, tBonus = 0, tDomain = 0;
 
     const sTitle = "Prepare spells per level (incl. Spell Points)";
-	const msgHeader = `<div class="pf1 chat-card item-card" data-actor-id="${actor.name}" data-item-id="${item.name}" data-action-id="${item.actions?.name}"><header class="card-header type-color type-spell flexrow"><h3 class="item-name" style="text-align: center; text-shadow: 2px 2px 2px black; font-weight: normal; font-size: 1.5em;">${sTitle}</h3></header></div><div><section style="font-size:0.9em">`;
+	const msgHeader = `<div class="pf1 chat-card item-card" data-actor-id="${actor.name}" data-item-id="${item.name}" data-action-id="${item.actions?.name}"><header class="card-header type-color type-spell flexrow"><h3 class="item-name" style="text-align: center; text-shadow: 2px 2px 2px black; font-weight: normal; font-size: 1.5em;">${sTitle}</h3></header></div><div><section style="font-size:0.95em">`;
 	let msgMid = `<ul class="dice-rolls">`;
 		
 	for ( i = 0; i < 10; i++ ) {
@@ -69,7 +69,6 @@
             tBonus = spellinfo[1].prepPD[i] || 0;
             tDomain = spellinfo[2].prepPD[i] || 0;
             zCasts = spellinfo[3].prepPD[i] || 0;
-            bPoints = zCasts * i;
             sOut = `${i}: ${tBase}[Base] + ${tBonus}[Bonus] + ${tDomain}[${spellinfo[2].name}] = ${zCasts}[Total].`;
 			bOut.push(sOut);
 			msgMid += `<li>${sOut}</li>`;
@@ -78,7 +77,6 @@
 			//	active spell slots
                 let zC = spellinfo[3].prepPD[i] || 0;
 				zCasts += (zC * i);
-				bPoints += (zCasts);
                 let tBa = spellinfo[0].prepPD[i] || 0;
 				tBase += (tBa * i);
                 let tBo = spellinfo[1].prepPD[i] || 0;
@@ -86,15 +84,15 @@
                 let tDo = spellinfo[2].prepPD[i] || 0;
 				tDomain += (tDo * i);
                 sDomain = spellinfo[2].name;
+				splPoints += zCasts;
 				sOut = `${i}: ${tBa}[Base] + ${tBo}[Bonus] + ${tDo}[${sDomain}] = ${zC}[Total].`;
 				bOut.push(sOut);
 				msgMid += `<li>${sOut}</li>`;		
 		}
 		console.log("Breakdown:", bOut[i]);
 	}
-debugger
     let msgBot = `</ul>`;
-	const bSP = `Spell Points: ${bPoints}, Max spell level: ${spellinfo.length}.`;
+	const bSP = `Spell Points: ${zCasts}, Max spell level: ${spellinfo.length}.`;
 	const bForm = `${tBase}[Base] + ${tBonus}[Bonus] + ${tDomain}[${sDomain}]`;
 	msgBot += msgBot + `<p>${bSP}</p><p>${bForm}</p></section></div>`;
 	//	make sure we have the latest formula, and use charges set to zero.
