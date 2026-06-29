@@ -55,7 +55,7 @@
 		//	we are only concerned about spell points so just ignore at-will
 			const curVal = item.getItemDictionaryFlag("castings");
 			if (curVal) newVal = Number(curVal);
-			if(mItem.sl == 0) {
+			if(mItem.system.level === 0) {
 			//  no extra charge  
 			} else {
 			//	increase castings
@@ -73,17 +73,19 @@ function updateSpellPoints(tsource, actor, shared) {
 	//	second part, update spell points to proper source.
 	//	grab the spell point formula for this spellbook
 debugger
-	let maxSP = tsource.maxFormula;				
-	maxSP = maxSP.toLowerCase();
-	maxSP = maxSP.replace("@resources.", "");
-	maxSP = maxSP.replace("spells.max", "");
-	maxSP = maxSP.at(0).toUpperCase() + maxSP.substring(1, (maxSP.length)) + " Spells";
+	let maxSP = tsource.maxFormula.toLowerCase();
+	if (maxSP.includes("@resources.")) maxSP = maxSP.replace("@resources.", "");
+	if (maxSP.includes("spells.value")) maxSP = maxSP.replace("spells.value", "");
+	if (maxSP.includes("spells.max")) maxSP = maxSP.replace("spells.max", "");
+	maxSP = maxSP.capitalize() + " Spells";
 	//	put it into a useable string so we can grab the 'parent' feature
 	let spSource = actor._itemTypes.feat.getName(maxSP);	// i.e.	'Witch Spells'
-	const spCost = shared.totalChargeCost;
-	const srcValue = spSource.system.uses.value;
-	attr = "system.uses.value";
-	const spNewVal = srcValue - spCost;
-	actor.items.get(spSource.id).update({ [attr]: spNewVal });
-	spSource = null;	//	flush
+	if (spSource) {
+		const spCost = shared.totalChargeCost;
+		const srcValue = spSource.system.uses.value;
+		attr = "system.uses.value";
+		const spNewVal = srcValue - spCost;
+		actor.items.get(spSource.id).update({ [attr]: spNewVal });
+		spSource = null;	//	flush		
+	}
 }
