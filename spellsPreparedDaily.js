@@ -2,7 +2,7 @@
 	==========================================================================
 	Macro Title: Spells Prepared Daily Macro for Foundry VTT PF1e
 	Author: classicrp, @raydenx (https://github.com/classicrp)
-	Last updated 2026-06-27
+	Last updated 2026-07-10
 	License: MIT License
 	
 	Description:
@@ -21,7 +21,7 @@
 	Returns: output to chat.
 	==========================================================================
 */
-	const curVer = "v0.3.0";
+	const curVer = "v0.3.1";
 	const head = `Macro.spellsPreparedDaily(${curVer}): `;
 	let msg = "";
 	let failState = false;
@@ -33,6 +33,13 @@
         //  not this macro
         return;
     }
+
+/*	item.name will include the 'class' to look for */
+
+//	All feats associated with 'class'
+//	srcs = act._itemTypes.feat
+		.filter(f => f.system.associations.classes.length !== 0)
+		.filter(f => f.system.associations.classes.includes('Bard'))
 
 //	build array from school in Dictionary
 debugger
