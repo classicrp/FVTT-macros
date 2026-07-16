@@ -13,7 +13,7 @@ let failure = false;
 
 //  location of the Roll Data Changes formula
 const itmAttr = "system.changes.0.formula";
-let itmDmg = await Number(foundry.utils.getProperty(item, itmAttr));
+let itmDmg = await parseInt(foundry.utils.getProperty(item, itmAttr));
 
 //  location and value of target actor's current constitution
 const actAttr = "system.abilities.con.base";
