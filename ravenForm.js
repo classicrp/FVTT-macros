@@ -52,46 +52,56 @@
 		// RAVEN fly 40' average
 		// Turned on, now we disable *Poison* and *Sting*, enable *Beak*, set images to *Raven*,
 		//		enable low-light vision, disable see-in-the-dark and set life-sense to 0.
-		await itemPoison.update({ [poisonAttr]: true });  			// this works
-		await actor.update({ [flyAttr]: 60 });						// this works
-		await actor.update({ [manAttr]: 'good' });				// this works
-		await actor.update({ [actorAttr]: actorRaven });			// this works
-		await actor.update({ [landAttr]: 10 });						// this works
-		await actor.update({ [llAttr]: true });
-		await actor.update({ [sidAttr]: false });
-		await actor.update({ [lsAttr]: 0 });
-		await token.document.update ({ [tokenAttr]: tokenRaven });	// this works
-		//	Add 'Beak'
-		const beak = await fromUuid(beakUuid);
-		const beakData = game.items.fromCompendium(beak);
-		await Item.create(beakData, {parent: actor});
-		//	Remove 'Sting'
-		const sting = await actor.items.find(i => i._stats.compendiumSource === stingUuid && i.name === 'Sting');
-		if (typeof sting !== "undefined") {
-			await sting.delete();
+		try {
+			foundry.utils.setProperty(itemPoison, poisonAttr, true);
+			foundry.utils.setProperty(actor, flyAttr, 60);
+			foundry.utils.setProperty(actor, manAttr, 'good');
+			foundry.utils.setProperty(actor, actorAttr, actorRaven);
+			foundry.utils.setProperty(actor, landAttr, 10);
+			foundry.utils.setProperty(actor, llAttr, true);
+			foundry.utils.setProperty(actor, sidAttr, false);
+			foundry.utils.setProperty(actor, lsAttr, 0);
+			await token.document.update ({ [tokenAttr]: tokenRaven });	// this works
+			//	Add 'Beak'
+			const beak = await fromUuid(beakUuid);
+			const beakData = game.items.fromCompendium(beak);
+			await Item.create(beakData, {parent: actor});
+			//	Remove 'Sting'
+			const sting = await actor.items.find(i => i._stats.compendiumSource === stingUuid && i.name === 'Sting');
+			if (typeof sting !== "undefined") {
+				await sting.delete();
+			}
+		} catch(error) {
+			console.error(error, "Raven, something did not work!");
+			return;
 		}
-
+		
 	} else {
 		// IMP fly 50' perfect 
 		// Turned off, now we enable *Poison* and *Sting*, disable *Beak* and set images back to *Imp*
 		//		disable low-light vision, enable see-in-the-dark and set life-sense to 60.
-		await itemPoison.update({ [poisonAttr]: false });  			// this works
-		await actor.update({ [flyAttr]: 50 });						// this works
-		await actor.update({ [manAttr]: 'perfect' });				// this works
-		await actor.update({ [actorAttr]: actorImp });				// this works
-		await actor.update({ [landAttr]: 20 });						// this works
-		await actor.update({ [llAttr]: false });
-		await actor.update({ [sidAttr]: true });
-		await actor.update({ [lsAttr]: 60 });
-		await token.document.update ({ [tokenAttr]: tokenImp });	// this works
-		//	Add 'Sting'
-		const sting = await fromUuid(stingUuid);
-		const stingData = game.items.fromCompendium(sting);
-		await Item.create(stingData, {parent: actor});
-		//	Remove 'Beak'
-		const beak = await actor.items.find(i => i._stats.compendiumSource === beakUuid && i.name === 'Beak');
-		if (typeof beak !== "undefined") {
-			await beak.delete();
+		try {
+			foundry.utils.setProperty(itemPoison, poisonAttr, false);
+			foundry.utils.setProperty(actor, flyAttr, 50);
+			foundry.utils.setProperty(actor, manAttr, 'perfect');
+			foundry.utils.setProperty(actor, actorAttr, actorImp);
+			foundry.utils.setProperty(actor, landAttr, 20);
+			foundry.utils.setProperty(actor, llAttr, false);
+			foundry.utils.setProperty(actor, sidAttr, true);
+			foundry.utils.setProperty(actor, lsAttr, 60);
+			await token.document.update ({ [tokenAttr]: tokenImp });	// this works
+			//	Add 'Sting'
+			const sting = await fromUuid(stingUuid);
+			const stingData = game.items.fromCompendium(sting);
+			await Item.create(stingData, {parent: actor});
+			//	Remove 'Beak'
+			const beak = await actor.items.find(i => i._stats.compendiumSource === beakUuid && i.name === 'Beak');
+			if (typeof beak !== "undefined") {
+				await beak.delete();
+			}
+		} catch(error) {
+			console.error(error, "Imp, something did not work!");
+			return;
 		}
 	}
 
