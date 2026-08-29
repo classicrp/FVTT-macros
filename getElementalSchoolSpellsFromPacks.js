@@ -9,97 +9,101 @@ const packs = game.packs.contents.filter(f=> f.metadata.type === "Item");
 //	Put your specific `.name` contents here
 const target = "elemental school";
 const wanted = await getWantedUuids(packs, target);
-const elementalList = getSpellsFromWantedUuids(wanted);
+//	If the filtered Array has contents, continue
+if (!wanted.length) return;
+let elementalList = Array();
+for (const eSchool of wanted) {
+	//	Grab the `uuid` for the "feature" from the Compendium
+	let local = await fromUuid(eSchool.uuid);
+	local = local.toObject();
+	const rslt = getSpellsFromWantedUuids(local);
+	if (rslt.length) {
+		if (elementalList.length) {
+			elementalList.concat(rslt);
+		} else {
+			elementalList.push(rslt)
+		}
+	}
+}
+console.info(elementalList);
 
-function getSpellsFromWantedUuids(wanted) {
+function getSpellsFromWantedUuids(local) {
 /*	Grabs the item for each provided "UUID" and parses through the description
 *		looking for a list of spells associated with the feature item that the 
 *		UUID represents.
-*	@rarams; 	{object array} - "wanted", an array of `uuid` objects.
+*	@params; 	{object array} - "local", `toObject()` version of an [ItemFeatPF].
 *	@returns; 	{object array} - a array of objects containing source feature, 
 *								level and spell name || an empty array.
 */
-	//	If the filtered Array has contents, continue
-	if (!wanted.length) return Array();
-	let spellList;
-	let elementalList = Array();
-	for (const eSchool of wanted) {
-		//	Grab the `uuid` for the "feature" from the Compendium
-		let local = await fromUuid(eSchool.uuid);
-		local = local.toObject();
-		if (local) {
-			//	Grab the description field
-			let desc = local.system.description.value;
-			//	Parse the HTML text
-			let parsed = parseHTML(desc);
-			spellList = Array();
-			for (const p of parsed) {
-				//	As long as the description contains a "Spell" header 
-				//	followed by a list of "spells by level"
-				if (p.innerText === "Spells") {
-					let cNodes = p.nextSibling.childNodes;
-					cNodes.forEach(e=> {
-						//	Add to Array the HTML and @UUID stripped text
-						spellList.push(removeHTMLandUUID(e.outerText));
-					})
-					break;
-				}
-			}
-			//	Strip out the "target" reference
-			const elementName = local.name.replace(" Elemental School", "").trim();
-			spellList.forEach(e => {
-				//  Break up each record of the "spellList" array
-				//	The first split based on "-" separates the level from the listed spells
-				const levels = e.split("-");
-				//	Grab the number from the "level" side
-				let level = parseInt(levels[0].trim(), 10);
-				//	Break the listed spells side by ","
-				const spells = levels[1].split(",");
-				for (let i=0; i < spells.length; i++) {
-					let spell = spells[i].trim();
-					//  Problems with spell variants including "," in the spell
-					//  such as "lesser", "greater", "mass", etc. which need to
-					//  be appended to the previous record
-					if (_SPELLMODIFIERS.includes(spell)) {
-						//  This is one of the spell variants
-						if (i > 0) {
-							//	The first spell of any list should not already
-							//	have a variant tag
-							let fltrd = elementalList.filter(f=> f.spell === spells[i-1].trim());
-							//  Always grab the last (highest level) spell
-							fltrd[fltrd.length - 1].spell += ", " + spell;
-							//	Clear the current spell which is just a variant tag
-							spell = "";
-						}
-					}
-					if (spell) {
-						//	Now we check for numbers in the spell
-						let nums = spell.split(" "), num = 0;
-						for (const n of nums) {
-							num = parseInt(n);
-							if (!isNaN(num)) break;
-						}
-						if (num) {
-						//  We have a bad "Roman" numeral, fix it
-							spell = spell.replace(num.toString(), _NUMBERTOROMAN[num]);
-						}
-						//  Create a record object for the current "spell" listed
-						let record = {
-							school: elementName,
-							level: level,
-							spell: spell
-						}
-						//	Add the spell to the output array
-						elementalList.push(record);
-					}
-				}
-			});
-			//	Only for testing, can be removed
-			console.info(elementName);
+	if (!local) return null;
+	const result = Array();
+	//	Grab the description field
+	let desc = local.system.description.value;
+	//	Parse the HTML text
+	let parsed = parseHTML(desc);
+	let spellList = Array();
+	for (const p of parsed) {
+		//	As long as the description contains a "Spell" header 
+		//	followed by a list of "spells by level"
+		if (p.innerText === "Spells") {
+			let cNodes = p.nextSibling.childNodes;
+			cNodes.forEach(e=> {
+				//	Add to Array the HTML and @UUID stripped text
+				spellList.push(removeHTMLandUUID(e.outerText));
+			})
+			break;
 		}
 	}
-	//	Only for testing, can be removed
-	console.info(elementalList);
+	//	Strip out the "target" reference
+	const elementName = local.name.replace(" Elemental School", "").trim();
+	spellList.forEach(e => {
+		//  Break up each record of the "spellList" array
+		//	The first split based on "-" separates the level from the listed spells
+		const levels = e.split("-");
+		//	Grab the number from the "level" side
+		let level = parseInt(levels[0].trim(), 10);
+		//	Break the listed spells side by ","
+		const spells = levels[1].split(",");
+		for (let i=0; i < spells.length; i++) {
+			let spell = spells[i].trim();
+			//  Problems with spell variants including "," in the spell
+			//  such as "lesser", "greater", "mass", etc. which need to
+			//  be appended to the previous record
+			if (_SPELLMODIFIERS.includes(spell)) {
+				//  This is one of the spell variants
+				if (i > 0) {
+					//	The first spell of any list should not already
+					//	have a variant tag
+					let fltrd = elementalList.filter(f=> f.spell === spells[i-1].trim());
+					//  Always grab the last (highest level) spell
+					fltrd[fltrd.length - 1].spell += ", " + spell;
+					//	Clear the current spell which is just a variant tag
+					spell = "";
+				}
+			}
+			if (spell) {
+				//	Now we check for numbers in the spell
+				let nums = spell.split(" "), num = 0;
+				for (const n of nums) {
+					num = parseInt(n);
+					if (!isNaN(num)) break;
+				}
+				if (num) {
+				//  We have a bad "Roman" numeral, fix it
+					spell = spell.replace(num.toString(), _NUMBERTOROMAN[num]);
+				}
+				//  Create a record object for the current "spell" listed
+				let record = {
+					school: elementName,
+					level: level,
+					spell: spell
+				}
+				//	Add the spell to the output array
+				result.push(record);
+			}
+		}
+	});
+	if (_VERBOSE >= 5) console.info("getSpellsFromWantedUuids()", result);
 	return result;
 };
 
