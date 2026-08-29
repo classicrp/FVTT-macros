@@ -16,7 +16,7 @@ packs.forEach(pack=> {
                                && !f.uuid.includes("crp-contents"))
                       .sort(function(a,b) {
                           let x=a.name, y=b.name;
-                          return (x<y)?-1:(x>y)?1:0; })
+                          return (x<y)?-1:(x>y)?1:0;})
 					  .map(m=> ({uuid: m.uuid}));
       if (fltrd.length) {
         fltrd.forEach(h=> {
