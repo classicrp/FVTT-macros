@@ -28,6 +28,7 @@ packs.forEach(pack=> {
 
 if (wanted.length) {
     let spellList;
+	let elementalList = Array();
     for (const eSchool of wanted) {
         let local = await fromUuid(eSchool.uuid);
         local = local.toObject();
@@ -44,7 +45,6 @@ if (wanted.length) {
 					break;
 				}
 			}
-			let elementalList = Array();
 			const elementName = local.name.replace(" Elemental School", "").trim();
 			spellList.forEach(e => {
 				//  now break up each record of spellList
@@ -86,9 +86,10 @@ if (wanted.length) {
 					}
 				}
 			});
-			console.info(elementName, elementalList);
+			console.info(elementName);
 		}
     }
+	console.info(elementalList);
 };
 
 function removeHTMLandUUID(htmlText, state, joiner) {
