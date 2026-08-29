@@ -16,27 +16,31 @@ for (const eSchool of wanted) {
 	//	Grab the `uuid` for the "feature" from the Compendium
 	let local = await fromUuid(eSchool.uuid);
 	local = local.toObject();
-	const rslt = getSpellsFromWantedUuids(local);
+	const rslt = getSpellsFromWantedUuids(local, eSchool.uuid);
 	if (rslt.length) {
 		if (elementalList.length) {
-			elementalList.concat(rslt);
+			elementalList = elementalList.concat(rslt);
 		} else {
-			elementalList.push(rslt)
+			elementalList = rslt;
 		}
 	}
 }
 console.info(elementalList);
 
-function getSpellsFromWantedUuids(local) {
+function getSpellsFromWantedUuids(local, uuid) {
 /*	Grabs the item for each provided "UUID" and parses through the description
 *		looking for a list of spells associated with the feature item that the 
 *		UUID represents.
-*	@params; 	{object array} - "local", `toObject()` version of an [ItemFeatPF].
+*	@params; 	{object array} - "local", `toObject()` version of an [ItemFeatPF],
+*				{string} - "uuid", the UUID of the source Compendium.
 *	@returns; 	{object array} - a array of objects containing source feature, 
 *								level and spell name || an empty array.
 */
 	if (!local) return null;
 	const result = Array();
+	//	Grab the "pack" used
+	const packinfo = uuid.split(".");
+	const pack = packinfo[1] + "." + packinfo[2];
 	//	Grab the description field
 	let desc = local.system.description.value;
 	//	Parse the HTML text
@@ -74,7 +78,11 @@ function getSpellsFromWantedUuids(local) {
 				if (i > 0) {
 					//	The first spell of any list should not already
 					//	have a variant tag
-					let fltrd = elementalList.filter(f=> f.spell === spells[i-1].trim());
+					let previous = spells[i-1].trim();
+					//	Update the current "result" set before returning
+					let fltrd = result
+						.filter(f=> f.school === elementName 
+								 && f.spell === previous);
 					//  Always grab the last (highest level) spell
 					fltrd[fltrd.length - 1].spell += ", " + spell;
 					//	Clear the current spell which is just a variant tag
@@ -94,6 +102,7 @@ function getSpellsFromWantedUuids(local) {
 				}
 				//  Create a record object for the current "spell" listed
 				let record = {
+					pack: pack,
 					school: elementName,
 					level: level,
 					spell: spell
@@ -103,7 +112,7 @@ function getSpellsFromWantedUuids(local) {
 			}
 		}
 	});
-	if (_VERBOSE >= 5) console.info("getSpellsFromWantedUuids()", result);
+	if (_VERBOSE >= 5) console.info(`getSpellsFromWantedUuids(${elementName})`, result);
 	return result;
 };
 
