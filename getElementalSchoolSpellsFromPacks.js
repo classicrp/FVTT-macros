@@ -26,6 +26,7 @@ for (const eSchool of wanted) {
 	}
 }
 console.info(elementalList);
+console.warn(JSON.stringify(elementalList));
 
 function getSpellsFromWantedUuids(local, uuid) {
 /*	Grabs the item for each provided "UUID" and parses through the description
