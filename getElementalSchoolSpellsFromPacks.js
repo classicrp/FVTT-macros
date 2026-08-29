@@ -8,41 +8,26 @@ const _SPELLMODIFIERS = ["lesser", "minor", "improved", "greater", "major", "sup
 const packs = game.packs.contents.filter(f=> f.metadata.type === "Item");
 //	Put your specific `.name` contents here
 const target = "elemental school";
-const wanted = Array();
-packs.forEach(pack=> {
-	//	Grab only the "Feats"
-    const srcs = pack.index.contents.filter(f=> f.type === "feat");
-    if (srcs.length) {
-		//	Filter down to "Class Features" and specific name requirements
-		//	in my case, I also filter out my compendium duplicates (the ones
-		//	that I've already fixed for my campaigns)
-		//	Only return the "UUID"
-		let fltrd = srcs.filter(f=> !foundry.utils.isEmpty(f.system)
-								 && f.system.subType === "classFeat"
-								 && f.name.toLowerCase().includes(target)
-								 && !f.uuid.includes("crp-contents"))
-						.sort(function(a,b) {
-							let x=a.name, y=b.name;
-							return (x<y)?-1:(x>y)?1:0;})
-						.map(m=> ({uuid: m.uuid}));
-		if (fltrd.length) {
-			//	Add each filtered record into an Array
-			fltrd.forEach(h=> {
-			wanted.push(h);          
-        });
-      }
-    }
-});
+const wanted = await getWantedUuids(packs, target);
+const elementalList = getSpellsFromWantedUuids(wanted);
 
-//	If the filtered Array has contents, continue
-if (wanted.length) {
-    let spellList;
+function getSpellsFromWantedUuids(wanted) {
+/*	Grabs the item for each provided "UUID" and parses through the description
+*		looking for a list of spells associated with the feature item that the 
+*		UUID represents.
+*	@rarams; 	{object array} - "wanted", an array of `uuid` objects.
+*	@returns; 	{object array} - a array of objects containing source feature, 
+*								level and spell name || an empty array.
+*/
+	//	If the filtered Array has contents, continue
+	if (!wanted.length) return Array();
+	let spellList;
 	let elementalList = Array();
-    for (const eSchool of wanted) {
+	for (const eSchool of wanted) {
 		//	Grab the `uuid` for the "feature" from the Compendium
-        let local = await fromUuid(eSchool.uuid);
-        local = local.toObject();
-        if (local) {
+		let local = await fromUuid(eSchool.uuid);
+		local = local.toObject();
+		if (local) {
 			//	Grab the description field
 			let desc = local.system.description.value;
 			//	Parse the HTML text
@@ -112,9 +97,45 @@ if (wanted.length) {
 			//	Only for testing, can be removed
 			console.info(elementName);
 		}
-    }
+	}
 	//	Only for testing, can be removed
 	console.info(elementalList);
+	return result;
+};
+
+function getWantedUuids(packs, target) {
+/*	Removes all HTML and @UUID coding from a provided text block.
+*	@rarams; 	{object array} - "packs", an array of [CompendiumCollections],
+*				{string} - "target", the specific item text that needs inclusion.
+*	@returns; 	{object array} - a array of uuid's matching the request.
+*/
+	const result = Array();
+	packs.forEach(pack=> {
+		//	Grab only the "Feats"
+		const srcs = pack.index.contents.filter(f=> f.type === "feat");
+		if (srcs.length) {
+			//	Filter down to "Class Features" and specific name requirements
+			//	in my case, I also filter out my compendium duplicates (the ones
+			//	that I've already fixed for my campaigns)
+			//	Only return the "UUID"
+			let fltrd = srcs.filter(f=> !foundry.utils.isEmpty(f.system)
+									 && f.system.subType === "classFeat"
+									 && f.name.toLowerCase().includes(target)
+									 && !f.uuid.includes("crp-contents"))
+							.sort(function(a,b) {
+								let x=a.name, y=b.name;
+								return (x<y)?-1:(x>y)?1:0;})
+							.map(m=> ({uuid: m.uuid}));
+			if (fltrd.length) {
+				//	Add each filtered record into an Array
+				fltrd.forEach(h=> {
+				result.push(h);          
+			});
+		  }
+		}
+	});
+	if (_VERBOSE >= 5) console.info("getWantedUuids()", result);
+	return result;
 };
 
 function removeHTMLandUUID(htmlText, state, joiner) {
