@@ -1,0 +1,2417 @@
+[{
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 0,
+		"spell": "telekinetic projectile"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 1,
+		"spell": "floating disk"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 1,
+		"spell": "magic missile"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 1,
+		"spell": "unseen servant"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 2,
+		"spell": "ablative barrier"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 2,
+		"spell": "blur"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 2,
+		"spell": "pilfering hand"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 2,
+		"spell": "spiritual weaponlife pact"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 2,
+		"spell": "protection from arrows"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 2,
+		"spell": "squeeze"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 2,
+		"spell": "web"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 2,
+		"spell": "whispering wind"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 3,
+		"spell": "blink"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 3,
+		"spell": "ectoplasmic snare"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 3,
+		"spell": "force punch"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 3,
+		"spell": "tiny hut"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 4,
+		"spell": "resilient sphere"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 4,
+		"spell": "spiritual ally"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 4,
+		"spell": "telekinetic charge"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 4,
+		"spell": "telekinetic maneuver"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 5,
+		"spell": "condensed ether"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 5,
+		"spell": "ethereal envelope"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 5,
+		"spell": "interposing hand"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 5,
+		"spell": "mage's faithful hound"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 5,
+		"spell": "secret chest"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 5,
+		"spell": "telekinesis"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 5,
+		"spell": "wall of ectoplasm"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 6,
+		"spell": "animate objects"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 6,
+		"spell": "enemy hammer"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 6,
+		"spell": "forceful hand"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 6,
+		"spell": "leashed shackles"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 7,
+		"spell": "ectoplasmic eruption"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 7,
+		"spell": "ethereal jaunt"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 7,
+		"spell": "grasping hand"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 7,
+		"spell": "phase door"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 8,
+		"spell": "clenched fist"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 8,
+		"spell": "telekinetic sphere"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 9,
+		"spell": "etherealness"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Aether",
+		"level": 9,
+		"spell": "telekinetic storm"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 0,
+		"spell": "message"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 1,
+		"spell": "air bubble"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 1,
+		"spell": "alter winds"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 1,
+		"spell": "feather fall"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 1,
+		"spell": "gentle breeze"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 1,
+		"spell": "shocking grasp"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 1,
+		"spell": "windy escape"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 2,
+		"spell": "aggressive thundercloud"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 2,
+		"spell": "elemental speech"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 2,
+		"spell": "elemental touch"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 2,
+		"spell": "glide"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 2,
+		"spell": "gust of wind"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 2,
+		"spell": "gusting sphere"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 2,
+		"spell": "levitate"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 2,
+		"spell": "resist energy"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 2,
+		"spell": "summon monster ii"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 2,
+		"spell": "whispering wind"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 3,
+		"spell": "air geyser"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 3,
+		"spell": "carrying wind"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 3,
+		"spell": "cloak of winds"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 3,
+		"spell": "draconic reservoir"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 3,
+		"spell": "elemental aura"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 3,
+		"spell": "fly"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 3,
+		"spell": "gaseous form"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 3,
+		"spell": "hostile levitation"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 3,
+		"spell": "lightning bolt"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 3,
+		"spell": "lightning conductor"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 3,
+		"spell": "protection from energy"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 3,
+		"spell": "resist energy, communal"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 3,
+		"spell": "second wind"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 3,
+		"spell": "wall of mist"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 3,
+		"spell": "wind wall"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 4,
+		"spell": "absorbing inhalation"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 4,
+		"spell": "aggressive thundercloud, greater"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 4,
+		"spell": "ball lightning"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 4,
+		"spell": "blast of wind"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 4,
+		"spell": "cloud shape"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 4,
+		"spell": "detonate"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 4,
+		"spell": "dragon's breath"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 4,
+		"spell": "elemental body i"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 4,
+		"spell": "miasmatic form"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 4,
+		"spell": "protection from energy, communal"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 4,
+		"spell": "river of wind"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 4,
+		"spell": "shout"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 4,
+		"spell": "summon monster iv"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 5,
+		"spell": "elemental body ii"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 5,
+		"spell": "fickle winds"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 5,
+		"spell": "lightning arc"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 5,
+		"spell": "overland flight"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 5,
+		"spell": "planar adaptation"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 5,
+		"spell": "planar binding, lesser"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 5,
+		"spell": "suffocation"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 5,
+		"spell": "summon monster v"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 5,
+		"spell": "wind blades"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 6,
+		"spell": "chain lightning"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 6,
+		"spell": "elemental body iii"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 6,
+		"spell": "path of the winds"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 6,
+		"spell": "planar binding"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 6,
+		"spell": "sirocco"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 6,
+		"spell": "summon monster vi"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 7,
+		"spell": "control weather"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 7,
+		"spell": "elemental body iv"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 7,
+		"spell": "fly, mass"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 7,
+		"spell": "planar adaptation, mass"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 7,
+		"spell": "scouring winds"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 7,
+		"spell": "summon monster vii"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 8,
+		"spell": "planar binding, greater"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 8,
+		"spell": "shout, greater"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 8,
+		"spell": "stormbolts"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 8,
+		"spell": "summon monster viii"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 9,
+		"spell": "gate"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 9,
+		"spell": "ride the lightning"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 9,
+		"spell": "suffocation, mass"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Air",
+		"level": 9,
+		"spell": "winds of vengeance"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 0,
+		"spell": "acid splash"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 1,
+		"spell": "corrosive touch"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 1,
+		"spell": "expeditious excavation"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 1,
+		"spell": "grease"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 1,
+		"spell": "mudball"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 1,
+		"spell": "stone fist"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 1,
+		"spell": "stone shield"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 1,
+		"spell": "thunderstomp"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 2,
+		"spell": "acid arrow"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 2,
+		"spell": "create pit"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 2,
+		"spell": "elemental speech"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 2,
+		"spell": "elemental touch"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 2,
+		"spell": "glitterdust"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 2,
+		"spell": "molten orb"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 2,
+		"spell": "resist energy"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 2,
+		"spell": "shatter"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 2,
+		"spell": "stone call"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 2,
+		"spell": "stone discus"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 2,
+		"spell": "summon monster ii"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 3,
+		"spell": "burrow"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 3,
+		"spell": "draconic reservoir"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 3,
+		"spell": "elemental aura"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 3,
+		"spell": "heart of the metal"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 3,
+		"spell": "protection from energy"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 3,
+		"spell": "raging rubble"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 3,
+		"spell": "resist energy, communal"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 3,
+		"spell": "shifting sand"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 3,
+		"spell": "spiked pit"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 3,
+		"spell": "stinking cloud"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 3,
+		"spell": "thunderstomp, greater"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 4,
+		"spell": "acid pit"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 4,
+		"spell": "calcific touch"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 4,
+		"spell": "detonate"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 4,
+		"spell": "dragon's breath"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 4,
+		"spell": "earth glide"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 4,
+		"spell": "elemental body i"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 4,
+		"spell": "obsidian flow"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 4,
+		"spell": "protection from energy, communal"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 4,
+		"spell": "stone shape"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 4,
+		"spell": "stoneskin"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 4,
+		"spell": "summon monster iv"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 4,
+		"spell": "vitriolic mist"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 5,
+		"spell": "acidic spray"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 5,
+		"spell": "corrosive consumption"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 5,
+		"spell": "elemental body ii"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 5,
+		"spell": "hungry pit"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 5,
+		"spell": "passwall"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 5,
+		"spell": "planar adaptation"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 5,
+		"spell": "planar binding, lesser"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 5,
+		"spell": "stoneskin, communal"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 5,
+		"spell": "summon monster v"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 5,
+		"spell": "transmute mud to rock"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 5,
+		"spell": "transmute rock to mud"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 5,
+		"spell": "wall of stone"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 6,
+		"spell": "acid fog"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 6,
+		"spell": "elemental body iii"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 6,
+		"spell": "flesh to stone"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 6,
+		"spell": "move earth"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 6,
+		"spell": "planar binding"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 6,
+		"spell": "stone to flesh"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 6,
+		"spell": "summon monster vi"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 6,
+		"spell": "tar pool"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 6,
+		"spell": "wall of iron"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 7,
+		"spell": "caustic eruption"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 7,
+		"spell": "elemental body iv"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 7,
+		"spell": "planar adaptation, mass"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 7,
+		"spell": "rampart"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 7,
+		"spell": "reverse gravity"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 7,
+		"spell": "statue"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 7,
+		"spell": "summon monster vii"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 8,
+		"spell": "iron body"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 8,
+		"spell": "planar binding, greater"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 8,
+		"spell": "summon monster viii"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 8,
+		"spell": "wall of lava"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 9,
+		"spell": "clashing rocks"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 9,
+		"spell": "gate"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Earth",
+		"level": 9,
+		"spell": "world wave"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 0,
+		"spell": "spark"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 1,
+		"spell": "burning hands"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 1,
+		"spell": "dancing lantern"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 1,
+		"spell": "touch of combustion"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 2,
+		"spell": "burning gaze"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 2,
+		"spell": "elemental speech"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 2,
+		"spell": "elemental touch"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 2,
+		"spell": "fiery shuriken"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 2,
+		"spell": "fire breath"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 2,
+		"spell": "flaming sphere"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 2,
+		"spell": "molten orb"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 2,
+		"spell": "pyrotechnics"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 2,
+		"spell": "resist energy"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 2,
+		"spell": "scorching ray"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 2,
+		"spell": "summon monster ii"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 3,
+		"spell": "ash storm"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 3,
+		"spell": "campfire wall"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 3,
+		"spell": "draconic reservoir"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 3,
+		"spell": "elemental aura"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 3,
+		"spell": "fire trail"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 3,
+		"spell": "fireball"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 3,
+		"spell": "firestream"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 3,
+		"spell": "flame arrow"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 3,
+		"spell": "flash fire"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 3,
+		"spell": "protection from energy"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 3,
+		"spell": "resist energy, communal"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 4,
+		"spell": "controlled fireball"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 4,
+		"spell": "detonate"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 4,
+		"spell": "dragon's breath"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 4,
+		"spell": "elemental body i"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 4,
+		"spell": "fire shield"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 4,
+		"spell": "fire trap"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 4,
+		"spell": "firefall"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 4,
+		"spell": "flaming sphere, greater"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 4,
+		"spell": "obsidian flow"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 4,
+		"spell": "protection from energy, communal"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 4,
+		"spell": "scorching ash form"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 4,
+		"spell": "summon monster iv"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 4,
+		"spell": "volcanic storm"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 4,
+		"spell": "wall of fire"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 5,
+		"spell": "damnation stride"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 5,
+		"spell": "elemental body ii"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 5,
+		"spell": "fire snake"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 5,
+		"spell": "geyser"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 5,
+		"spell": "planar adaptation"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 5,
+		"spell": "planar binding, lesser"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 5,
+		"spell": "summon monster v"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 6,
+		"spell": "chains of fire"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 6,
+		"spell": "contagious flame"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 6,
+		"spell": "elemental body iii"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 6,
+		"spell": "planar binding"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 6,
+		"spell": "sirocco"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 6,
+		"spell": "summon monster vi"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 6,
+		"spell": "tar pool"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 7,
+		"spell": "delayed blast fireball"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 7,
+		"spell": "elemental body iv"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 7,
+		"spell": "firebrand"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 7,
+		"spell": "planar adaptation, mass"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 7,
+		"spell": "summon monster vii"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 8,
+		"spell": "incendiary cloud"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 8,
+		"spell": "planar binding, greater"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 8,
+		"spell": "summon monster viii"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 8,
+		"spell": "wall of lava"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 9,
+		"spell": "firey body"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 9,
+		"spell": "gate"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Fire",
+		"level": 9,
+		"spell": "meteor swarm"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 0,
+		"spell": "mending"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 1,
+		"spell": "body capacitance"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 1,
+		"spell": "gravity bow"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 1,
+		"spell": "magic weapon"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 1,
+		"spell": "mirror polish"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 1,
+		"spell": "reinforce armaments"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 1,
+		"spell": "shock shield"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 1,
+		"spell": "shocking grasp"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 2,
+		"spell": "aggressive thundercloud"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 2,
+		"spell": "bullet shield"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 2,
+		"spell": "bullet ward"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 2,
+		"spell": "defensive shock"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 2,
+		"spell": "glitterdust"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 2,
+		"spell": "make whole"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 2,
+		"spell": "shatter"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 2,
+		"spell": "silk to steel"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 2,
+		"spell": "warding weapon"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 3,
+		"spell": "chill metal"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 3,
+		"spell": "heat metal"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 3,
+		"spell": "keen edge"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 3,
+		"spell": "lightning bolt"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 3,
+		"spell": "magic weapon, greater"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 3,
+		"spell": "pellet blast"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 3,
+		"spell": "silver darts"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 3,
+		"spell": "versatile weapon"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 4,
+		"spell": "aggressive thundercloud, greater"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 4,
+		"spell": "malfunction"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 4,
+		"spell": "named bullet"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 4,
+		"spell": "shout"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 4,
+		"spell": "stoneskin"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 5,
+		"spell": "lightning arc"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 5,
+		"spell": "major creation"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 5,
+		"spell": "rapid repair"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 5,
+		"spell": "rusting grasp"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 5,
+		"spell": "soothe construct"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 5,
+		"spell": "unbreakable construct"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 5,
+		"spell": "wreath of blades"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 6,
+		"spell": "chain lightning"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 6,
+		"spell": "disintegrate"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 6,
+		"spell": "named bullet, greater"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 6,
+		"spell": "wall of iron"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 7,
+		"spell": "arcane cannon"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 7,
+		"spell": "awaken construct"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 7,
+		"spell": "control construct"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 7,
+		"spell": "statue"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 8,
+		"spell": "call construct"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 8,
+		"spell": "iron body"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 8,
+		"spell": "shout, greater"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 8,
+		"spell": "stormbolts"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 9,
+		"spell": "meteor swarm"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 9,
+		"spell": "repel metal or stone"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Metal",
+		"level": 9,
+		"spell": "ride the lightning"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 0,
+		"spell": "guidance"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 1,
+		"spell": "gravity bow"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 1,
+		"spell": "keen senses"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 1,
+		"spell": "shield"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 1,
+		"spell": "true strike"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 2,
+		"spell": "continual flame"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 2,
+		"spell": "haunting mists"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 2,
+		"spell": "invisibility"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 2,
+		"spell": "masterwork transformation"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 2,
+		"spell": "see invisibility"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 2,
+		"spell": "share memorypact"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 2,
+		"spell": "protection from arrows"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 2,
+		"spell": "squeeze"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 2,
+		"spell": "web"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 2,
+		"spell": "whispering wind"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 3,
+		"spell": "arcane sight"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 3,
+		"spell": "clairaudience/clairvoyance"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 3,
+		"spell": "dispel magic"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 3,
+		"spell": "nondetection"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 3,
+		"spell": "seek thoughts"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 3,
+		"spell": "tapestry's embrace"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 3,
+		"spell": "twilight knife"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 4,
+		"spell": "minor creation"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 4,
+		"spell": "moonstruck"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 4,
+		"spell": "wandering star motes"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 5,
+		"spell": "fabricate"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 5,
+		"spell": "major creation"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 5,
+		"spell": "mind fog"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 5,
+		"spell": "telepathic bond"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 5,
+		"spell": "teleport"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 6,
+		"spell": "dispel magic, greater"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 6,
+		"spell": "legend lore"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 6,
+		"spell": "mage's lucubration"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 6,
+		"spell": "true seeing"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 7,
+		"spell": "simulacrum"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 7,
+		"spell": "teleport, greater"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 7,
+		"spell": "vision"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 8,
+		"spell": "mind blank"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 8,
+		"spell": "moment of prescience"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 8,
+		"spell": "orb of the void"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 8,
+		"spell": "whirlwind"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 9,
+		"spell": "foresight"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 9,
+		"spell": "mage's disjunction"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Void",
+		"level": 9,
+		"spell": "time stop"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 0,
+		"spell": "ray of frost"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 1,
+		"spell": "damp powder"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 1,
+		"spell": "hydraulic push"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 1,
+		"spell": "icicle dagger"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 1,
+		"spell": "marid's mastery"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 1,
+		"spell": "obscuring mist"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 1,
+		"spell": "touch of the sea"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 1,
+		"spell": "waterproof"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 1,
+		"spell": "wave shield"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 2,
+		"spell": "accelerate poison"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 2,
+		"spell": "elemental speech"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 2,
+		"spell": "elemental touch"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 2,
+		"spell": "fog cloud"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 2,
+		"spell": "frigid touch"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 2,
+		"spell": "frost fall"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 2,
+		"spell": "resist energy"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 2,
+		"spell": "river whip"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 2,
+		"spell": "slipstream"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 2,
+		"spell": "spindrift spritz"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 2,
+		"spell": "summon monster ii"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 2,
+		"spell": "unshakable chill"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 3,
+		"spell": "aqueous orb"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 3,
+		"spell": "draconic reservoir"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 3,
+		"spell": "elemental aura"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 3,
+		"spell": "hydraulic torrent"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 3,
+		"spell": "protection from energy"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 3,
+		"spell": "resist energy, communal"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 3,
+		"spell": "sleet storm"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 3,
+		"spell": "water breathing"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 4,
+		"spell": "detonate"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 4,
+		"spell": "dragon's breath"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 4,
+		"spell": "elemental body i"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 4,
+		"spell": "ice storm"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 4,
+		"spell": "protection from energy, communal"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 4,
+		"spell": "ride the waves"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 4,
+		"spell": "rising water"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 4,
+		"spell": "solid fog"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 4,
+		"spell": "spindrift spritz, mass"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 4,
+		"spell": "summon monster iv"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 4,
+		"spell": "wall of ice"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 5,
+		"spell": "cloudkill"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 5,
+		"spell": "cone of cold"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 5,
+		"spell": "elemental body ii"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 5,
+		"spell": "geyser"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 5,
+		"spell": "icy prison"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 5,
+		"spell": "planar adaptation"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 5,
+		"spell": "planar binding, lesser"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 5,
+		"spell": "summon monster v"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 6,
+		"spell": "cold ice strike"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 6,
+		"spell": "elemental body iii"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 6,
+		"spell": "fluid form"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 6,
+		"spell": "freezing sphere"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 6,
+		"spell": "ice crystal teleport"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 6,
+		"spell": "planar binding"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 6,
+		"spell": "speak with waves"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 6,
+		"spell": "summon monster vi"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 7,
+		"spell": "control weather"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 7,
+		"spell": "elemental body iv"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 7,
+		"spell": "expel blood"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 7,
+		"spell": "ice body"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 7,
+		"spell": "planar adaptation, mass"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 7,
+		"spell": "summon monster vii"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 7,
+		"spell": "vortex"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 8,
+		"spell": "horrid wilting"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 8,
+		"spell": "planar binding, greater"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 8,
+		"spell": "polar ray"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 8,
+		"spell": "seamantle"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 8,
+		"spell": "summon monster viii"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 9,
+		"spell": "gate"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 9,
+		"spell": "icy prison, mass"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 9,
+		"spell": "tsunami"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Water",
+		"level": 9,
+		"spell": "world wave"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 0,
+		"spell": "light"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 1,
+		"spell": "alter winds"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 1,
+		"spell": "animate rope"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 1,
+		"spell": "charm person"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 1,
+		"spell": "cultural adaptation"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 1,
+		"spell": "handy grapnel"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 1,
+		"spell": "illusion of calm"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 1,
+		"spell": "liberating command"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 1,
+		"spell": "quintessence"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 2,
+		"spell": "cat's grace"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 2,
+		"spell": "companion life link"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 2,
+		"spell": "entangle"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 2,
+		"spell": "extreme flexibility"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 2,
+		"spell": "life pact"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 2,
+		"spell": "protection from arrows"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 2,
+		"spell": "squeeze"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 2,
+		"spell": "web"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 2,
+		"spell": "whispering wind"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 3,
+		"spell": "air geyser"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 3,
+		"spell": "anchored step"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 3,
+		"spell": "cloak of winds"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 3,
+		"spell": "pack empathy"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 3,
+		"spell": "tongues"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 3,
+		"spell": "tree shape"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 3,
+		"spell": "wind wall"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 4,
+		"spell": "age resistance, lesser"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 4,
+		"spell": "charm monster"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 4,
+		"spell": "hallucinatory terrain"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 4,
+		"spell": "minor creation"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 4,
+		"spell": "plant growth"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 4,
+		"spell": "river of wind"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 4,
+		"spell": "secure shelter"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 4,
+		"spell": "sirocco"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 5,
+		"spell": "charm person, mass"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 5,
+		"spell": "command plants"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 5,
+		"spell": "fabricate"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 5,
+		"spell": "fickle winds"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 5,
+		"spell": "mirage arcana"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 5,
+		"spell": "plant shape i"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 5,
+		"spell": "sending"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 5,
+		"spell": "telepathic bond"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 6,
+		"spell": "age resistance"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 6,
+		"spell": "battlemind link"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 6,
+		"spell": "cat's grace, mass"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 6,
+		"spell": "plant shape ii"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 6,
+		"spell": "serenity"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 6,
+		"spell": "tree stride"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 7,
+		"spell": "age resistance, greater"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 7,
+		"spell": "control weather"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 7,
+		"spell": "liveoak"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 7,
+		"spell": "plant shape iii"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 7,
+		"spell": "scouring winds"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 8,
+		"spell": "charm monster, mass"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 8,
+		"spell": "euphoric tranquility"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 8,
+		"spell": "transmute metal to wood"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 9,
+		"spell": "control plants"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 9,
+		"spell": "refuge"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 9,
+		"spell": "winds of vengeance"
+	}, {
+		"pack": "pf1.class-abilities",
+		"school": "Wood",
+		"level": 9,
+		"spell": "wooden phalanx"
+	}
+]
