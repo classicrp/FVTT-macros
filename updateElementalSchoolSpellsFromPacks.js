@@ -213,7 +213,8 @@ function updateSpellsWithElementalSchools( el, spell ) {
 *				{object} - "spell", the matching [ItemSpellPF] for record. 
 *	@returns	{boolean} - true if no error occurs.
 */
-	let result = setProperty(spell, "system.learnedAt.elementalSchool", {el.elementName: el.level});
+	const record = { ${el.elementName}: el.level };
+	let result = setProperty(spell, "system.learnedAt.elementalSchool", record);
 	if (_VERBOSE >= 4) console.info(`updateSpellsWithElementalSchools(${Spell: el.spell {el.elementName: el.level}})`, result);
 	return result;
 };
