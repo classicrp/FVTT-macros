@@ -26,6 +26,7 @@ for (const eSchool of wanted) {
 	}
 	rslt = null;
 }
+const refinedList = refineElementalList(elementalList);
 await getSpellUuids( packs, elementalList );
 console.info(`Updated "elementalList"`, elementalList);
 const unknowns = Array();
@@ -40,12 +41,41 @@ for (const el of elementalList) {
 	const record = Object();
 	setProperty(record, el.school, el.level);
 	let spell = await fromUuid(el.uuid);
-	await spell.update({ ["system.learnedAt.elementalSchool"]: record });
-debugger
+//	await spell.update({ ["system.learnedAt.elementalSchool"]: record });
 //    break;  // verify first one is written correclty
 //	await setProperty(spell, "system.learnedAt.elementalSchool", record);
 }
 console.warn("Spells with no matching UUID", unknowns);
+
+function refineElementalList(elementalList) {
+	let result = Array();
+debugger
+	const duplicates = elementalList
+							.flatMap(m => m.spell)
+							.reduce((acc, spell) => {
+								acc[spell] = (acc[spell] || 0) + 1;
+								return acc;
+							}, {});
+	result = Object.entries(duplicates)
+				.map(m=> ({ spell: m[0], count: m[1] }))
+				.filter(f=> f.count > 1)
+				.sort(function(a,b) {
+					let x=a.spell, y=b.spell;
+					return (x<y)?-1:(x>y)?1:0;
+				});
+
+/*
+	const fltrd = elementalList
+					.sort(function(a,b) {
+						let x=a.spell, y=b.spell;
+						if (x < y) return -1;
+                        if (x > y) return 1;
+                        setProperty(a.elementalSchool, b.school, b.level);
+						return 0;
+					});
+*/
+	return result;
+};
 
 function getSpellsFromWantedUuids(local, uuid) {
 /*	Grabs the item for each provided "UUID" and parses through the description
@@ -126,7 +156,11 @@ function getSpellsFromWantedUuids(local, uuid) {
 				let record = {
 					pack: pack,
 					feature: (local.name),
+					featureUuid: uuid,
 					school: elementName,
+					elementalSchool: {
+						[elementName]: level
+					},
 					level: level,
 					spell: spell,
 					uuid: String()
