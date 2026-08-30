@@ -1,5 +1,4 @@
 console.clear();
-debugger
 const _VERBOSE = 5;
 const _NUMBERTOROMAN = {1:"i", 2:"ii", 3:"iii", 4:"iv", 5:"v", 6:"vi", 7:"vii", 8:"viii", 9:"ix", 10:"x"};  //  packageInventoryData()
 const _SPELLMODIFIERS = ["lesser", "minor", "improved", "greater", "major", "supreme", "mass", "communal"];  //  elementalSchoolSpells()
@@ -38,17 +37,24 @@ for (const el of elementalList) {
 		//	skip and continue
 		continue;
 	}
+	const record = Object();
+	setProperty(record, el.school, el.level);
 	let spell = await fromUuid(el.uuid);
-	rslt = await updateSpellsWithElementalSchools(spell, el);
+	await spell.update({ ["system.learnedAt.elementalSchool"]: record });
+debugger
+//    break;  // verify first one is written correclty
+//	await setProperty(spell, "system.learnedAt.elementalSchool", record);
 }
-console.warn("Spells with no matching UUID", unknown);
+console.warn("Spells with no matching UUID", unknowns);
 
 function getSpellsFromWantedUuids(local, uuid) {
 /*	Grabs the item for each provided "UUID" and parses through the description
 *		looking for a list of spells associated with the feature item that the 
 *		UUID represents.
+*
 *	@params; 	{object array} - "local", `toObject()` version of an [ItemFeatPF],
 *				{string} - "uuid", the UUID of the source Compendium.
+*
 *	@returns; 	{object array} - a array of objects containing source feature, 
 *								level and spell name || an empty array.
 */
@@ -119,6 +125,7 @@ function getSpellsFromWantedUuids(local, uuid) {
 				//  Create a record object for the current "spell" listed
 				let record = {
 					pack: pack,
+					feature: (local.name),
 					school: elementName,
 					level: level,
 					spell: spell,
@@ -135,8 +142,10 @@ function getSpellsFromWantedUuids(local, uuid) {
 
 function getWantedUuids(packs, target) {
 /*	Removes all HTML and @UUID coding from a provided text block.
+*
 *	@params; 	{object array} - "packs", an array of [CompendiumCollections],
 *				{string} - "target", the specific item text that needs inclusion.
+*
 *	@returns; 	{object array} - a array of uuid's matching the request.
 */
 	const result = Array();
@@ -172,58 +181,62 @@ function getSpellUuids( packs, elementalList ) {
 /*	Go through Compendia to find the spell matching the list and update
 *	the `uuid` in the list. A missing UUID indicates an issue with the original
 *	feature spell list in the description that will need a manual fix.
+*
 *	@params		{object array} - "packs", an array of [CompendiumCollections],
 *				{object array} - "elementalList", the working record set.
-*	@returns	{object array} - "elementalList", updated with `uuid`.
+*
+*	@returns	{null} - "elementalList" is updated with `uuid` in place.
 */
-	const result = Array();
-	packs.forEach(pack=> {
-		//	Grab only the "Feats"
-		const srcs = pack.index.contents.filter(f=> f.type === "feat");
-		if (srcs.length) {
-			//	Filter down to "Class Features" and specific name requirements
-			//	in my case, I also filter out my compendium duplicates (the ones
-			//	that I've already fixed for my campaigns)
-			//	Only return the "UUID"
-			let fltrd = srcs.filter(f=> !foundry.utils.isEmpty(f.system)
-									 && f.system.subType === "classFeat"
-									 && f.name.toLowerCase().includes(target)
-									 && !f.uuid.includes("crp-contents"))
-							.sort(function(a,b) {
-								let x=a.name, y=b.name;
-								return (x<y)?-1:(x>y)?1:0;})
-							.map(m=> ({uuid: m.uuid}));
-			if (fltrd.length) {
-				//	Add each filtered record into an Array
-				fltrd.forEach(h=> {
-				result.push(h);          
+	for (const pack of packs) {
+		//	Grab only the "Spells"
+		const srcs = pack.index.contents.filter(f=> f.type === "spell");
+		if (!srcs.length) continue;
+		//	Filter down to "Spells" and specific name requirements
+		//	in my case, I also filter out my compendium duplicates (the ones
+		//	that I've already fixed for my campaigns)
+		const fltrd = srcs.filter(f=> !foundry.utils.isEmpty(f.system)
+								 && !f.uuid.includes("crp-contents"))
+						.map(m=> ({name: m.name, uuid: m.uuid}));
+		if (fltrd.length) {
+			//	Add each filtered record into an Array
+			fltrd.forEach(h=> {
+				let rslt = elementalList.filter(e=> e.spell === h.name.toLowerCase());
+				if (rslt.length) {
+					for (let r of rslt) {
+						//	For all matching records in "elementalList"
+						r.uuid = h.uuid;
+					}
+				}
 			});
-		  }
 		}
-	});
-	if (_VERBOSE >= 5) console.info("getWantedUuids()", result);
-	return result;
+	}
+	if (_VERBOSE >= 5) console.info("getSpellUuids()");
+	return;
 };
 
-function updateSpellsWithElementalSchools( el, spell ) {
+function updateSpellsWithElementalSchools( spell, el ) {
 /*	Update Compendium spells' `system.learnedAt.elementalSchool`
 *	properties with the `school: level` combo from list for each spell.
 *
-*	@params		{object} - "el", specific record of "elementalList",
-*				{object} - "spell", the matching [ItemSpellPF] for record. 
+*	@params		{object} - "spell", the matching [ItemSpellPF] for record,
+*				{object} - "el", specific record of "elementalList",
+*				 
 *	@returns	{boolean} - true if no error occurs.
 */
-	const record = { ${el.elementName}: el.level };
+	const record = Object();
+	setProperty(record, el.school, el.level);
 	let result = setProperty(spell, "system.learnedAt.elementalSchool", record);
-	if (_VERBOSE >= 4) console.info(`updateSpellsWithElementalSchools(${Spell: el.spell {el.elementName: el.level}})`, result);
+	if (_VERBOSE >= 4) console.info(`updateSpellsWithElementalSchools(Spell: "${el.spell}" {${el.school}: ${el.level}}`, result);
 	return result;
 };
 
 function removeHTMLandUUID(htmlText, state, joiner) {
 /*	Removes all HTML and @UUID coding from a provided text block.
+*
 *	@rarams; 	{string} - "htmlText", a block of encoded text,
 *				{boolean} - `state`: true = "short" (only returns 1st paragraph), false = "full" (returns whole text),
 *				{string} - "joiner", paragraph separator.
+*
 *	@returns; 	{string} - text stripped of all HTML and @UUID coding.
 */
 	if (_VERBOSE >= 7) {
