@@ -16,10 +16,10 @@
 Issue:			"life pact, protection from arrows, squeeze, web, whispering wind" is excess text.
 Recommend:		List should terminate after "spiritual weapon".
 ```
-Pack: "pf1.class-abilities"\
-Feature: "Fire Elemental School"\
-Level: 9\
-Spell: "firey body"
+**Pack:** "pf1.class-abilities"\
+**Feature:** "Fire Elemental School"\
+**Level:** 9\
+**Spell:** "firey body"
 ```
 	INVESTIGATION:
 	SOURCE		CONTENT
@@ -32,10 +32,10 @@ Issue: 			Both match, so likely the spell itself is mis-named. Checking... Nope.
 				Spell is "fiery body" so both AONPRD and PF1 are misspelled.	
 Recommend:		Rename "firey body" as "fiery body" in lists.
 ```
-Pack: "pf1.class-abilities"\
-Feature: "Void Elemental School"\
-Level: 2\
-Spell: "share memorypact"
+**Pack:** "pf1.class-abilities"\
+**Feature:** "Void Elemental School"\
+**Level:** 2\
+**Spell:** "share memorypact"
 ```
 	INVESTIGATION:
 	SOURCE		CONTENT
@@ -50,10 +50,10 @@ Spell: "share memorypact"
 Issue:	 		"pact, protection from arrows, squeeze, web, whispering wind" is excess text.
 Recommend:		List should terminate after "share memory".
 ```
-Pack: "pf1.class-abilities"\
-Feature: "Void Elemental School"\
-Level: 3\
-Spell: "tapestry's embrace"
+**Pack:** "pf1.class-abilities"\
+**Feature:** "Void Elemental School"\
+**Level:** 3\
+**Spell:** "tapestry's embrace"
 ```
 	INVESTIGATION:
 	SOURCE		CONTENT
