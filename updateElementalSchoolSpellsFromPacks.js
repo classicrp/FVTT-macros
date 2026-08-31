@@ -5,7 +5,7 @@ const _SPELLMODIFIERS = ["lesser", "minor", "improved", "greater", "major", "sup
 
 const notif = ui.notifications.info( "Beginning updates", { permanent: true, progress: true, pct: 0 } );
 
-//	Look for packs the have "Items"
+//	Look for packs that have "Items"
 const packs = game.packs.contents.filter( f=> f.metadata.type === "Item" );
 notif.update({ message: "Item Compendiums identified" });
 //	Put your specific `.name` contents here
