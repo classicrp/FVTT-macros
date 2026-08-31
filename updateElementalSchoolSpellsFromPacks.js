@@ -3,20 +3,31 @@ const _VERBOSE = 5;
 const _NUMBERTOROMAN = {1:"i", 2:"ii", 3:"iii", 4:"iv", 5:"v", 6:"vi", 7:"vii", 8:"viii", 9:"ix", 10:"x"};  //  packageInventoryData()
 const _SPELLMODIFIERS = ["lesser", "minor", "improved", "greater", "major", "supreme", "mass", "communal"];  //  elementalSchoolSpells()
 
+const notif = ui.notifications.warn("Beginning updates", { permanent: true, progress: false });
+
 //	Look for packs the have "Items"
 const packs = game.packs.contents.filter(f=> f.metadata.type === "Item");
+notif.update({ message: "Item Compendiums identified"});
 //	Put your specific `.name` contents here
 const target = "elemental school";
-const wanted = await getWantedUuids(packs, target);
+const wanted = await getWantedUuids(packs, target, notif);
 let rslt;
 //	If the filtered Array has contents, continue
-if (!wanted.length) return;
+if (!wanted.length) {
+	notif.remove();
+	ui.notifications.error(`No Class Features with "${target}" in name were found!.`);
+	return;
+}
 let elementalList = Array();
+notif.update({ message: "Collecting Spells from feature...", pct = 0});
+let count = 0, ratio = 0, max = wnated.length;
 for (const eSchool of wanted) {
 	//	Grab the `uuid` for the "feature" from the Compendium
-	let local = await fromUuid(eSchool.uuid);
+	let local = await fromUuid(eSchool.uuid);  //  remains in main to allow sync pull from Compendium
+	ratio = Math.floor( count / max * 100 ) / 100;
+	notif.update({ pct: ratio });
 	local = local.toObject();
-	rslt = getSpellsFromWantedUuids(local, eSchool.uuid);
+	rslt = await getSpellsFromWantedUuids(local, eSchool.uuid, notif);
 	if (rslt.length) {
 		if (elementalList.length) {
 			elementalList = elementalList.concat(rslt);
@@ -25,59 +36,99 @@ for (const eSchool of wanted) {
 		}
 	}
 	rslt = null;
+	count++;
 }
-const refinedList = refineElementalList(elementalList);
-await getSpellUuids( packs, elementalList );
+
+notif.update({ pct = 0 });
+//	Add spell UUIDs to the generated "elementalList"
+await getSpellUuids( packs, elementalList, notif );
 console.info(`Updated "elementalList"`, elementalList);
-const unknowns = Array();
-for (const el of elementalList) {
-	//	see if a uuid exists for the spell
-	if (!el.uuid) {
-		//	make a note of the "bad" record
-		unknowns.push(el);
-		//	skip and continue
-		continue;
-	}
-	const record = Object();
-	setProperty(record, el.school, el.level);
-	let spell = await fromUuid(el.uuid);
-//	await spell.update({ ["system.learnedAt.elementalSchool"]: record });
-//    break;  // verify first one is written correclty
-//	await setProperty(spell, "system.learnedAt.elementalSchool", record);
+
+//	Get a list of unknown "spells" listed in the source feature
+const unknowns = await elementalList.filter(f=> f.uuid === "");
+if (unknowns.length) {
+
+	console.warn("Spells with no matching UUID", unknowns);
 }
-console.warn("Spells with no matching UUID", unknowns);
+let listForSpellUpdates = await getListForSpellUpdates( elementalList, notif );
 
-function refineElementalList(elementalList) {
-	let result = Array();
+count = 0, ratio = 0, max = listForSpellUpdates.length;
+notif.update({ message: "Updating Spells", pct: ratio });
+for (let ul of listForSpellUpdates) {
+	//	see if a uuid exists for the spell
 debugger
-	const duplicates = elementalList
-							.flatMap(m => m.spell)
-							.reduce((acc, spell) => {
-								acc[spell] = (acc[spell] || 0) + 1;
-								return acc;
-							}, {});
-	result = Object.entries(duplicates)
-				.map(m=> ({ spell: m[0], count: m[1] }))
-				.filter(f=> f.count > 1)
-				.sort(function(a,b) {
-					let x=a.spell, y=b.spell;
-					return (x<y)?-1:(x>y)?1:0;
-				});
+	let spell = await fromUuid(ul.uuid);
+	ratio = Math.floor( count / max * 100 ) / 100;
+	let success = Boolean();
+	try {
+		await spell.update({ ["system.learnedAt.elementalSchool"]: ul.elementalSchool });
+		success = true;
+	} catch (error) {
+		error = 0;
+		success = false;
+	}
+	notif.update({ pct: ratio });
+	//	Update the memory list
+	ul.updated = success;
+	console.log(`Updated Spell "${ul.spell}" with Elemental School data:`, ul.elementalSchool, `Succeeded? ${success}`);
+	count++;
+}
 
-/*
-	const fltrd = elementalList
-					.sort(function(a,b) {
-						let x=a.spell, y=b.spell;
-						if (x < y) return -1;
-                        if (x > y) return 1;
-                        setProperty(a.elementalSchool, b.school, b.level);
-						return 0;
-					});
-*/
+notif.remove();
+ui.notifications.success("Completed Updates!");
+await checkForSuccess( listForSpellUpdates );
+
+function checkForSuccess( listForSpellUpdates ) {
+	const result = listForSpellUpdates
+		.flatMap(m => (m.updated === true))
+		.reduce((acc, updated) => {
+			acc[updated] = (acc[updated] || false) + 1;
+			return acc;
+		}, {});
+	console.info("Success rate:", result);
+};
+
+function getListForSpellUpdates( elementalList, notif ) {
+	let result = Array();
+	//	Do a count by "spell" to provide number of occurrences
+	notif.update({ message: "Collecting same Spells...", pct: 5 });
+	const duplicates = elementalList
+						.filter(f=> f.uuid !== "")
+						.flatMap(m => m.spell)
+						.reduce((acc, spell) => {
+							acc[spell] = (acc[spell] || 0) + 1;
+							return acc;
+						}, {});
+	//	Prep an object array with properties needed to proceed with updates
+	notif.update({ message: "Collating Spell data...", pct: 10 });
+	const shorterList = Object.entries(duplicates)
+					.map(m=> ({ spell: m[0], count: m[1], elementalSchool: {}, uuid: "", updated: false }));
+	//	Update the missing properties from the original "elementalList"
+
+	notif.update({ message: "Assembling final Spell list", pct: 15 });
+	for (let sh of shorterList) {
+		let count = 0, start = 15, ratio = 0, max = shorterList.length;
+		let rslt = elementalList.filter(f=> f.spell === sh.spell);
+		ratio = (Math.floor( count / max * 100 ) + start) / 100;
+		notif.update({ pct: ratio });
+		rslt.forEach(e=> {
+			if (count === 0) sh.uuid = e.uuid;
+			if (foundry.utils.isEmpty(sh.elementalSchool)) {
+				//	first occurance
+				sh.elementalSchool = e.elementalSchool;
+			} else {
+				//	append the current object from "e" to "sh"
+				Object.assign(sh.elementalSchool, e.elementalSchool);
+			}
+			count++
+		});
+		result.push(sh);
+	}
+	if (_VERBOSE >= 5) console.info("getListForSpellUpdates()", result);
 	return result;
 };
 
-function getSpellsFromWantedUuids(local, uuid) {
+function getSpellsFromWantedUuids(local, uuid, notif) {
 /*	Grabs the item for each provided "UUID" and parses through the description
 *		looking for a list of spells associated with the feature item that the 
 *		UUID represents.
@@ -110,6 +161,7 @@ function getSpellsFromWantedUuids(local, uuid) {
 			break;
 		}
 	}
+	notif.update( message: `Collecting Spells from Class Feature "${local.name}"`);
 	//	Strip out the "target" reference
 	const elementName = local.name.replace(" Elemental School", "").trim();
 	spellList.forEach(e => {
@@ -183,8 +235,11 @@ function getWantedUuids(packs, target) {
 *	@returns; 	{object array} - a array of uuid's matching the request.
 */
 	const result = Array();
+	let count = 0, ratio = 0, max = packs.size || packs.length;
+	notif.update({ message: `Grabing Class Features ("${target}")`, progress: true});
 	packs.forEach(pack=> {
 		//	Grab only the "Feats"
+		ratio = Math.floor( count / max * 100 ) / 100;
 		const srcs = pack.index.contents.filter(f=> f.type === "feat");
 		if (srcs.length) {
 			//	Filter down to "Class Features" and specific name requirements
@@ -206,12 +261,14 @@ function getWantedUuids(packs, target) {
 			});
 		  }
 		}
+		notif.update({ pct: ratio});
+		count++;
 	});
 	if (_VERBOSE >= 5) console.info("getWantedUuids()", result);
 	return result;
 };
 
-function getSpellUuids( packs, elementalList ) {
+function getSpellUuids( packs, elementalList, notif ) {
 /*	Go through Compendia to find the spell matching the list and update
 *	the `uuid` in the list. A missing UUID indicates an issue with the original
 *	feature spell list in the description that will need a manual fix.
@@ -222,10 +279,11 @@ function getSpellUuids( packs, elementalList ) {
 *	@returns	{null} - "elementalList" is updated with `uuid` in place.
 */
 	for (const pack of packs) {
+		notif.update({ message: `Collecting Spell UUIDs from "${pack.metadata.label}"`, pct = 0});
 		//	Grab only the "Spells"
 		const srcs = pack.index.contents.filter(f=> f.type === "spell");
 		if (!srcs.length) continue;
-		//	Filter down to "Spells" and specific name requirements
+		//	Filter down to "Spells" and any specific name requirements
 		//	in my case, I also filter out my compendium duplicates (the ones
 		//	that I've already fixed for my campaigns)
 		const fltrd = srcs.filter(f=> !foundry.utils.isEmpty(f.system)
@@ -233,7 +291,10 @@ function getSpellUuids( packs, elementalList ) {
 						.map(m=> ({name: m.name, uuid: m.uuid}));
 		if (fltrd.length) {
 			//	Add each filtered record into an Array
+			let count = 0, ratio = 0, max = fltrd.length
 			fltrd.forEach(h=> {
+				ratio = Math.floor( count / max * 100 ) / 100;
+				notif.update({ pct = ratio });
 				let rslt = elementalList.filter(e=> e.spell === h.name.toLowerCase());
 				if (rslt.length) {
 					for (let r of rslt) {
@@ -241,6 +302,7 @@ function getSpellUuids( packs, elementalList ) {
 						r.uuid = h.uuid;
 					}
 				}
+				count++;
 			});
 		}
 	}
