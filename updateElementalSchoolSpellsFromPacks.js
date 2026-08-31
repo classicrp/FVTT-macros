@@ -3,7 +3,7 @@ const _VERBOSE = 5;
 const _NUMBERTOROMAN = {1:"i", 2:"ii", 3:"iii", 4:"iv", 5:"v", 6:"vi", 7:"vii", 8:"viii", 9:"ix", 10:"x"};  //  packageInventoryData()
 const _SPELLMODIFIERS = ["lesser", "minor", "improved", "greater", "major", "supreme", "mass", "communal"];  //  elementalSchoolSpells()
 
-const notif = ui.notifications.warn( "Beginning updates", { permanent: true, progress: false } );
+const notif = ui.notifications.warn( "Beginning updates", { permanent: true, progress: true, pct: 0 } );
 
 //	Look for packs the have "Items"
 const packs = game.packs.contents.filter(f=> f.metadata.type === "Item" );
@@ -20,7 +20,7 @@ if ( !wanted.length ) {
 }
 let elementalList = Array();
 notif.update({ message: "Collecting Spells from feature...", pct: 0 });
-let count = 0, ratio = 0, max = wnated.length;
+let count = 0, ratio = 0, max = wanted.length;
 for (const eSchool of wanted) {
 	//	Grab the `uuid` for the "feature" from the Compendium
 	let local = await fromUuid( eSchool.uuid );  //  remains in main to allow sync pull from Compendium
@@ -47,8 +47,16 @@ console.info( `Updated "elementalList"`, elementalList );
 //	Get a list of unknown "spells" listed in the source feature
 const unknowns = await elementalList.filter(f=> f.uuid === "" );
 if ( unknowns.length ) {
+	let msg = `<h3>Unknowns Spells Found</h3><p></p>`;
+	unknowns.forEach(e=> {
+		msg += `<p><span style="font-family: Arial; font-size: 1.1em">
+			<strong>Pack:</strong> ${e.pack}</br>
+			<strong>Class Feature:</strong> ${e.feature}</br>
+			<strong>Level:</strong> ${e.level}</br>
+			<strong>Spell:</strong> ${e.spell}</span></p>`;
+	});
 	await ChatMessage.implementation.create({
-		content: `<h3>Unknowns Spells Found</h3><p></p>${JSON.stingify( unknowns )}`,
+		content: msg,
 	});
 	console.warn( "Spells with no matching UUID", unknowns );
 }
@@ -58,7 +66,6 @@ count = 0, ratio = 0, max = listForSpellUpdates.length;
 notif.update({ message: "Updating Spells", pct: ratio });
 for (let ul of listForSpellUpdates) {
 	//	see if a uuid exists for the spell
-debugger
 	let spell = await fromUuid( ul.uuid );
 	ratio = Math.floor( count / max * 100 ) / 100;
 	let success = Boolean();
@@ -80,8 +87,15 @@ notif.remove();
 ui.notifications.success( "Completed Updates!" );
 const successes = await checkForSuccess( listForSpellUpdates );
 if ( successes ) {
+	let msg = `<h3>Spells Updated Success</h3><p></p>`;
+	rslt = Object.entries(successes)
+			.map(m=> ({ state: m[0], count: m[1] }));
+	rslt.forEach(e=> {
+		msg += `<p><span style="font-family: Arial; font-size: 1.1em">
+				<strong>${e.state}:</strong> ${e.count} of ${listForSpellUpdates.length}</span></p>`;
+	});
 	await ChatMessage.implementation.create({
-		content: `<h3>Spells Updated Success</h3><p></p>${JSON.stingify( successes )}`,
+		content: msg,
 	});	
 };
 
