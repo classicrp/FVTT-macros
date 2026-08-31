@@ -73,5 +73,5 @@ Issue:			Both lists match, so let's look at the spell.  Hmm, no such spell exist
 
 [Paizo](https://paizo.com/threads/rzs2nn6p?Tapestrys-Embrace) has a similar claim.
 ```
-Recommend:		Change spell from "tapestry's embrace" to "call of the void".
+Recommend:		Change spell from "tapestry's embrace" to "call the void".
 ```
