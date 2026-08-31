@@ -51,7 +51,7 @@ if ( unknowns.length ) {
 	unknowns.forEach( e=> {
 		msg += `<p><span style="font-family: Arial; font-size: 1.1em">
 			<strong>Pack:</strong> ${e.pack}</br>
-			<strong>Class Feature:</strong> ${e.feature}</br>
+			<strong>Feature:</strong> ${e.feature}</br>
 			<strong>Level:</strong> ${e.level}</br>
 			<strong>Spell:</strong> ${e.spell}</span></p>`;
 	});
