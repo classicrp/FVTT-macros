@@ -15,7 +15,7 @@ let rslt;
 //	If the filtered Array has contents, continue
 if ( !wanted.length ) {
 	notif.remove();
-	ui.notifications.error( `No Class Features with "${target}" in name were found!.` );
+	ui.notifications.error( `No Class Features with "${target}" in the name were found!.` );
 	return;
 }
 let elementalList = Array();
