@@ -123,7 +123,7 @@ function getListForSpellUpdates( elementalList, notif ) {
 						}, {});
 	//	Prep an object array with properties needed to proceed with updates
 	notif.update({ message: "Collating Spell data...", pct: 10 });
-	const shorterList = Object.entries(duplicates)
+	const shorterList = Object.entries( duplicates )
 					.map( m=> ({ spell: m[0], count: m[1], elementalSchool: {}, uuid: "", updated: false }));
 	//	Update the missing properties from the original "elementalList"
 
