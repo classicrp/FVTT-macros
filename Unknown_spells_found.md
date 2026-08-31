@@ -69,7 +69,9 @@ Issue:			Both lists match, so let's look at the spell.  Hmm, no such spell exist
 				but I found a reference on d20PFSRD.
 ```
 [*Editor’s Note](https://www.d20pfsrd.com/classes/core-classes/wizard/arcane-schools/paizo-arcane-schools/elemental-arcane-schools/void-elemental-school/)		
-> The spell listed as tapestry’s embrace doesn’t seem to exist, and it has been suggested that the spell call the void was originally called that name and was	changed in editing. GMs are encouraged to use call the void as a 3rd-level Void Elementalist wizard spell.
+> The spell listed as tapestry’s embrace doesn’t seem to exist, and it has been suggested that the spell call the void was originally called that name and was	changed in editing. GMs are encouraged to use call the void as a 3rd-level Void Elementalist wizard spell.\
+
+[Paizo](https://paizo.com/threads/rzs2nn6p?Tapestrys-Embrace) has a similar claim.
 ```
 Recommend:		Change spell from "tapestry's embrace" to "call of the void".
 ```
