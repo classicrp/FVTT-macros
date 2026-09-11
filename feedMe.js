@@ -28,9 +28,7 @@
 // Try that first.
 
 */
-const _VERSION = 'v1.0.10';
-const _LEAD = `Macro.feedMe(${_VERSION}): `;
-let msg = '';
+let msg = String();
 let failure = false;
 const state = true;
 const _SHOW = true;
@@ -40,7 +38,7 @@ if (action.tag == 'havokGash') {
     	
 	if (_SHOW) debugger
     // check that there was a target selected
-    if (shared.chatAttacks[0].targets !== null) {
+    if (shared.chatAttacks[0].target.size) {
         // there is a target
 		
 		const vAc = Number( shared.chatData["flags.vsAC.targets"][0].ac.normal );
