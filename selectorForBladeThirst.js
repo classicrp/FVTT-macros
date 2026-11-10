@@ -1,11 +1,11 @@
 const _VERSION = '1.3.3';
 const _HEAD = `Macro.selectorForBladeThirst(${_VERSION})`;
-const _SHOW = false;
-const _VERBOSE = false;
+const _SHOW = true;
+const _VERBOSE = true;
 if (_VERBOSE) console.log(_HEAD);
 
 	if (action.tag === 'btstop' || action.tag === 'btchange') {
-		//	Turn off any active "BladeThirst" buffs
+	//	Turn off any active "BladeThirst" buffs
 		const actBuffs = await actor._itemTypes.buff
 			.filter(b => (b.system.tags.includes('bladethirst') && b.system.active));
 		for (const a of actBuffs) {
@@ -24,6 +24,8 @@ if (_VERBOSE) console.log(_HEAD);
 	const level = await hasArchetype(actor, "bard", "arcane duelist");
 	if (level) {
 		maxcost = 1 + Math.floor((level - 6) / 3);
+//		await item.setItemDictionaryFlag("maxBonus", maxcost);
+		await foundry.utils.setProperty(item, "system.flags.dictionary.maxBonus", maxcost);
 	} else {
 		return;
 	}
@@ -32,20 +34,19 @@ if (_VERBOSE) console.log(_HEAD);
 	//	WEAPON DATA
 	const weapTypes = ["rwak", "mwak", "twak", "save"];
 	let skip = true;
-	const lastweap = await item.getItemDictionaryFlag('weapon');
+//	const lastweap = await item.getItemDictionaryFlag('weapon');
+	const lastweap = await foundry.utils.getProperty(item, "system.flags.dictionary.weapon")
 	let weaps = await deepClone(actor._itemTypes.weapon
 		.filter(f => f.system.actions.length !== 0))
 		.sort(function(a, b){
 			let x = a.name.toLowerCase();
 			let y = b.name.toLowerCase();
-			if (x < y) {return -1;}
-			if (x > y) {return 1;}
-			return 0;
+			return (x < y) ? -1 : (x > y) ? 1 : 0;
 		});
 
 	if (_VERBOSE) console.log('weaps:', weaps);
 	if (_SHOW) debugger;
-	let fWeap = [];
+	let fWeap = Array();
 	for (const w of weaps) {
 		let o = createWeaponObject();
 		if (w.actions.size !== 0) {
@@ -84,12 +85,10 @@ if (_VERBOSE) console.log(_HEAD);
 		.sort(function(a, b){
 			let x = a.name.toLowerCase();
 			let y = b.name.toLowerCase();
-			if (x < y) {return -1;}
-			if (x > y) {return 1;}
-			return 0;
+			return (x < y) ? -1 : (x > y) ? 1 : 0;
 		});
 
-	let fBuff = [], wBuff = [];
+	let fBuff = Array(), wBuff = Array();
 	for (const b of buffs) {
 		let o = createBuffObject();
 		//  debugger;
@@ -97,7 +96,8 @@ if (_VERBOSE) console.log(_HEAD);
 		o.name = b.name.replace(' (bladethirst)', '');
 		o.feature = b.system.tags[0];
 		o.cost = b.system.level;
-		let fltrd = b.system.tags.filter(t => t.toLowerCase() !== 'bladethirst' && t.toString().length !== 1);
+		let fltrd = b.system.tags
+			.filter(t => t.toLowerCase() !== 'bladethirst' && t.toString().length !== 1);
 		for (let f of fltrd) {
 			o.type.push(f);
 		}
@@ -198,8 +198,8 @@ if (_VERBOSE) console.log(_HEAD);
 		return;
 	} 
 	//debugger
-	let weapon = [];
-	let msg = "";
+	let weapon = Array();
+	let msg = String();
 	shared.chatAttacks[0].effectNotesHTML = await msg;
 	if (typeof shared.__nasPendingAttackFootnotes !== 'undefined') {
 		const pauseTime = 750;
@@ -208,15 +208,21 @@ if (_VERBOSE) console.log(_HEAD);
 	if (_SHOW) debugger
 
 	await weapon.push(response.weaponSelect);
-	await item.setItemDictionaryFlag('weapon', response.weaponSelect);
-
+	//await item.setItemDictionaryFlag('weapon', response.weaponSelect);
+	await foundry.utils.setProperty(item, "system.flags.dictionary.weapon", response.weaponSelect);
+	
 	const buffSelect = response.buffSelect;
 	const numBuffs = buffSelect.length;
 	for (let i = 0; i < numBuffs; i++) {
-		await item.setItemDictionaryFlag(`buff${i+1}`, buffSelect[i]);
+		//await item.setItemDictionaryFlag(`buff${i+1}`, buffSelect[i]);
+		let attr = `system.flags.dictionary.buff${i+1}`;
+		await foundry.utils.setProperty(item, attr, buffSelect[i]);
+
 		activated = await actor.items.get(buffSelect[i]);
 		//	have to bind the correct weapon now
-		await activated.setFlag('ckl-roll-bonuses', 'target_weapon', weapon);
+		await foundry.utils.setProperty(activated, 'ckl-roll-bonuses.target_weapon', weapon)
+//		await activated.setFlag('ckl-roll-bonuses', 'target_weapon', weapon);
+		
 		//await activated.update({ ['flags[ckl-roll-bonuses].target_weapon']: weaponSelect});
 		await activated.setActive(true);
 		//await activated.update({ ['system.active']: true });
@@ -225,7 +231,12 @@ return
 
 function clearDictionary() {
 	if (_SHOW) debugger
-    item.update({ ['system.flags.dictionary']: [] });  
+	let dict = Object.keys(foundry.utils.getProperty(item, "system.flags.dictionary"));
+	for (let d of dict) {
+		if (d === "maxBonus") continue;
+		foundry.utils.deleteProperty(item, `system.flags.dictionary.${d}`);
+	}
+//    item.update({ ['system.flags.dictionary']: [] });  
 	shared.chatMessage = false;
 	return
 }
@@ -241,7 +252,7 @@ function onRender(_event, app){
 		const cost = values.reduce((acc,e)=> fBuff.find(i=> e.includes(i.id)).cost + acc, 0);
 		const newMax = maxcost - cost;
 		const inner = fBuff.reduce((acc,e)=>{
-			if(e.cost <= newMax) return acc+=`<option value="${e.id}">${e.name}</option>\n`;
+			if (e.cost <= newMax) return acc+=`<option value="${e.id}">${e.name}</option>\n`;
 			return acc;
 		},`<option value=""></option>`);
 		multi.querySelector("select").innerHTML = inner;
@@ -256,7 +267,7 @@ function onRender(_event, app){
 		fBuff = wBuff.filter(f => f.type.includes(sType.toString()));
 		// rebuild the needed html
  		const inner = fBuff.reduce((acc,e)=>{
-			if(e.type.includes(sType.toString())) return acc+=`<option value="${e.id}">${e.name}</option>\n`;
+			if (e.type.includes(sType.toString())) return acc+=`<option value="${e.id}">${e.name}</option>\n`;
 			return acc;
 		},`<option value=""></option>`);
 		// set the multi-select to the filtered buffs
@@ -268,32 +279,39 @@ function onRender(_event, app){
 function hasArchetype(actor, c, a) {
 //debugger
 	let rslt = -1;
-	const clss = deepClone(actor.items.filter(f => f.system.subType === "base").concat(actor.items.filter(f => f.system.subType === ("template" || "misc") && f.system.associations.classes !== [])));
+	const clss = deepClone(actor.items
+        .filter(f => f.system.subType === "base")
+        .concat(actor.items
+            .filter(f => f.system.subType === ("template" || "misc") 
+                && f.system.associations.classes !== [])));
 	if (_VERBOSE) console.log('list of classes and templates:', clss);
-	rslt = clss.findIndex(f => f.system.subType === "base" && f.name.toLowerCase().includes(c));
+	rslt = clss.findIndex(f => f.system.subType === "base" 
+        && f.name.toLowerCase().includes(c));
 	const mCl = clss.at(rslt).system.level;
-	rslt = clss.find( f => f.system.subType === ("template" || "misc") && f.name.toLowerCase().includes(a));
-	if (typeof rslt === "undefined")
+	rslt = clss.find( f => f.system.subType === ("template" || "misc") 
+        && f.name.toLowerCase().includes(a));
+	if (typeof rslt === "undefined") {
 		return ui.notifications.warn(`Could not find a ${c.titleCase()} (${a.titleCase()}`);
+    }
 	return mCl;	
 }
 
 function createWeaponObject() {
 //	returns a simple data object
 	return {
-		id: "",
-		name: "",
-		type: []
+		id: String(),
+		name: String(),
+		type: Array()
 	};
 }
 
 function createBuffObject() {
 //	returns a simple data object
 	return {
-		id: "",
-		name: "",
-		feature: "",
-		cost: 0,
-		type: []
+		id: String(),
+		name: String(),
+		feature: String(),
+		cost: Number(),
+		type: Array()
 	};
 }
